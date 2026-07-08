@@ -22,7 +22,7 @@ class FrontMatter
 
     private static function escape(string $value): string
     {
-        return str_replace('"', '\\"', $value);
+        return str_replace(['\\', '"'], ['\\\\', '\\"'], $value);
     }
 
     private static function yamlList(array $items): string
@@ -32,7 +32,7 @@ class FrontMatter
         }
 
         $quoted = array_map(function (string $item): string {
-            return '"' . str_replace('"', '\\"', $item) . '"';
+            return '"' . str_replace(['\\', '"'], ['\\\\', '\\"'], $item) . '"';
         }, $items);
 
         return '[' . implode(', ', $quoted) . ']';

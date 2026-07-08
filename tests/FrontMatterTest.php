@@ -69,4 +69,20 @@ YAML;
 
         $this->assertStringContainsString('title: "Il post con \\"virgolette\\""', $result);
     }
+
+    public function test_escapes_backslashes_in_title(): void
+    {
+        $result = FrontMatter::build([
+            'title' => 'Percorso C:\\Utenti\\test',
+            'slug' => 'post-backslash',
+            'date' => '2026-07-08T10:30:00+02:00',
+            'modified' => '2026-07-08T10:30:00+02:00',
+            'wp_id' => 3,
+            'categories' => [],
+            'tags' => [],
+            'permalink' => 'https://tuosito.it/post-backslash/',
+        ]);
+
+        $this->assertStringContainsString('title: "Percorso C:\\\\Utenti\\\\test"', $result);
+    }
 }
