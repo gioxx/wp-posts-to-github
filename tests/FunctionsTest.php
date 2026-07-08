@@ -78,4 +78,55 @@ class FunctionsTest extends TestCase
 
         $this->assertFalse($result['success']);
     }
+
+    public function test_export_post_by_id_does_not_write_meta_when_export_service_fails(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 55;
+        $post->post_name = 'post-in-conflitto';
+        $post->post_content = '<p>Corpo</p>';
+        $post->post_date_gmt = '2026-07-08 08:30:00';
+        $post->post_status = 'publish';
+        $post->post_type = 'post';
+
+        Functions\when('get_post')->justReturn($post);
+        Functions\when('__')->returnArg(1);
+
+        // Settings::get() dependencies.
+        Functions\when('get_option')->justReturn([
+            'token' => 'ghp_test',
+            'owner_repo' => 'gioxx/blog',
+            'branch' => 'main',
+            'base_folder' => 'posts',
+        ]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+
+        // post_to_export_data() dependencies.
+        Functions\when('get_the_title')->justReturn('Post in conflitto');
+        Functions\when('get_the_category')->justReturn([]);
+        Functions\when('get_the_tags')->justReturn([]);
+        Functions\when('wp_list_pluck')->justReturn([]);
+        Functions\when('get_permalink')->justReturn('https://tuosito.it/post-in-conflitto/');
+        Functions\when('get_post_time')->justReturn('2026-07-08T10:30:00+02:00');
+        Functions\when('get_post_modified_time')->justReturn('2026-07-08T11:00:00+02:00');
+        Functions\when('apply_filters')->justReturn('<p>Corpo</p>');
+        Functions\when('get_post_meta')->justReturn('');
+
+        // GithubClient::putFile() dependencies: force a failure response.
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 409]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(409);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'sha does not match']));
+
+        Functions\expect('update_post_meta')->never();
+
+        $result = \POTOGH\export_post_by_id(55);
+
+        $this->assertFalse($result['success']);
+    }
 }
