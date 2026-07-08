@@ -70,9 +70,15 @@ class GithubClient
             return ['success' => true, 'sha' => $body['content']['sha'] ?? null];
         }
 
+        $error = $body['message'] ?? ('GitHub API error, HTTP ' . $code);
+
+        if ($code === 409) {
+            $error .= ' (il file potrebbe essere stato modificato direttamente su GitHub: verifica il contenuto del repository prima di ri-esportare)';
+        }
+
         return [
             'success' => false,
-            'error' => $body['message'] ?? ('GitHub API error, HTTP ' . $code),
+            'error' => $error,
             'status' => $code,
         ];
     }

@@ -75,7 +75,11 @@ class GithubClientTest extends TestCase
         $result = $client->putFile('posts/2026/my-post.md', '# Hello', 'Export post: Hello (#1)', 'stale-sha');
 
         $this->assertSame(
-            ['success' => false, 'error' => 'sha does not match', 'status' => 409],
+            [
+                'success' => false,
+                'error' => 'sha does not match (il file potrebbe essere stato modificato direttamente su GitHub: verifica il contenuto del repository prima di ri-esportare)',
+                'status' => 409,
+            ],
             $result
         );
     }
