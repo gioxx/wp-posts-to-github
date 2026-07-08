@@ -65,6 +65,7 @@ class Settings
         register_setting('potogh_settings_group', self::OPTION_NAME, [
             'sanitize_callback' => [self::class, 'sanitize'],
             'default' => self::defaults(),
+            'autoload' => false,
         ]);
     }
 
