@@ -13,6 +13,18 @@
         });
     }
 
+    function logTrace(postId, lines) {
+        if (!lines || !lines.length) {
+            return;
+        }
+
+        var $log = $('#potogh-bulk-log');
+
+        $.each(lines, function (i, line) {
+            $log.append($('<div>').text('#' + postId + ': ' + line));
+        });
+    }
+
     $('#potogh-bulk-export-selected').on('click', function () {
         var $button = $(this);
         var nonce = $('#potogh_bulk_nonce').val();
@@ -25,6 +37,7 @@
         }
 
         $button.prop('disabled', true);
+        $('#potogh-bulk-log').empty();
         var succeeded = 0;
         var failed = [];
 
@@ -49,11 +62,12 @@
                 } else {
                     failed.push(postId + ': ' + response.data.message);
                 }
+                logTrace(postId, response.data.trace);
             }).fail(function (jqXHR) {
-                var message = jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message
-                    ? jqXHR.responseJSON.data.message
-                    : 'errore di rete';
+                var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
+                var message = data && data.message ? data.message : 'errore di rete';
                 failed.push(postId + ': ' + message);
+                logTrace(postId, data ? data.trace : []);
             }).always(function () {
                 next(index + 1);
             });

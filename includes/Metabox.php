@@ -29,6 +29,7 @@ class Metabox
             <?php esc_html_e('Esporta su GitHub', 'post-to-github-md'); ?>
         </button>
         <div class="potogh-export-message"></div>
+        <ul class="potogh-export-trace"></ul>
         <?php
     }
 
@@ -61,11 +62,12 @@ class Metabox
         $result = export_post_by_id($postId);
 
         if (!$result['success']) {
-            wp_send_json_error(['message' => $result['error']], 500);
+            wp_send_json_error(['message' => $result['error'], 'trace' => $result['trace']], 500);
         }
 
         wp_send_json_success([
             'message' => self::statusLabel(ExportStatus::EXPORTED, $result['exported_at']),
+            'trace' => $result['trace'],
         ]);
     }
 }
