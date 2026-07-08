@@ -1,0 +1,24 @@
+{
+    "name": "gioxx/post-to-github-md",
+    "description": "Export published WordPress posts to Markdown files in a private GitHub repository.",
+    "type": "wordpress-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": ">=7.4",
+        "league/html-to-markdown": "^5.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "brain/monkey": "^2.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "POTOGH\\": "includes/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "POTOGH\\Tests\\": "tests/"
+        }
+    }
+}
