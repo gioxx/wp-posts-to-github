@@ -43,11 +43,12 @@ class ExportServiceTest extends TestCase
         $service = new ExportService(new Converter(), $githubClient, 'posts');
         $result = $service->exportPost($this->samplePostData());
 
-        $this->assertSame([
-            'success' => true,
-            'path' => 'posts/2026/come-configurare-wordpress.md',
-            'sha' => 'new-sha',
-        ], $result);
+        $this->assertTrue($result['success']);
+        $this->assertSame('posts/2026/come-configurare-wordpress.md', $result['path']);
+        $this->assertSame('new-sha', $result['sha']);
+        $this->assertNotEmpty($result['trace']);
+        $this->assertStringContainsString('posts/2026/come-configurare-wordpress.md', $result['trace'][0]);
+        $this->assertStringContainsString('new-sha', end($result['trace']));
     }
 
     public function test_reexport_uses_existing_path_and_sha(): void
@@ -85,6 +86,9 @@ class ExportServiceTest extends TestCase
         $service = new ExportService(new Converter(), $githubClient, 'posts');
         $result = $service->exportPost($this->samplePostData());
 
-        $this->assertSame(['success' => false, 'error' => 'sha does not match'], $result);
+        $this->assertFalse($result['success']);
+        $this->assertSame('sha does not match', $result['error']);
+        $this->assertNotEmpty($result['trace']);
+        $this->assertStringContainsString('sha does not match', end($result['trace']));
     }
 }

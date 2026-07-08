@@ -57,6 +57,7 @@ class BulkPage
                 </tbody>
             </table>
             <div id="potogh-bulk-summary"></div>
+            <div id="potogh-bulk-log"></div>
         </div>
         <?php
     }
@@ -77,12 +78,13 @@ class BulkPage
         $result = export_post_by_id($postId);
 
         if (!$result['success']) {
-            wp_send_json_error(['message' => $result['error'], 'post_id' => $postId], 500);
+            wp_send_json_error(['message' => $result['error'], 'post_id' => $postId, 'trace' => $result['trace']], 500);
         }
 
         wp_send_json_success([
             'post_id' => $postId,
             'message' => Metabox::statusLabel(ExportStatus::EXPORTED, $result['exported_at']),
+            'trace' => $result['trace'],
         ]);
     }
 }

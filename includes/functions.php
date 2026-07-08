@@ -37,11 +37,11 @@ function export_post_by_id(int $postId): array
     $post = get_post($postId);
 
     if (!$post instanceof \WP_Post) {
-        return ['success' => false, 'error' => __('Post non trovato.', 'post-to-github-md')];
+        return ['success' => false, 'error' => __('Post non trovato.', 'post-to-github-md'), 'trace' => []];
     }
 
     if ($post->post_status !== 'publish' || $post->post_type !== 'post') {
-        return ['success' => false, 'error' => __('Solo i post pubblicati possono essere esportati.', 'post-to-github-md')];
+        return ['success' => false, 'error' => __('Solo i post pubblicati possono essere esportati.', 'post-to-github-md'), 'trace' => []];
     }
 
     $service = build_export_service();
@@ -56,7 +56,7 @@ function export_post_by_id(int $postId): array
     update_post_meta($postId, '_potogh_sha', $result['sha']);
     update_post_meta($postId, '_potogh_exported_at', $exportedAt);
 
-    return ['success' => true, 'path' => $result['path'], 'exported_at' => $exportedAt];
+    return ['success' => true, 'path' => $result['path'], 'exported_at' => $exportedAt, 'trace' => $result['trace']];
 }
 
 function enqueue_admin_assets(string $hook): void
