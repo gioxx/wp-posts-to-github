@@ -40,6 +40,10 @@ function export_post_by_id(int $postId): array
         return ['success' => false, 'error' => __('Post non trovato.', 'post-to-github-md')];
     }
 
+    if ($post->post_status !== 'publish' || $post->post_type !== 'post') {
+        return ['success' => false, 'error' => __('Solo i post pubblicati possono essere esportati.', 'post-to-github-md')];
+    }
+
     $service = build_export_service();
     $result = $service->exportPost(post_to_export_data($post));
 

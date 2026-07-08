@@ -62,4 +62,20 @@ class FunctionsTest extends TestCase
 
         $this->assertFalse($result['success']);
     }
+
+    public function test_export_post_by_id_rejects_non_published_post(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 42;
+        $post->post_status = 'draft';
+        $post->post_type = 'post';
+
+        Functions\when('get_post')->justReturn($post);
+        Functions\when('__')->returnArg(1);
+        Functions\expect('update_post_meta')->never();
+
+        $result = \POTOGH\export_post_by_id(42);
+
+        $this->assertFalse($result['success']);
+    }
 }
