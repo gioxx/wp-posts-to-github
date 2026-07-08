@@ -22,8 +22,11 @@
             } else {
                 $message.text(response.data.message);
             }
-        }).fail(function () {
-            $message.text('Errore di rete durante l\'esportazione.');
+        }).fail(function (jqXHR) {
+            var message = jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message
+                ? jqXHR.responseJSON.data.message
+                : 'Errore di rete durante l\'esportazione.';
+            $message.text(message);
         }).always(function () {
             $button.prop('disabled', false);
         });

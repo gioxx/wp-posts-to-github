@@ -49,8 +49,11 @@
                 } else {
                     failed.push(postId + ': ' + response.data.message);
                 }
-            }).fail(function () {
-                failed.push(postId + ': errore di rete');
+            }).fail(function (jqXHR) {
+                var message = jqXHR.responseJSON && jqXHR.responseJSON.data && jqXHR.responseJSON.data.message
+                    ? jqXHR.responseJSON.data.message
+                    : 'errore di rete';
+                failed.push(postId + ': ' + message);
             }).always(function () {
                 next(index + 1);
             });
