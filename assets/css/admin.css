@@ -314,11 +314,14 @@
 }
 
 #potogh-select-all-spinner {
+    border-color: #dcdcde;
+    border-top-color: #2271b1;
+}
+
+#potogh-select-all-spinner:not([hidden]) {
     display: inline-block;
     vertical-align: middle;
     margin-left: 6px;
-    border-color: #dcdcde;
-    border-top-color: #2271b1;
 }
 
 .potogh-bulk-stop-label {
