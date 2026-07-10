@@ -298,24 +298,28 @@ class ExportTab
             [
                 'status' => '',
                 'class' => 'total',
+                'icon' => 'dashicons-admin-post',
                 'count' => $counts['total'],
                 'label' => __('Total published posts', 'post-to-github-md'),
             ],
             [
                 'status' => ExportStatus::NEVER_EXPORTED,
                 'class' => ExportStatus::NEVER_EXPORTED,
+                'icon' => Metabox::statusIconClass(ExportStatus::NEVER_EXPORTED),
                 'count' => $counts['never_exported'],
                 'label' => __('Never exported', 'post-to-github-md'),
             ],
             [
                 'status' => ExportStatus::EXPORTED,
                 'class' => ExportStatus::EXPORTED,
+                'icon' => Metabox::statusIconClass(ExportStatus::EXPORTED),
                 'count' => $counts['exported'],
                 'label' => __('Exported', 'post-to-github-md'),
             ],
             [
                 'status' => ExportStatus::MODIFIED_SINCE_EXPORT,
                 'class' => ExportStatus::MODIFIED_SINCE_EXPORT,
+                'icon' => Metabox::statusIconClass(ExportStatus::MODIFIED_SINCE_EXPORT),
                 'count' => $counts['modified'],
                 'label' => __('Modified since export', 'post-to-github-md'),
             ],
@@ -324,6 +328,7 @@ class ExportTab
         <div class="potogh-stats">
             <?php foreach ($tiles as $tile) : ?>
                 <a class="potogh-stat-tile potogh-stat-<?php echo esc_attr($tile['class']); ?>" href="<?php echo esc_url(admin_url('edit.php?page=potogh-export' . ($tile['status'] !== '' ? '&status=' . $tile['status'] : ''))); ?>">
+                    <span class="dashicons <?php echo esc_attr($tile['icon']); ?> potogh-stat-icon" aria-hidden="true"></span>
                     <span class="potogh-stat-number"><?php echo esc_html((string) $tile['count']); ?></span>
                     <span class="potogh-stat-label"><?php echo esc_html($tile['label']); ?></span>
                 </a>
