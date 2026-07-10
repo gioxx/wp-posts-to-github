@@ -12,6 +12,10 @@
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: post-to-github-md
  * Domain Path: /languages
+ *
+ * GitHub Plugin URI: gioxx/wp-post-to-github-md
+ * GitHub Branch: main
+ * GitHub Languages: true
  */
 
 if (!defined('ABSPATH')) {
