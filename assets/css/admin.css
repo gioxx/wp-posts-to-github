@@ -69,9 +69,15 @@
     height: auto;
 }
 
-.potogh-credits .description {
-    margin: 0;
+.potogh-credits-text .description {
+    margin: 0 0 6px;
     color: #646970;
+}
+
+.potogh-credits-text .potogh-trademark-notice {
+    margin-bottom: 0;
+    font-size: 11px;
+    line-height: 1.5;
 }
 
 .potogh-bulk-footer {

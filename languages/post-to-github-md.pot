@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.7\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:15+0200\n"
+"POT-Creation-Date: 2026-07-10 22:19+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -157,7 +157,7 @@ msgid "No posts match the current filters."
 msgstr ""
 
 #: includes/ExportTab.php:213 includes/ExportTab.php:239
-#: includes/Metabox.php:80 includes/Settings.php:197 includes/Settings.php:227
+#: includes/Metabox.php:80 includes/Settings.php:202 includes/Settings.php:232
 msgid "Insufficient permissions."
 msgstr ""
 
@@ -303,69 +303,79 @@ msgstr ""
 msgid "Posts &rsaquo; Export to GitHub"
 msgstr ""
 
-#: includes/Settings.php:115
+#: includes/Settings.php:116
 #, php-format
 msgid ""
 "Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by "
 "GitHub, Inc."
 msgstr ""
 
-#: includes/Settings.php:133
+#: includes/Settings.php:123
+msgid ""
+"All trademarks mentioned are the property of their respective owners. Third-"
+"party trademarks, product names, trade names, corporate names and companies "
+"mentioned may be trademarks of their respective owners or registered "
+"trademarks of other companies and have been used for explanatory purposes "
+"only and for the benefit of the owner, without any intent to infringe "
+"existing copyright."
+msgstr ""
+
+#: includes/Settings.php:138
 msgid "GitHub Personal Access Token"
 msgstr ""
 
-#: includes/Settings.php:140
+#: includes/Settings.php:145
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
 "Generate one at %s."
 msgstr ""
 
-#: includes/Settings.php:149
+#: includes/Settings.php:154
 msgid "Repository"
 msgstr ""
 
-#: includes/Settings.php:153
+#: includes/Settings.php:158
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
 msgstr ""
 
-#: includes/Settings.php:158
+#: includes/Settings.php:163
 msgid "Branch"
 msgstr ""
 
-#: includes/Settings.php:161
+#: includes/Settings.php:166
 msgid "Detect from repository"
 msgstr ""
 
-#: includes/Settings.php:164
+#: includes/Settings.php:169
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr ""
 
-#: includes/Settings.php:169
+#: includes/Settings.php:174
 msgid "Base folder"
 msgstr ""
 
-#: includes/Settings.php:173
+#: includes/Settings.php:178
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
 msgstr ""
 
-#: includes/Settings.php:181
+#: includes/Settings.php:186
 msgid "Test connection"
 msgstr ""
 
-#: includes/Settings.php:184
+#: includes/Settings.php:189
 msgid "Save Changes"
 msgstr ""
 
-#: includes/Settings.php:209
+#: includes/Settings.php:214
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 
-#: includes/Settings.php:239
+#: includes/Settings.php:244
 msgid "Enter both a token and a valid repository first."
 msgstr ""

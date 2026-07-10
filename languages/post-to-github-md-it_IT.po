@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Post to GitHub Markdown package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.7\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.8\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:15+0200\n"
+"POT-Creation-Date: 2026-07-10 22:19+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -156,7 +156,7 @@ msgid "No posts match the current filters."
 msgstr "Nessun post corrisponde ai filtri attuali."
 
 #: includes/ExportTab.php:213 includes/ExportTab.php:239
-#: includes/Metabox.php:80 includes/Settings.php:197 includes/Settings.php:227
+#: includes/Metabox.php:80 includes/Settings.php:202 includes/Settings.php:232
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
@@ -304,7 +304,7 @@ msgstr "Cerchi la funzione di export dei post? Vai su %s."
 msgid "Posts &rsaquo; Export to GitHub"
 msgstr "Articoli &rsaquo; Esporta su GitHub"
 
-#: includes/Settings.php:115
+#: includes/Settings.php:116
 #, php-format
 msgid ""
 "Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by "
@@ -313,11 +313,27 @@ msgstr ""
 "Post to GitHub Markdown di Gioxx, sorgente su %1$s. Illustrazioni: %2$s di "
 "GitHub, Inc."
 
-#: includes/Settings.php:133
+#: includes/Settings.php:123
+msgid ""
+"All trademarks mentioned are the property of their respective owners. Third-"
+"party trademarks, product names, trade names, corporate names and companies "
+"mentioned may be trademarks of their respective owners or registered "
+"trademarks of other companies and have been used for explanatory purposes "
+"only and for the benefit of the owner, without any intent to infringe "
+"existing copyright."
+msgstr ""
+"Tutti i marchi citati sono di proprietà dei rispettivi titolari. Marchi di "
+"terzi, nomi di prodotti, nomi commerciali, ragioni sociali e aziende "
+"citate possono essere marchi dei rispettivi proprietari o marchi "
+"registrati di altre società e sono stati utilizzati a scopo esplicativo, a "
+"beneficio del titolare, senza alcuna intenzione di violare il copyright "
+"esistente."
+
+#: includes/Settings.php:138
 msgid "GitHub Personal Access Token"
 msgstr "Token di accesso personale GitHub"
 
-#: includes/Settings.php:140
+#: includes/Settings.php:145
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
@@ -326,11 +342,11 @@ msgstr ""
 "Un token fine-grained o classico con accesso %s al repository di "
 "destinazione. Generane uno su %s."
 
-#: includes/Settings.php:149
+#: includes/Settings.php:154
 msgid "Repository"
 msgstr "Repository"
 
-#: includes/Settings.php:153
+#: includes/Settings.php:158
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
@@ -338,23 +354,23 @@ msgstr ""
 "Inserisci \"owner/repo\" oppure l'URL completo di GitHub (es. https://"
 "github.com/owner/repo)."
 
-#: includes/Settings.php:158
+#: includes/Settings.php:163
 msgid "Branch"
 msgstr "Branch"
 
-#: includes/Settings.php:161
+#: includes/Settings.php:166
 msgid "Detect from repository"
 msgstr "Rileva dal repository"
 
-#: includes/Settings.php:164
+#: includes/Settings.php:169
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr "Il branch su cui verranno pubblicati i post (es. main)."
 
-#: includes/Settings.php:169
+#: includes/Settings.php:174
 msgid "Base folder"
 msgstr "Cartella base"
 
-#: includes/Settings.php:173
+#: includes/Settings.php:178
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
@@ -362,22 +378,22 @@ msgstr ""
 "Cartella del repository in cui vengono esportati i post (es. posts). Se "
 "lasciata vuota, viene usata \"posts\" come predefinita."
 
-#: includes/Settings.php:181
+#: includes/Settings.php:186
 msgid "Test connection"
 msgstr "Verifica connessione"
 
-#: includes/Settings.php:184
+#: includes/Settings.php:189
 msgid "Save Changes"
 msgstr "Salva modifiche"
 
-#: includes/Settings.php:209
+#: includes/Settings.php:214
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 "Inserisci sia un token che un repository valido prima di verificare la "
 "connessione."
 
-#: includes/Settings.php:239
+#: includes/Settings.php:244
 msgid "Enter both a token and a valid repository first."
 msgstr "Inserisci sia un token che un repository valido."
 
