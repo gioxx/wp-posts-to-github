@@ -202,12 +202,12 @@ class ExportTab
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
             </div>
-            <div class="potogh-bulk-log-header">
+            <div class="potogh-bulk-log-wrap">
                 <button type="button" class="potogh-bulk-stop-label" id="potogh-bulk-stop" hidden>
                     <?php esc_html_e('Stop', 'post-to-github-md'); ?>
                 </button>
+                <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
             </div>
-            <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
         </div>
         <?php
     }

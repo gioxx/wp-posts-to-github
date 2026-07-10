@@ -165,10 +165,9 @@
     padding: 8px 20px 4px;
 }
 
-.potogh-bulk-log-header {
-    display: flex;
-    justify-content: flex-end;
-    padding: 4px 20px 0;
+.potogh-bulk-log-wrap {
+    position: relative;
+    margin-top: 20px;
 }
 
 .potogh-bulk-log {
@@ -217,16 +216,20 @@
 }
 
 .potogh-bulk-stop-label {
-    padding: 6px 20px;
-    font-size: 12px;
+    position: absolute;
+    top: -22px;
+    left: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: #fff;
     background: #d63638;
     border: none;
-    border-radius: 3px 3px 0 0;
+    border-radius: 4px 4px 0 0;
     cursor: pointer;
+    z-index: 1;
 }
 
 .potogh-bulk-stop-label:hover,
