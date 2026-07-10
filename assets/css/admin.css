@@ -68,13 +68,33 @@
     padding: 8px 20px 4px;
 }
 
+.potogh-bulk-footer-body {
+    display: flex;
+    align-items: flex-end;
+}
+
 .potogh-bulk-log {
+    flex: 1;
+    min-width: 0;
     max-height: 160px;
     overflow-y: auto;
     padding: 4px 20px 8px;
     color: #c3c4c7;
     font-family: Consolas, Monaco, monospace;
     font-size: 12px;
+}
+
+.potogh-bulk-mascot {
+    flex-shrink: 0;
+    height: 120px;
+    width: auto;
+    margin: 0 16px 0 0;
+}
+
+@media (max-width: 782px) {
+    .potogh-bulk-mascot {
+        display: none;
+    }
 }
 
 #potogh-bulk-summary {

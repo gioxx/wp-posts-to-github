@@ -197,7 +197,10 @@ class ExportTab
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
             </div>
-            <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
+            <div class="potogh-bulk-footer-body">
+                <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
+                <img src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="" aria-hidden="true" class="potogh-bulk-mascot">
+            </div>
         </div>
         <?php
     }
