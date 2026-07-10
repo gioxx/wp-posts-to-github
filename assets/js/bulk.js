@@ -171,6 +171,50 @@
         });
     }
 
+    function statusIconClass(status) {
+        switch (status) {
+            case 'exported':
+                return 'dashicons-yes-alt';
+            case 'modified_since_export':
+                return 'dashicons-warning';
+            default:
+                return 'dashicons-clock';
+        }
+    }
+
+    function adjustStatTile(statusClass, delta) {
+        var $number = $('.potogh-stat-tile.potogh-stat-' + statusClass + ' .potogh-stat-number');
+
+        if (!$number.length) {
+            return;
+        }
+
+        var current = parseInt($number.text(), 10) || 0;
+        $number.text(current + delta);
+    }
+
+    function markRowExported(postId, message) {
+        var $cell = $('tr[data-post-id="' + postId + '"]').find('.potogh-status-cell');
+        var previousStatus = null;
+
+        $.each(['never_exported', 'modified_since_export', 'exported'], function (i, s) {
+            if ($cell.hasClass('potogh-status-' + s)) {
+                previousStatus = s;
+            }
+        });
+
+        $cell
+            .removeClass('potogh-status-never_exported potogh-status-modified_since_export potogh-status-exported')
+            .addClass('potogh-status-exported');
+        $cell.find('.dashicons').attr('class', 'dashicons ' + statusIconClass('exported'));
+        $cell.find('.potogh-status-text').text(message);
+
+        if (previousStatus && previousStatus !== 'exported') {
+            adjustStatTile(previousStatus, -1);
+            adjustStatTile('exported', 1);
+        }
+    }
+
     function logTrace(postId, lines) {
         if (!lines || !lines.length) {
             return;
@@ -241,10 +285,9 @@
             var postId = ids[index];
 
             exportOne(postId, nonce).done(function (response) {
-                var $row = $('tr[data-post-id="' + postId + '"]');
                 if (response.success) {
                     succeeded++;
-                    $row.find('.potogh-status-text').text(response.data.message);
+                    markRowExported(postId, response.data.message);
                 } else {
                     failed.push(postId + ': ' + response.data.message);
                 }
