@@ -165,33 +165,24 @@
     padding: 8px 20px 4px;
 }
 
-.potogh-bulk-footer-body {
+.potogh-bulk-log-header {
     display: flex;
-    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 4px 20px 0;
 }
 
 .potogh-bulk-log {
-    flex: 1;
-    min-width: 0;
     max-height: 160px;
-    overflow-y: auto;
+    overflow-y: scroll;
     padding: 4px 20px 8px;
     color: #c3c4c7;
     font-family: Consolas, Monaco, monospace;
     font-size: 12px;
+    scrollbar-width: none;
 }
 
-.potogh-bulk-mascot {
-    flex-shrink: 0;
-    height: 120px;
-    width: auto;
-    margin: 0 16px 0 0;
-}
-
-@media (max-width: 782px) {
-    .potogh-bulk-mascot {
-        display: none;
-    }
+.potogh-bulk-log::-webkit-scrollbar {
+    display: none;
 }
 
 #potogh-bulk-summary {
@@ -225,9 +216,22 @@
     margin-left: 6px;
 }
 
-#potogh-bulk-stop {
-    margin-left: 10px;
-    vertical-align: baseline;
+.potogh-bulk-stop-label {
+    padding: 6px 20px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: #d63638;
+    border: none;
+    border-radius: 3px 3px 0 0;
+    cursor: pointer;
+}
+
+.potogh-bulk-stop-label:hover,
+.potogh-bulk-stop-label:focus {
+    background: #b32d2e;
 }
 
 .potogh-export-table.wp-list-table th.check-column,

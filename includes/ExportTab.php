@@ -200,14 +200,13 @@ class ExportTab
             <div id="potogh-bulk-progress" class="potogh-progress">
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
-                <button type="button" class="button button-small" id="potogh-bulk-stop" hidden>
+            </div>
+            <div class="potogh-bulk-log-header">
+                <button type="button" class="potogh-bulk-stop-label" id="potogh-bulk-stop" hidden>
                     <?php esc_html_e('Stop', 'post-to-github-md'); ?>
                 </button>
             </div>
-            <div class="potogh-bulk-footer-body">
-                <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
-                <img src="<?php echo esc_url(POTOGH_PLUGIN_URL . 'assets/images/hulatocat.gif'); ?>" alt="" aria-hidden="true" class="potogh-bulk-mascot">
-            </div>
+            <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
         </div>
         <?php
     }
