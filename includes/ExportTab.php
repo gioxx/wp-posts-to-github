@@ -88,6 +88,9 @@ class ExportTab
                             <span class="dashicons dashicons-cloud-upload"></span>
                             <?php esc_html_e('Export selected', 'post-to-github-md'); ?>
                         </button>
+                        <button type="button" class="button" id="potogh-bulk-stop" hidden>
+                            <?php esc_html_e('Stop', 'post-to-github-md'); ?>
+                        </button>
                     </div>
 
                     <div class="alignleft actions">

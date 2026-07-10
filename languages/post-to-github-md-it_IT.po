@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Post to GitHub Markdown package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.4\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:02+0200\n"
+"POT-Creation-Date: 2026-07-10 22:06+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -82,112 +82,116 @@ msgstr "Cerca post"
 msgid "Export selected"
 msgstr "Esporta selezionati"
 
-#: includes/ExportTab.php:95
+#: includes/ExportTab.php:92 includes/functions.php:86
+msgid "Stop"
+msgstr "Interrompi"
+
+#: includes/ExportTab.php:98
 msgid "All statuses"
 msgstr "Tutti gli stati"
 
-#: includes/ExportTab.php:96 includes/Metabox.php:46
+#: includes/ExportTab.php:99 includes/Metabox.php:46
 msgid "Never exported"
 msgstr "Mai esportato"
 
-#: includes/ExportTab.php:97
+#: includes/ExportTab.php:100
 msgid "Exported"
 msgstr "Esportato"
 
-#: includes/ExportTab.php:98
+#: includes/ExportTab.php:101
 msgid "Modified since export"
 msgstr "Modificato dopo export"
 
-#: includes/ExportTab.php:104
+#: includes/ExportTab.php:107
 msgid "All categories"
 msgstr "Tutte le categorie"
 
-#: includes/ExportTab.php:113
+#: includes/ExportTab.php:116
 msgid "All tags"
 msgstr "Tutti i tag"
 
-#: includes/ExportTab.php:120
+#: includes/ExportTab.php:123
 msgid "All dates"
 msgstr "Tutte le date"
 
-#: includes/ExportTab.php:129
+#: includes/ExportTab.php:132
 #, php-format
 msgid "%d per page"
 msgstr "%d per pagina"
 
-#: includes/ExportTab.php:134
+#: includes/ExportTab.php:137
 msgid "Filter"
 msgstr "Filtra"
 
-#: includes/ExportTab.php:144
+#: includes/ExportTab.php:147
 msgid "Clear selection"
 msgstr "Annulla selezione"
 
-#: includes/ExportTab.php:151
+#: includes/ExportTab.php:154
 msgid "Select all"
 msgstr "Seleziona tutto"
 
-#: includes/ExportTab.php:154
+#: includes/ExportTab.php:157
 msgid "Title"
 msgstr "Titolo"
 
-#: includes/ExportTab.php:155
+#: includes/ExportTab.php:158
 msgid "Categories"
 msgstr "Categorie"
 
-#: includes/ExportTab.php:156
+#: includes/ExportTab.php:159
 msgid "Tags"
 msgstr "Tag"
 
-#: includes/ExportTab.php:157
+#: includes/ExportTab.php:160
 msgid "Publish date"
 msgstr "Data pubblicazione"
 
-#: includes/ExportTab.php:158
+#: includes/ExportTab.php:161
 msgid "Export status"
 msgstr "Stato export"
 
-#: includes/ExportTab.php:163
+#: includes/ExportTab.php:166
 msgid "No posts match the current filters."
 msgstr "Nessun post corrisponde ai filtri attuali."
 
-#: includes/ExportTab.php:207 includes/ExportTab.php:233
+#: includes/ExportTab.php:210 includes/ExportTab.php:236
 #: includes/Metabox.php:80 includes/Settings.php:177 includes/Settings.php:207
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
-#: includes/ExportTab.php:211 includes/Metabox.php:84
+#: includes/ExportTab.php:214 includes/Metabox.php:84
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 
-#: includes/ExportTab.php:409
+#: includes/ExportTab.php:412
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d elemento"
 msgstr[1] "%d elementi"
 
-#: includes/ExportTab.php:417
+#: includes/ExportTab.php:420
 msgid "First page"
 msgstr "Prima pagina"
 
-#: includes/ExportTab.php:418
+#: includes/ExportTab.php:421
 msgid "Previous page"
 msgstr "Pagina precedente"
 
-#: includes/ExportTab.php:425
+#: includes/ExportTab.php:428
 msgid "Current Page"
 msgstr "Pagina corrente"
 
-#: includes/ExportTab.php:428
+#: includes/ExportTab.php:431
 msgid "of"
 msgstr "di"
 
-#: includes/ExportTab.php:432
+#: includes/ExportTab.php:435
 msgid "Next page"
 msgstr "Pagina successiva"
 
-#: includes/ExportTab.php:433
+#: includes/ExportTab.php:436
 msgid "Last page"
 msgstr "Ultima pagina"
 
@@ -203,7 +207,7 @@ msgstr "Solo i post pubblicati possono essere esportati."
 msgid "Network error during export."
 msgstr "Errore di rete durante l'esportazione."
 
-#: includes/functions.php:76 includes/functions.php:94
+#: includes/functions.php:76 includes/functions.php:98
 msgid "Network error."
 msgstr "Errore di rete."
 
@@ -231,7 +235,16 @@ msgstr "selezionati"
 msgid "Select all %d items matching this filter"
 msgstr "Seleziona tutti i %d elementi corrispondenti a questo filtro"
 
-#: includes/functions.php:93
+#: includes/functions.php:87
+msgid "Stopping…"
+msgstr "Interruzione in corso…"
+
+#: includes/functions.php:89
+#, php-format
+msgid "Stopped: %d posts left unprocessed."
+msgstr "Interrotto: %d post rimasti non elaborati."
+
+#: includes/functions.php:97
 msgid "Testing…"
 msgstr "Verifica in corso…"
 

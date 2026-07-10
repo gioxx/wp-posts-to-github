@@ -4,6 +4,7 @@
     var selectedIds = [];
     var selectAllMatching = false;
     var suppressChange = false;
+    var stopRequested = false;
 
     function currentFilterParams() {
         var $form = $('.potogh-filters-form');
@@ -147,10 +148,11 @@
     }
 
     function setExporting(exporting) {
-        $('.potogh-filters-form :input').prop('disabled', exporting);
+        $('.potogh-filters-form :input').not('#potogh-bulk-stop').prop('disabled', exporting);
         $('.tablenav-pages a').css('pointer-events', exporting ? 'none' : '');
         $('body').toggleClass('potogh-exporting', exporting);
         $('#potogh-bulk-footer').prop('hidden', !exporting);
+        $('#potogh-bulk-stop').prop('hidden', !exporting).prop('disabled', false).text(potoghBulk.stopLabel);
     }
 
     function updateProgress(done, total) {
@@ -160,6 +162,11 @@
         $('#potogh-bulk-progress-text').text(done + '/' + total);
     }
 
+    $('#potogh-bulk-stop').on('click', function () {
+        stopRequested = true;
+        $(this).prop('disabled', true).text(potoghBulk.stopping);
+    });
+
     $('#potogh-bulk-export-selected').on('click', function () {
         var nonce = $('.potogh-export-tab').data('nonce');
         var ids = selectedIds.slice();
@@ -168,6 +175,7 @@
             return;
         }
 
+        stopRequested = false;
         setExporting(true);
         $('#potogh-bulk-log').empty();
         $('#potogh-bulk-summary').text('');
@@ -177,10 +185,13 @@
         var failed = [];
 
         function next(index) {
-            if (index >= ids.length) {
+            if (stopRequested || index >= ids.length) {
                 var summary = potoghBulk.summarySucceeded.replace('%d', succeeded);
                 if (failed.length > 0) {
                     summary += ' ' + potoghBulk.summaryFailed.replace('%d', failed.length) + ' ' + failed.join('; ');
+                }
+                if (stopRequested && index < ids.length) {
+                    summary += ' ' + potoghBulk.summaryStopped.replace('%d', ids.length - index);
                 }
                 $('#potogh-bulk-summary').text(summary);
                 window.setTimeout(function () {

@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.4\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:02+0200\n"
+"POT-Creation-Date: 2026-07-10 22:06+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -83,112 +83,116 @@ msgstr ""
 msgid "Export selected"
 msgstr ""
 
-#: includes/ExportTab.php:95
-msgid "All statuses"
-msgstr ""
-
-#: includes/ExportTab.php:96 includes/Metabox.php:46
-msgid "Never exported"
-msgstr ""
-
-#: includes/ExportTab.php:97
-msgid "Exported"
+#: includes/ExportTab.php:92 includes/functions.php:86
+msgid "Stop"
 msgstr ""
 
 #: includes/ExportTab.php:98
+msgid "All statuses"
+msgstr ""
+
+#: includes/ExportTab.php:99 includes/Metabox.php:46
+msgid "Never exported"
+msgstr ""
+
+#: includes/ExportTab.php:100
+msgid "Exported"
+msgstr ""
+
+#: includes/ExportTab.php:101
 msgid "Modified since export"
 msgstr ""
 
-#: includes/ExportTab.php:104
+#: includes/ExportTab.php:107
 msgid "All categories"
 msgstr ""
 
-#: includes/ExportTab.php:113
+#: includes/ExportTab.php:116
 msgid "All tags"
 msgstr ""
 
-#: includes/ExportTab.php:120
+#: includes/ExportTab.php:123
 msgid "All dates"
 msgstr ""
 
-#: includes/ExportTab.php:129
+#: includes/ExportTab.php:132
 #, php-format
 msgid "%d per page"
 msgstr ""
 
-#: includes/ExportTab.php:134
+#: includes/ExportTab.php:137
 msgid "Filter"
 msgstr ""
 
-#: includes/ExportTab.php:144
+#: includes/ExportTab.php:147
 msgid "Clear selection"
 msgstr ""
 
-#: includes/ExportTab.php:151
+#: includes/ExportTab.php:154
 msgid "Select all"
 msgstr ""
 
-#: includes/ExportTab.php:154
+#: includes/ExportTab.php:157
 msgid "Title"
 msgstr ""
 
-#: includes/ExportTab.php:155
+#: includes/ExportTab.php:158
 msgid "Categories"
 msgstr ""
 
-#: includes/ExportTab.php:156
+#: includes/ExportTab.php:159
 msgid "Tags"
 msgstr ""
 
-#: includes/ExportTab.php:157
+#: includes/ExportTab.php:160
 msgid "Publish date"
 msgstr ""
 
-#: includes/ExportTab.php:158
+#: includes/ExportTab.php:161
 msgid "Export status"
 msgstr ""
 
-#: includes/ExportTab.php:163
+#: includes/ExportTab.php:166
 msgid "No posts match the current filters."
 msgstr ""
 
-#: includes/ExportTab.php:207 includes/ExportTab.php:233
+#: includes/ExportTab.php:210 includes/ExportTab.php:236
 #: includes/Metabox.php:80 includes/Settings.php:177 includes/Settings.php:207
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/ExportTab.php:211 includes/Metabox.php:84
+#: includes/ExportTab.php:214 includes/Metabox.php:84
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr ""
 
-#: includes/ExportTab.php:409
+#: includes/ExportTab.php:412
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/ExportTab.php:417
+#: includes/ExportTab.php:420
 msgid "First page"
 msgstr ""
 
-#: includes/ExportTab.php:418
+#: includes/ExportTab.php:421
 msgid "Previous page"
 msgstr ""
 
-#: includes/ExportTab.php:425
+#: includes/ExportTab.php:428
 msgid "Current Page"
 msgstr ""
 
-#: includes/ExportTab.php:428
+#: includes/ExportTab.php:431
 msgid "of"
 msgstr ""
 
-#: includes/ExportTab.php:432
+#: includes/ExportTab.php:435
 msgid "Next page"
 msgstr ""
 
-#: includes/ExportTab.php:433
+#: includes/ExportTab.php:436
 msgid "Last page"
 msgstr ""
 
@@ -204,7 +208,7 @@ msgstr ""
 msgid "Network error during export."
 msgstr ""
 
-#: includes/functions.php:76 includes/functions.php:94
+#: includes/functions.php:76 includes/functions.php:98
 msgid "Network error."
 msgstr ""
 
@@ -232,7 +236,16 @@ msgstr ""
 msgid "Select all %d items matching this filter"
 msgstr ""
 
-#: includes/functions.php:93
+#: includes/functions.php:87
+msgid "Stopping…"
+msgstr ""
+
+#: includes/functions.php:89
+#, php-format
+msgid "Stopped: %d posts left unprocessed."
+msgstr ""
+
+#: includes/functions.php:97
 msgid "Testing…"
 msgstr ""
 

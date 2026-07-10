@@ -108,6 +108,10 @@
     margin-left: 6px;
 }
 
+#potogh-bulk-stop {
+    margin-left: 6px;
+}
+
 .potogh-export-table.wp-list-table th.check-column,
 .potogh-export-table.wp-list-table td.check-column {
     width: 2.2em;

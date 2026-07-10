@@ -83,6 +83,10 @@ function enqueue_admin_assets(string $hook): void
             'selectedLabel' => __('selected', 'post-to-github-md'),
             /* translators: %d: total number of posts matching the current filters */
             'selectAllMatching' => __('Select all %d items matching this filter', 'post-to-github-md'),
+            'stopLabel' => __('Stop', 'post-to-github-md'),
+            'stopping' => __('Stopping…', 'post-to-github-md'),
+            /* translators: %d: number of posts left unprocessed after stopping */
+            'summaryStopped' => __('Stopped: %d posts left unprocessed.', 'post-to-github-md'),
         ]);
     }
 
