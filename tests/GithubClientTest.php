@@ -195,6 +195,36 @@ class GithubClientTest extends TestCase
         $this->assertSame('Branch "missing-branch" not found in repository.', $result['message']);
     }
 
+    public function test_get_default_branch_returns_branch_from_repo(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\expect('wp_remote_get')->once()->andReturn(['response' => ['code' => 200]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['default_branch' => 'develop']));
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->getDefaultBranch();
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('develop', $result['branch']);
+    }
+
+    public function test_get_default_branch_fails_on_invalid_token(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\expect('wp_remote_get')->once()->andReturn(['response' => ['code' => 401]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(401);
+        Functions\when('wp_remote_retrieve_body')->justReturn('{}');
+
+        $client = new GithubClient('bad-token', 'owner/repo', 'main');
+        $result = $client->getDefaultBranch();
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Invalid GitHub token.', $result['message']);
+    }
+
     public function test_put_file_request_uses_put_method_and_correct_url(): void
     {
         Functions\when('wp_json_encode')->alias(function ($data) {

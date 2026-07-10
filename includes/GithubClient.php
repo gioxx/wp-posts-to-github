@@ -41,28 +41,10 @@ class GithubClient
 
     public function testConnection(): array
     {
-        $repoUrl = sprintf('https://api.github.com/repos/%s', $this->ownerRepo);
-        $repoResponse = wp_remote_get($repoUrl, ['headers' => $this->headers()]);
+        $repo = $this->fetchRepo();
 
-        if (is_wp_error($repoResponse)) {
-            return ['success' => false, 'message' => $repoResponse->get_error_message()];
-        }
-
-        $repoCode = wp_remote_retrieve_response_code($repoResponse);
-
-        if ($repoCode === 401) {
-            return ['success' => false, 'message' => __('Invalid GitHub token.', 'post-to-github-md')];
-        }
-
-        if ($repoCode === 404) {
-            return ['success' => false, 'message' => __('Repository not found or not accessible with this token.', 'post-to-github-md')];
-        }
-
-        if ($repoCode < 200 || $repoCode >= 300) {
-            $body = json_decode(wp_remote_retrieve_body($repoResponse), true);
-            $error = $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $repoCode);
-
-            return ['success' => false, 'message' => $error];
+        if (!$repo['success']) {
+            return $repo;
         }
 
         $branchUrl = sprintf('https://api.github.com/repos/%s/branches/%s', $this->ownerRepo, rawurlencode($this->branch));
@@ -83,6 +65,53 @@ class GithubClient
         }
 
         return ['success' => true, 'message' => __('Connection successful: repository and branch are reachable.', 'post-to-github-md')];
+    }
+
+    public function getDefaultBranch(): array
+    {
+        $repo = $this->fetchRepo();
+
+        if (!$repo['success']) {
+            return $repo;
+        }
+
+        $branch = $repo['body']['default_branch'] ?? null;
+
+        if (!$branch) {
+            return ['success' => false, 'message' => __('Could not determine the default branch.', 'post-to-github-md')];
+        }
+
+        return ['success' => true, 'branch' => $branch];
+    }
+
+    private function fetchRepo(): array
+    {
+        $url = sprintf('https://api.github.com/repos/%s', $this->ownerRepo);
+        $response = wp_remote_get($url, ['headers' => $this->headers()]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'message' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code === 401) {
+            return ['success' => false, 'message' => __('Invalid GitHub token.', 'post-to-github-md')];
+        }
+
+        if ($code === 404) {
+            return ['success' => false, 'message' => __('Repository not found or not accessible with this token.', 'post-to-github-md')];
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        if ($code < 200 || $code >= 300) {
+            $error = $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $code);
+
+            return ['success' => false, 'message' => $error];
+        }
+
+        return ['success' => true, 'body' => $body];
     }
 
     public function putFile(string $path, string $content, string $message, ?string $sha = null): array

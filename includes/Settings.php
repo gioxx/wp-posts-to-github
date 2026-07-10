@@ -144,6 +144,8 @@ class Settings
                         <th><label for="potogh_branch"><?php esc_html_e('Branch', 'post-to-github-md'); ?></label></th>
                         <td>
                             <input type="text" id="potogh_branch" name="<?php echo esc_attr(self::OPTION_NAME); ?>[branch]" value="<?php echo esc_attr($settings['branch']); ?>" class="regular-text">
+                            <button type="button" class="button" id="potogh-detect-branch"><?php esc_html_e('Detect from repository', 'post-to-github-md'); ?></button>
+                            <span id="potogh-detect-branch-result"></span>
                             <p class="description">
                                 <?php esc_html_e('The branch posts will be committed to (e.g. main).', 'post-to-github-md'); ?>
                             </p>
@@ -152,22 +154,24 @@ class Settings
                     <tr>
                         <th><label for="potogh_base_folder"><?php esc_html_e('Base folder', 'post-to-github-md'); ?></label></th>
                         <td>
-                            <input type="text" id="potogh_base_folder" name="<?php echo esc_attr(self::OPTION_NAME); ?>[base_folder]" value="<?php echo esc_attr($settings['base_folder']); ?>" class="regular-text">
+                            <input type="text" id="potogh_base_folder" name="<?php echo esc_attr(self::OPTION_NAME); ?>[base_folder]" value="<?php echo esc_attr($settings['base_folder']); ?>" class="regular-text" placeholder="posts">
                             <p class="description">
-                                <?php esc_html_e('Repository folder posts are exported into (e.g. posts).', 'post-to-github-md'); ?>
+                                <?php esc_html_e('Repository folder posts are exported into (e.g. posts). Left empty, it defaults to "posts".', 'post-to-github-md'); ?>
                             </p>
                         </td>
                     </tr>
                 </table>
-                <?php submit_button(); ?>
+                <p class="submit potogh-submit-row">
+                    <?php wp_nonce_field('potogh_test_connection', 'potogh_test_connection_nonce'); ?>
+                    <button type="button" class="button" id="potogh-test-connection">
+                        <?php esc_html_e('Test connection', 'post-to-github-md'); ?>
+                    </button>
+                    <button type="submit" class="button button-primary" id="potogh-save-settings" disabled>
+                        <?php esc_html_e('Save Changes', 'post-to-github-md'); ?>
+                    </button>
+                    <span id="potogh-test-connection-result"></span>
+                </p>
             </form>
-            <p>
-                <?php wp_nonce_field('potogh_test_connection', 'potogh_test_connection_nonce'); ?>
-                <button type="button" class="button" id="potogh-test-connection">
-                    <?php esc_html_e('Test connection', 'post-to-github-md'); ?>
-                </button>
-                <span id="potogh-test-connection-result"></span>
-            </p>
         <?php
     }
 
@@ -199,5 +203,35 @@ class Settings
         }
 
         wp_send_json_success(['message' => $result['message']]);
+    }
+
+    public function handleAjaxDetectBranch(): void
+    {
+        check_ajax_referer('potogh_test_connection', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+        }
+
+        $defaults = self::defaults();
+        $sanitized = self::sanitize([
+            'token' => wp_unslash($_POST['token'] ?? ''),
+            'owner_repo' => wp_unslash($_POST['owner_repo'] ?? ''),
+            'branch' => $defaults['branch'],
+            'base_folder' => $defaults['base_folder'],
+        ]);
+
+        if ($sanitized['token'] === '' || $sanitized['owner_repo'] === '') {
+            wp_send_json_error(['message' => __('Enter both a token and a valid repository first.', 'post-to-github-md')], 400);
+        }
+
+        $client = new GithubClient($sanitized['token'], $sanitized['owner_repo'], $defaults['branch']);
+        $result = $client->getDefaultBranch();
+
+        if (!$result['success']) {
+            wp_send_json_error(['message' => $result['message']], 400);
+        }
+
+        wp_send_json_success(['branch' => $result['branch']]);
     }
 }
