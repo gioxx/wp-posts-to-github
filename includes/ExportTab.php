@@ -28,8 +28,32 @@ class ExportTab
     {
         ?>
         <div class="wrap potogh-settings">
-            <h1><?php echo esc_html__('Export posts to GitHub', 'post-to-github-md'); ?></h1>
-            <?php $this->render(); ?>
+            <h1 class="wp-heading-inline"><?php echo esc_html__('Export posts to GitHub', 'post-to-github-md'); ?></h1>
+            <hr class="wp-header-end">
+            <?php if (!Settings::isConfigured()) : ?>
+                <div class="notice notice-warning inline">
+                    <p>
+                        <?php
+                        printf(
+                            /* translators: %s: link to the plugin settings screen */
+                            esc_html__('Configure the GitHub Personal Access Token and repository in %s before exporting posts.', 'post-to-github-md'),
+                            '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('Post to GitHub MD settings', 'post-to-github-md') . '</a>'
+                        );
+                        ?>
+                    </p>
+                </div>
+            <?php else : ?>
+                <p>
+                    <?php
+                    printf(
+                        /* translators: %s: link to the plugin settings screen */
+                        esc_html__('Need to change the GitHub connection? Head over to %s.', 'post-to-github-md'),
+                        '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('Post to GitHub MD settings', 'post-to-github-md') . '</a>'
+                    );
+                    ?>
+                </p>
+                <?php $this->render(); ?>
+            <?php endif; ?>
         </div>
         <?php
     }
@@ -80,6 +104,8 @@ class ExportTab
                             'show_option_all' => __('All categories', 'post-to-github-md'),
                             'hide_empty' => false,
                             'selected' => $filters['category'],
+                            'orderby' => 'name',
+                            'order' => 'ASC',
                         ]);
                         ?>
 
@@ -142,7 +168,7 @@ class ExportTab
                 ?>
                     <tr data-post-id="<?php echo esc_attr($post->ID); ?>">
                         <th scope="row" class="check-column"><input type="checkbox" class="potogh-post-checkbox" value="<?php echo esc_attr($post->ID); ?>"></th>
-                        <td class="column-title"><?php echo esc_html(get_the_title($post)); ?></td>
+                        <td class="column-title"><a href="<?php echo esc_url(get_edit_post_link($post)); ?>"><?php echo esc_html(get_the_title($post)); ?></a></td>
                         <td class="column-categories"><?php echo wp_kses_post($this->termLinks(get_the_category($post->ID), 'category', $filters, $perPage)); ?></td>
                         <td class="column-tags"><?php echo wp_kses_post($this->termLinks(get_the_tags($post->ID) ?: [], 'tag', $filters, $perPage)); ?></td>
                         <td class="column-date"><?php echo esc_html(get_the_date('', $post)); ?></td>
@@ -161,13 +187,15 @@ class ExportTab
             </div>
             </form>
 
-            <div id="potogh-bulk-progress" class="potogh-progress" hidden>
+            <div id="potogh-bulk-summary"></div>
+        </div>
+        <div id="potogh-bulk-footer" class="potogh-bulk-footer" hidden>
+            <div id="potogh-bulk-progress" class="potogh-progress">
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
             </div>
-            <div id="potogh-bulk-summary"></div>
+            <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
         </div>
-        <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
         <?php
     }
 

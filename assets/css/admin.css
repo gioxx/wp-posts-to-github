@@ -53,24 +53,28 @@
     padding: 1px 4px;
 }
 
-.potogh-bulk-log {
+.potogh-bulk-footer {
     position: fixed;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 9999;
-    max-height: 200px;
-    overflow-y: auto;
-    padding: 8px 20px;
     background: #1d2327;
-    color: #c3c4c7;
     border-top: 1px solid #3c434a;
-    font-family: Consolas, Monaco, monospace;
-    font-size: 12px;
 }
 
-.potogh-bulk-log:empty {
-    display: none;
+.potogh-bulk-footer .potogh-progress {
+    margin: 0;
+    padding: 8px 20px 4px;
+}
+
+.potogh-bulk-log {
+    max-height: 160px;
+    overflow-y: auto;
+    padding: 4px 20px 8px;
+    color: #c3c4c7;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
 }
 
 #potogh-bulk-summary {
@@ -92,6 +96,11 @@
 
 #potogh-selection-summary {
     min-height: 1.5em;
+    margin: 4px 0;
+}
+
+.potogh-export-tab .tablenav.top {
+    margin-bottom: 4px;
 }
 
 #potogh-select-all-matching-btn,
@@ -114,12 +123,12 @@
 }
 
 .potogh-export-table .column-title {
-    width: 26%;
+    width: 38%;
 }
 
 .potogh-export-table .column-categories,
 .potogh-export-table .column-tags {
-    width: 18%;
+    width: 13%;
 }
 
 .potogh-export-table .column-date {
@@ -157,6 +166,7 @@
     display: inline-block;
     margin-top: 4px;
     font-size: 12px;
+    color: #c3c4c7;
 }
 
 body.potogh-exporting .potogh-filters-form,

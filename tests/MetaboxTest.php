@@ -28,12 +28,26 @@ class MetaboxTest extends TestCase
         $this->assertSame('Never exported', Metabox::statusLabel(ExportStatus::NEVER_EXPORTED, null));
     }
 
-    public function test_status_label_exported_includes_date(): void
+    public function test_status_label_exported_formats_date_in_site_timezone(): void
     {
+        Functions\when('get_option')->alias(function ($name) {
+            return $name === 'date_format' ? 'Y-m-d' : 'H:i';
+        });
+        Functions\expect('wp_date')
+            ->once()
+            ->with('Y-m-d H:i', strtotime('2026-07-08T11:00:00+00:00'))
+            ->andReturn('2026-07-08 13:00');
+
         $label = Metabox::statusLabel(ExportStatus::EXPORTED, '2026-07-08T11:00:00+00:00');
 
-        $this->assertStringContainsString('Exported on', $label);
-        $this->assertStringContainsString('2026-07-08T11:00:00+00:00', $label);
+        $this->assertSame('Exported on 2026-07-08 13:00', $label);
+    }
+
+    public function test_status_label_exported_falls_back_to_raw_value_on_unparseable_date(): void
+    {
+        $label = Metabox::statusLabel(ExportStatus::EXPORTED, 'not-a-date');
+
+        $this->assertSame('Exported on not-a-date', $label);
     }
 
     public function test_status_label_modified_since_export(): void

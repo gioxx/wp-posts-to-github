@@ -39,12 +39,23 @@ class Metabox
     {
         switch ($status) {
             case ExportStatus::EXPORTED:
-                return sprintf(__('Exported on %s', 'post-to-github-md'), $exportedAt);
+                return sprintf(__('Exported on %s', 'post-to-github-md'), self::formatExportedAt($exportedAt));
             case ExportStatus::MODIFIED_SINCE_EXPORT:
                 return __('Modified since last export', 'post-to-github-md');
             default:
                 return __('Never exported', 'post-to-github-md');
         }
+    }
+
+    private static function formatExportedAt(?string $exportedAtGmt): string
+    {
+        $timestamp = $exportedAtGmt !== null ? strtotime($exportedAtGmt) : false;
+
+        if ($timestamp === false) {
+            return (string) $exportedAtGmt;
+        }
+
+        return wp_date(get_option('date_format') . ' ' . get_option('time_format'), $timestamp);
     }
 
     public static function statusIconClass(string $status): string

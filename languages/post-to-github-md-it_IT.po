@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Post to GitHub Markdown package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.2\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 21:45+0200\n"
+"POT-Creation-Date: 2026-07-10 21:56+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -24,128 +24,146 @@ msgstr "Esporta su GitHub"
 msgid "Export posts to GitHub"
 msgstr "Esporta post su GitHub"
 
-#: includes/ExportTab.php:56
+#: includes/ExportTab.php:39
+#, php-format
+msgid ""
+"Configure the GitHub Personal Access Token and repository in %s before "
+"exporting posts."
+msgstr ""
+"Configura il Personal Access Token GitHub e il repository in %s prima di "
+"esportare i post."
+
+#: includes/ExportTab.php:40 includes/ExportTab.php:51
+msgid "Post to GitHub MD settings"
+msgstr "Impostazioni Post to GitHub MD"
+
+#: includes/ExportTab.php:50
+#, php-format
+msgid "Need to change the GitHub connection? Head over to %s."
+msgstr "Devi modificare la connessione a GitHub? Vai su %s."
+
+#: includes/ExportTab.php:80
 msgid "Search posts:"
 msgstr "Cerca post:"
 
-#: includes/ExportTab.php:57
+#: includes/ExportTab.php:81
 msgid "Search title…"
 msgstr "Cerca per titolo…"
 
-#: includes/ExportTab.php:58
+#: includes/ExportTab.php:82
 msgid "Search Posts"
 msgstr "Cerca post"
 
-#: includes/ExportTab.php:65
+#: includes/ExportTab.php:89
 msgid "Export selected"
 msgstr "Esporta selezionati"
 
-#: includes/ExportTab.php:71
+#: includes/ExportTab.php:95
 msgid "All statuses"
 msgstr "Tutti gli stati"
 
-#: includes/ExportTab.php:72 includes/Metabox.php:46
+#: includes/ExportTab.php:96 includes/Metabox.php:46
 msgid "Never exported"
 msgstr "Mai esportato"
 
-#: includes/ExportTab.php:73
+#: includes/ExportTab.php:97
 msgid "Exported"
 msgstr "Esportato"
 
-#: includes/ExportTab.php:74
+#: includes/ExportTab.php:98
 msgid "Modified since export"
 msgstr "Modificato dopo export"
 
-#: includes/ExportTab.php:80
+#: includes/ExportTab.php:104
 msgid "All categories"
 msgstr "Tutte le categorie"
 
-#: includes/ExportTab.php:87
+#: includes/ExportTab.php:113
 msgid "All tags"
 msgstr "Tutti i tag"
 
-#: includes/ExportTab.php:94
+#: includes/ExportTab.php:120
 msgid "All dates"
 msgstr "Tutte le date"
 
-#: includes/ExportTab.php:103
+#: includes/ExportTab.php:129
 #, php-format
 msgid "%d per page"
 msgstr "%d per pagina"
 
-#: includes/ExportTab.php:108
+#: includes/ExportTab.php:134
 msgid "Filter"
 msgstr "Filtra"
 
-#: includes/ExportTab.php:118
+#: includes/ExportTab.php:144
 msgid "Clear selection"
 msgstr "Annulla selezione"
 
-#: includes/ExportTab.php:125
+#: includes/ExportTab.php:151
 msgid "Select all"
 msgstr "Seleziona tutto"
 
-#: includes/ExportTab.php:128
+#: includes/ExportTab.php:154
 msgid "Title"
 msgstr "Titolo"
 
-#: includes/ExportTab.php:129
+#: includes/ExportTab.php:155
 msgid "Categories"
 msgstr "Categorie"
 
-#: includes/ExportTab.php:130
+#: includes/ExportTab.php:156
 msgid "Tags"
 msgstr "Tag"
 
-#: includes/ExportTab.php:131
+#: includes/ExportTab.php:157
 msgid "Publish date"
 msgstr "Data pubblicazione"
 
-#: includes/ExportTab.php:132
+#: includes/ExportTab.php:158
 msgid "Export status"
 msgstr "Stato export"
 
-#: includes/ExportTab.php:137
+#: includes/ExportTab.php:163
 msgid "No posts match the current filters."
 msgstr "Nessun post corrisponde ai filtri attuali."
 
-#: includes/ExportTab.php:179 includes/ExportTab.php:205
-#: includes/Metabox.php:69 includes/Settings.php:177 includes/Settings.php:207
+#: includes/ExportTab.php:207 includes/ExportTab.php:233
+#: includes/Metabox.php:80 includes/Settings.php:177 includes/Settings.php:207
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
-#: includes/ExportTab.php:183 includes/Metabox.php:73
+#: includes/ExportTab.php:211 includes/Metabox.php:84
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 
-#: includes/ExportTab.php:381
+#: includes/ExportTab.php:409
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d elemento"
 msgstr[1] "%d elementi"
 
-#: includes/ExportTab.php:389
+#: includes/ExportTab.php:417
 msgid "First page"
 msgstr "Prima pagina"
 
-#: includes/ExportTab.php:390
+#: includes/ExportTab.php:418
 msgid "Previous page"
 msgstr "Pagina precedente"
 
-#: includes/ExportTab.php:397
+#: includes/ExportTab.php:425
 msgid "Current Page"
 msgstr "Pagina corrente"
 
-#: includes/ExportTab.php:400
+#: includes/ExportTab.php:428
 msgid "of"
 msgstr "di"
 
-#: includes/ExportTab.php:404
+#: includes/ExportTab.php:432
 msgid "Next page"
 msgstr "Pagina successiva"
 
-#: includes/ExportTab.php:405
+#: includes/ExportTab.php:433
 msgid "Last page"
 msgstr "Ultima pagina"
 

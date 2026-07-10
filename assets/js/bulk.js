@@ -142,20 +142,21 @@
         $.each(lines, function (i, line) {
             $log.append($('<div>').text('#' + postId + ': ' + line));
         });
+
+        $log.scrollTop($log[0].scrollHeight);
     }
 
     function setExporting(exporting) {
         $('.potogh-filters-form :input').prop('disabled', exporting);
         $('.tablenav-pages a').css('pointer-events', exporting ? 'none' : '');
         $('body').toggleClass('potogh-exporting', exporting);
+        $('#potogh-bulk-footer').prop('hidden', !exporting);
     }
 
     function updateProgress(done, total) {
-        var $progress = $('#potogh-bulk-progress');
         var percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
-        $progress.prop('hidden', false);
-        $progress.find('.potogh-progress-fill').css('width', percent + '%');
+        $('#potogh-bulk-progress .potogh-progress-fill').css('width', percent + '%');
         $('#potogh-bulk-progress-text').text(done + '/' + total);
     }
 
@@ -182,7 +183,9 @@
                     summary += ' ' + potoghBulk.summaryFailed.replace('%d', failed.length) + ' ' + failed.join('; ');
                 }
                 $('#potogh-bulk-summary').text(summary);
-                setExporting(false);
+                window.setTimeout(function () {
+                    window.location.reload();
+                }, 1200);
                 return;
             }
 
