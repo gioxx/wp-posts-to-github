@@ -314,9 +314,11 @@
 }
 
 #potogh-select-all-spinner {
-    float: none;
+    display: inline-block;
     vertical-align: middle;
-    margin: 0 0 0 6px;
+    margin-left: 6px;
+    border-color: #dcdcde;
+    border-top-color: #2271b1;
 }
 
 .potogh-bulk-stop-label {

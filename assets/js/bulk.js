@@ -142,7 +142,7 @@
         var $spinner = $('#potogh-select-all-spinner');
 
         $btn.prop('disabled', true);
-        $spinner.addClass('is-active');
+        $spinner.prop('hidden', false);
 
         $.post(potoghBulk.ajaxUrl, $.extend({
             action: 'potogh_get_filtered_ids',
@@ -155,7 +155,7 @@
             }
         }).always(function () {
             $btn.prop('disabled', false);
-            $spinner.removeClass('is-active');
+            $spinner.prop('hidden', true);
         });
     });
 
