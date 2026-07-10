@@ -110,10 +110,9 @@ class Settings
             <p class="description">
                 <?php
                 printf(
-                    /* translators: 1: link to the plugin repository, 2: link to the Octodex mascot gallery */
-                    esc_html__('Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by GitHub, Inc.', 'post-to-github-md'),
-                    '<a href="https://github.com/gioxx/wp-post-to-github-md" target="_blank" rel="noopener noreferrer">GitHub</a>',
-                    '<a href="https://octodex.github.com" target="_blank" rel="noopener noreferrer">The Octodex</a>'
+                    /* translators: %s: link to the plugin repository */
+                    esc_html__('Post to GitHub Markdown by Gioxx, source on %s.', 'post-to-github-md'),
+                    '<a href="https://github.com/gioxx/wp-post-to-github-md" target="_blank" rel="noopener noreferrer">GitHub</a>'
                 );
                 ?>
             </p>

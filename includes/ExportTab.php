@@ -198,6 +198,7 @@ class ExportTab
         </div>
         <div id="potogh-bulk-footer" class="potogh-bulk-footer" hidden>
             <div id="potogh-bulk-progress" class="potogh-progress">
+                <span class="potogh-spinner" aria-hidden="true"></span>
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
             </div>

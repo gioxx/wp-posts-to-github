@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Post to GitHub Markdown package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.12\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.13\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:23+0200\n"
+"POT-Creation-Date: 2026-07-10 22:40+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -82,90 +82,89 @@ msgstr "Cerca post"
 msgid "Export selected"
 msgstr "Esporta selezionati"
 
-#: includes/ExportTab.php:94 includes/functions.php:86
-msgid "Stop"
-msgstr "Interrompi"
-
-#: includes/ExportTab.php:100
+#: includes/ExportTab.php:97
 msgid "All statuses"
 msgstr "Tutti gli stati"
 
-#: includes/ExportTab.php:101 includes/ExportTab.php:308
-#: includes/Metabox.php:46
+#: includes/ExportTab.php:98 includes/ExportTab.php:309 includes/Metabox.php:46
 msgid "Never exported"
 msgstr "Mai esportato"
 
-#: includes/ExportTab.php:102 includes/ExportTab.php:314
+#: includes/ExportTab.php:99 includes/ExportTab.php:316
 msgid "Exported"
 msgstr "Esportato"
 
-#: includes/ExportTab.php:103 includes/ExportTab.php:320
+#: includes/ExportTab.php:100 includes/ExportTab.php:323
 msgid "Modified since export"
 msgstr "Modificato dopo export"
 
-#: includes/ExportTab.php:109
+#: includes/ExportTab.php:106
 msgid "All categories"
 msgstr "Tutte le categorie"
 
-#: includes/ExportTab.php:118
+#: includes/ExportTab.php:115
 msgid "All tags"
 msgstr "Tutti i tag"
 
-#: includes/ExportTab.php:125
+#: includes/ExportTab.php:122
 msgid "All dates"
 msgstr "Tutte le date"
 
-#: includes/ExportTab.php:134
+#: includes/ExportTab.php:131
 #, php-format
 msgid "%d per page"
 msgstr "%d per pagina"
 
-#: includes/ExportTab.php:139
+#: includes/ExportTab.php:136
 msgid "Filter"
 msgstr "Filtra"
 
-#: includes/ExportTab.php:142
+#: includes/ExportTab.php:139
 msgid "Reset filters"
 msgstr "Azzera filtri"
 
-#: includes/ExportTab.php:154
+#: includes/ExportTab.php:151
 msgid "Clear selection"
 msgstr "Annulla selezione"
 
-#: includes/ExportTab.php:161
+#: includes/ExportTab.php:158
 msgid "Select all"
 msgstr "Seleziona tutto"
 
-#: includes/ExportTab.php:164
+#: includes/ExportTab.php:161
 msgid "Title"
 msgstr "Titolo"
 
-#: includes/ExportTab.php:165
+#: includes/ExportTab.php:162
 msgid "Categories"
 msgstr "Categorie"
 
-#: includes/ExportTab.php:166
+#: includes/ExportTab.php:163
 msgid "Tags"
 msgstr "Tag"
 
-#: includes/ExportTab.php:167
+#: includes/ExportTab.php:164
 msgid "Publish date"
 msgstr "Data pubblicazione"
 
-#: includes/ExportTab.php:168
+#: includes/ExportTab.php:165
 msgid "Export status"
 msgstr "Stato export"
 
-#: includes/ExportTab.php:173
+#: includes/ExportTab.php:170
 msgid "No posts match the current filters."
 msgstr "Nessun post corrisponde ai filtri attuali."
 
-#: includes/ExportTab.php:220 includes/ExportTab.php:246
-#: includes/Metabox.php:80 includes/Settings.php:202 includes/Settings.php:232
+#: includes/ExportTab.php:206 includes/functions.php:86
+msgid "Stop"
+msgstr "Interrompi"
+
+#: includes/ExportTab.php:219 includes/ExportTab.php:245
+#: includes/Metabox.php:80 includes/Settings.php:198 includes/Settings.php:228
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
-#: includes/ExportTab.php:224 includes/Metabox.php:84
+#: includes/ExportTab.php:223 includes/Metabox.php:84
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 
@@ -173,34 +172,34 @@ msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 msgid "Total published posts"
 msgstr "Post pubblicati totali"
 
-#: includes/ExportTab.php:512
+#: includes/ExportTab.php:516
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d elemento"
 msgstr[1] "%d elementi"
 
-#: includes/ExportTab.php:520
+#: includes/ExportTab.php:524
 msgid "First page"
 msgstr "Prima pagina"
 
-#: includes/ExportTab.php:521
+#: includes/ExportTab.php:525
 msgid "Previous page"
 msgstr "Pagina precedente"
 
-#: includes/ExportTab.php:528
+#: includes/ExportTab.php:532
 msgid "Current Page"
 msgstr "Pagina corrente"
 
-#: includes/ExportTab.php:531
+#: includes/ExportTab.php:535
 msgid "of"
 msgstr "di"
 
-#: includes/ExportTab.php:535
+#: includes/ExportTab.php:539
 msgid "Next page"
 msgstr "Pagina successiva"
 
-#: includes/ExportTab.php:536
+#: includes/ExportTab.php:540
 msgid "Last page"
 msgstr "Ultima pagina"
 
@@ -313,16 +312,12 @@ msgstr "Cerchi la funzione di export dei post? Vai su %s."
 msgid "Posts &rsaquo; Export to GitHub"
 msgstr "Articoli &rsaquo; Esporta su GitHub"
 
-#: includes/Settings.php:116
+#: includes/Settings.php:114
 #, php-format
-msgid ""
-"Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by "
-"GitHub, Inc."
-msgstr ""
-"Post to GitHub Markdown di Gioxx, sorgente su %1$s. Illustrazioni: %2$s di "
-"GitHub, Inc."
+msgid "Post to GitHub Markdown by Gioxx, source on %s."
+msgstr "Post to GitHub Markdown di Gioxx, sorgente su %s."
 
-#: includes/Settings.php:123
+#: includes/Settings.php:120
 msgid ""
 "All trademarks mentioned are the property of their respective owners. Third-"
 "party trademarks, product names, trade names, corporate names and companies "
@@ -337,11 +332,11 @@ msgstr ""
 "altre società e sono stati utilizzati a scopo esplicativo, a beneficio del "
 "titolare, senza alcuna intenzione di violare il copyright esistente."
 
-#: includes/Settings.php:138
+#: includes/Settings.php:134
 msgid "GitHub Personal Access Token"
 msgstr "Token di accesso personale GitHub"
 
-#: includes/Settings.php:145
+#: includes/Settings.php:141
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
@@ -350,11 +345,11 @@ msgstr ""
 "Un token fine-grained o classico con accesso %s al repository di "
 "destinazione. Generane uno su %s."
 
-#: includes/Settings.php:154
+#: includes/Settings.php:150
 msgid "Repository"
 msgstr "Repository"
 
-#: includes/Settings.php:158
+#: includes/Settings.php:154
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
@@ -362,23 +357,23 @@ msgstr ""
 "Inserisci \"owner/repo\" oppure l'URL completo di GitHub (es. https://"
 "github.com/owner/repo)."
 
-#: includes/Settings.php:163
+#: includes/Settings.php:159
 msgid "Branch"
 msgstr "Branch"
 
-#: includes/Settings.php:166
+#: includes/Settings.php:162
 msgid "Detect from repository"
 msgstr "Rileva dal repository"
 
-#: includes/Settings.php:169
+#: includes/Settings.php:165
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr "Il branch su cui verranno pubblicati i post (es. main)."
 
-#: includes/Settings.php:174
+#: includes/Settings.php:170
 msgid "Base folder"
 msgstr "Cartella base"
 
-#: includes/Settings.php:178
+#: includes/Settings.php:174
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
@@ -386,22 +381,22 @@ msgstr ""
 "Cartella del repository in cui vengono esportati i post (es. posts). Se "
 "lasciata vuota, viene usata \"posts\" come predefinita."
 
-#: includes/Settings.php:186
+#: includes/Settings.php:182
 msgid "Test connection"
 msgstr "Verifica connessione"
 
-#: includes/Settings.php:189
+#: includes/Settings.php:185
 msgid "Save Changes"
 msgstr "Salva modifiche"
 
-#: includes/Settings.php:214
+#: includes/Settings.php:210
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 "Inserisci sia un token che un repository valido prima di verificare la "
 "connessione."
 
-#: includes/Settings.php:244
+#: includes/Settings.php:240
 msgid "Enter both a token and a valid repository first."
 msgstr "Inserisci sia un token che un repository valido."
 
