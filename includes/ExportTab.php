@@ -90,9 +90,6 @@ class ExportTab
                             <span class="dashicons dashicons-cloud-upload"></span>
                             <?php esc_html_e('Export selected', 'post-to-github-md'); ?>
                         </button>
-                        <button type="button" class="button" id="potogh-bulk-stop" hidden>
-                            <?php esc_html_e('Stop', 'post-to-github-md'); ?>
-                        </button>
                     </div>
 
                     <div class="alignleft actions">
@@ -203,6 +200,9 @@ class ExportTab
             <div id="potogh-bulk-progress" class="potogh-progress">
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
+                <button type="button" class="button button-small" id="potogh-bulk-stop" hidden>
+                    <?php esc_html_e('Stop', 'post-to-github-md'); ?>
+                </button>
             </div>
             <div class="potogh-bulk-footer-body">
                 <div id="potogh-bulk-log" class="potogh-bulk-log"></div>

@@ -173,7 +173,7 @@
     }
 
     function setExporting(exporting) {
-        $('.potogh-filters-form :input').not('#potogh-bulk-stop').prop('disabled', exporting);
+        $('.potogh-filters-form :input').prop('disabled', exporting);
         $('.tablenav-pages a').css('pointer-events', exporting ? 'none' : '');
         $('body').toggleClass('potogh-exporting', exporting);
         $('#potogh-bulk-footer').prop('hidden', !exporting);

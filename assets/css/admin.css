@@ -133,27 +133,18 @@
 }
 
 .potogh-credits {
-    display: flex;
-    align-items: center;
-    gap: 16px;
     max-width: 600px;
     margin-top: 32px;
     padding-top: 16px;
     border-top: 1px solid #dcdcde;
 }
 
-.potogh-credits-mascot {
-    flex-shrink: 0;
-    width: 100px;
-    height: auto;
-}
-
-.potogh-credits-text .description {
+.potogh-credits .description {
     margin: 0 0 6px;
     color: #646970;
 }
 
-.potogh-credits-text .potogh-trademark-notice {
+.potogh-credits .potogh-trademark-notice {
     margin-bottom: 0;
     font-size: 11px;
     line-height: 1.5;
@@ -235,7 +226,8 @@
 }
 
 #potogh-bulk-stop {
-    margin-left: 6px;
+    margin-left: 10px;
+    vertical-align: baseline;
 }
 
 .potogh-export-table.wp-list-table th.check-column,

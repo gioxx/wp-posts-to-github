@@ -107,22 +107,19 @@ class Settings
     {
         ?>
         <div class="potogh-credits">
-            <img src="<?php echo esc_url(POTOGH_PLUGIN_URL . 'assets/images/universetocat.png'); ?>" alt="" aria-hidden="true" class="potogh-credits-mascot">
-            <div class="potogh-credits-text">
-                <p class="description">
-                    <?php
-                    printf(
-                        /* translators: 1: link to the plugin repository, 2: link to the Octodex mascot gallery */
-                        esc_html__('Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by GitHub, Inc.', 'post-to-github-md'),
-                        '<a href="https://github.com/gioxx/wp-post-to-github-md" target="_blank" rel="noopener noreferrer">GitHub</a>',
-                        '<a href="https://octodex.github.com" target="_blank" rel="noopener noreferrer">The Octodex</a>'
-                    );
-                    ?>
-                </p>
-                <p class="description potogh-trademark-notice">
-                    <?php esc_html_e('All trademarks mentioned are the property of their respective owners. Third-party trademarks, product names, trade names, corporate names and companies mentioned may be trademarks of their respective owners or registered trademarks of other companies and have been used for explanatory purposes only and for the benefit of the owner, without any intent to infringe existing copyright.', 'post-to-github-md'); ?>
-                </p>
-            </div>
+            <p class="description">
+                <?php
+                printf(
+                    /* translators: 1: link to the plugin repository, 2: link to the Octodex mascot gallery */
+                    esc_html__('Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by GitHub, Inc.', 'post-to-github-md'),
+                    '<a href="https://github.com/gioxx/wp-post-to-github-md" target="_blank" rel="noopener noreferrer">GitHub</a>',
+                    '<a href="https://octodex.github.com" target="_blank" rel="noopener noreferrer">The Octodex</a>'
+                );
+                ?>
+            </p>
+            <p class="description potogh-trademark-notice">
+                <?php esc_html_e('All trademarks mentioned are the property of their respective owners. Third-party trademarks, product names, trade names, corporate names and companies mentioned may be trademarks of their respective owners or registered trademarks of other companies and have been used for explanatory purposes only and for the benefit of the owner, without any intent to infringe existing copyright.', 'post-to-github-md'); ?>
+            </p>
         </div>
         <?php
     }
