@@ -313,6 +313,12 @@
     margin-left: 6px;
 }
 
+#potogh-select-all-spinner {
+    float: none;
+    vertical-align: middle;
+    margin: 0 0 0 6px;
+}
+
 .potogh-bulk-stop-label {
     position: absolute;
     bottom: 100%;

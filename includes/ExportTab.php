@@ -148,6 +148,7 @@ class ExportTab
             <p id="potogh-selection-summary">
                 <span id="potogh-selection-count"></span>
                 <button type="button" class="button-link" id="potogh-select-all-matching-btn" hidden></button>
+                <span class="spinner" id="potogh-select-all-spinner"></span>
                 <button type="button" class="button-link" id="potogh-clear-selection-btn" hidden><?php esc_html_e('Clear selection', 'post-to-github-md'); ?></button>
             </p>
 

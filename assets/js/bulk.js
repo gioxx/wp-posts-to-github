@@ -138,6 +138,12 @@
     });
 
     $('#potogh-select-all-matching-btn').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#potogh-select-all-spinner');
+
+        $btn.prop('disabled', true);
+        $spinner.addClass('is-active');
+
         $.post(potoghBulk.ajaxUrl, $.extend({
             action: 'potogh_get_filtered_ids',
             nonce: $('.potogh-export-tab').data('nonce')
@@ -147,6 +153,9 @@
                 selectedIds = response.data.ids;
                 updateSelectionUi();
             }
+        }).always(function () {
+            $btn.prop('disabled', false);
+            $spinner.removeClass('is-active');
         });
     });
 
