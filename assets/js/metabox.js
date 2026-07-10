@@ -11,6 +11,8 @@
         $.each(lines, function (i, line) {
             $trace.append($('<li>').text(line));
         });
+
+        $trace.scrollTop($trace[0].scrollHeight);
     }
 
     function setStatusExported($status, message) {
@@ -26,11 +28,13 @@
         var postId = $button.data('post-id');
         var $wrapper = $button.closest('.postbox').length ? $button.closest('.postbox') : $button.parent();
         var $status = $wrapper.find('.potogh-status');
+        var $progress = $wrapper.find('.potogh-export-progress');
         var $message = $wrapper.find('.potogh-export-message');
         var $trace = $wrapper.find('.potogh-export-trace');
         var nonce = $wrapper.find('#potogh_export_nonce').val();
 
-        $button.prop('disabled', true).addClass('potogh-loading');
+        $button.prop('disabled', true);
+        $progress.prop('hidden', false);
         $message.text('');
         renderTrace($trace, []);
 
@@ -52,7 +56,8 @@
             $message.text(message);
             renderTrace($trace, data ? data.trace : []);
         }).always(function () {
-            $button.prop('disabled', false).removeClass('potogh-loading');
+            $button.prop('disabled', false);
+            $progress.prop('hidden', true);
         });
     });
 })(jQuery);

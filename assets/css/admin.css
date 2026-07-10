@@ -42,8 +42,18 @@
     width: 100%;
 }
 
-#potogh_export .potogh-export-button.potogh-loading .dashicons {
-    animation: potogh-spin 0.8s linear infinite;
+#potogh_export .potogh-export-progress {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #646970;
+}
+
+#potogh_export .potogh-export-progress .potogh-spinner {
+    border-color: #dcdcde;
+    border-top-color: #2271b1;
 }
 
 #potogh_export .potogh-export-message {

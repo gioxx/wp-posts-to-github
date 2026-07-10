@@ -30,6 +30,10 @@ class Metabox
             <span class="dashicons dashicons-cloud-upload"></span>
             <?php esc_html_e('Export to GitHub', 'post-to-github-md'); ?>
         </button>
+        <p class="potogh-export-progress" hidden>
+            <span class="potogh-spinner" aria-hidden="true"></span>
+            <?php esc_html_e('Exporting…', 'post-to-github-md'); ?>
+        </p>
         <div class="potogh-export-message"></div>
         <ul class="potogh-export-trace"></ul>
         <?php

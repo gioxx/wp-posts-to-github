@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Post to GitHub Markdown package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.19\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.20\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:40+0200\n"
+"POT-Creation-Date: 2026-07-10 23:17+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -86,15 +86,15 @@ msgstr "Esporta selezionati"
 msgid "All statuses"
 msgstr "Tutti gli stati"
 
-#: includes/ExportTab.php:98 includes/ExportTab.php:309 includes/Metabox.php:46
+#: includes/ExportTab.php:98 includes/ExportTab.php:310 includes/Metabox.php:50
 msgid "Never exported"
 msgstr "Mai esportato"
 
-#: includes/ExportTab.php:99 includes/ExportTab.php:316
+#: includes/ExportTab.php:99 includes/ExportTab.php:317
 msgid "Exported"
 msgstr "Esportato"
 
-#: includes/ExportTab.php:100 includes/ExportTab.php:323
+#: includes/ExportTab.php:100 includes/ExportTab.php:324
 msgid "Modified since export"
 msgstr "Modificato dopo export"
 
@@ -155,51 +155,51 @@ msgstr "Stato export"
 msgid "No posts match the current filters."
 msgstr "Nessun post corrisponde ai filtri attuali."
 
-#: includes/ExportTab.php:206 includes/functions.php:86
+#: includes/ExportTab.php:201 includes/functions.php:86
 msgid "Stop"
 msgstr "Interrompi"
 
-#: includes/ExportTab.php:219 includes/ExportTab.php:245
-#: includes/Metabox.php:80 includes/Settings.php:198 includes/Settings.php:228
+#: includes/ExportTab.php:220 includes/ExportTab.php:246
+#: includes/Metabox.php:84 includes/Settings.php:198 includes/Settings.php:228
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
-#: includes/ExportTab.php:223 includes/Metabox.php:84
+#: includes/ExportTab.php:224 includes/Metabox.php:88
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 
-#: includes/ExportTab.php:302
+#: includes/ExportTab.php:303
 msgid "Total published posts"
 msgstr "Post pubblicati totali"
 
-#: includes/ExportTab.php:516
+#: includes/ExportTab.php:517
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d elemento"
 msgstr[1] "%d elementi"
 
-#: includes/ExportTab.php:524
+#: includes/ExportTab.php:525
 msgid "First page"
 msgstr "Prima pagina"
 
-#: includes/ExportTab.php:525
+#: includes/ExportTab.php:526
 msgid "Previous page"
 msgstr "Pagina precedente"
 
-#: includes/ExportTab.php:532
+#: includes/ExportTab.php:533
 msgid "Current Page"
 msgstr "Pagina corrente"
 
-#: includes/ExportTab.php:535
+#: includes/ExportTab.php:536
 msgid "of"
 msgstr "di"
 
-#: includes/ExportTab.php:539
+#: includes/ExportTab.php:540
 msgid "Next page"
 msgstr "Pagina successiva"
 
-#: includes/ExportTab.php:540
+#: includes/ExportTab.php:541
 msgid "Last page"
 msgstr "Ultima pagina"
 
@@ -290,12 +290,16 @@ msgstr ""
 "(il file potrebbe essere stato modificato direttamente su GitHub: verifica "
 "il contenuto del repository prima di ri-esportare)"
 
-#: includes/Metabox.php:42
+#: includes/Metabox.php:35
+msgid "Exporting…"
+msgstr "Esportazione in corso…"
+
+#: includes/Metabox.php:46
 #, php-format
 msgid "Exported on %s"
 msgstr "Esportato il %s"
 
-#: includes/Metabox.php:44
+#: includes/Metabox.php:48
 msgid "Modified since last export"
 msgstr "Modificato dopo l'ultima esportazione"
 
