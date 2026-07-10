@@ -5,6 +5,7 @@
     var selectAllMatching = false;
     var suppressChange = false;
     var stopRequested = false;
+    var lastCheckedCheckbox = null;
 
     function currentFilterParams() {
         var $form = $('.potogh-filters-form');
@@ -79,6 +80,30 @@
         suppressChange = false;
         updateSelectionUi();
     }
+
+    $(document).on('click', '.potogh-post-checkbox', function (e) {
+        if (suppressChange) {
+            return;
+        }
+
+        if (e.shiftKey && lastCheckedCheckbox) {
+            var checkboxes = $('.potogh-post-checkbox').toArray();
+            var start = checkboxes.indexOf(lastCheckedCheckbox);
+            var end = checkboxes.indexOf(this);
+
+            if (start !== -1 && end !== -1) {
+                var checked = $(this).is(':checked');
+                var from = Math.min(start, end);
+                var to = Math.max(start, end);
+
+                checkboxes.slice(from, to + 1).forEach(function (checkbox) {
+                    checkbox.checked = checked;
+                });
+            }
+        }
+
+        lastCheckedCheckbox = this;
+    });
 
     $(document).on('change', '.potogh-post-checkbox', function () {
         if (suppressChange) {

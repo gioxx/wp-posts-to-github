@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.8\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:19+0200\n"
+"POT-Creation-Date: 2026-07-10 22:23+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -67,132 +67,141 @@ msgstr ""
 msgid "Need to change the GitHub connection? Head over to %s."
 msgstr ""
 
-#: includes/ExportTab.php:80
+#: includes/ExportTab.php:82
 msgid "Search posts:"
 msgstr ""
 
-#: includes/ExportTab.php:81
+#: includes/ExportTab.php:83
 msgid "Search title…"
 msgstr ""
 
-#: includes/ExportTab.php:82
+#: includes/ExportTab.php:84
 msgid "Search Posts"
 msgstr ""
 
-#: includes/ExportTab.php:89
+#: includes/ExportTab.php:91
 msgid "Export selected"
 msgstr ""
 
-#: includes/ExportTab.php:92 includes/functions.php:86
+#: includes/ExportTab.php:94 includes/functions.php:86
 msgid "Stop"
 msgstr ""
 
-#: includes/ExportTab.php:98
+#: includes/ExportTab.php:100
 msgid "All statuses"
 msgstr ""
 
-#: includes/ExportTab.php:99 includes/Metabox.php:46
+#: includes/ExportTab.php:101 includes/ExportTab.php:308
+#: includes/Metabox.php:46
 msgid "Never exported"
 msgstr ""
 
-#: includes/ExportTab.php:100
+#: includes/ExportTab.php:102 includes/ExportTab.php:314
 msgid "Exported"
 msgstr ""
 
-#: includes/ExportTab.php:101
+#: includes/ExportTab.php:103 includes/ExportTab.php:320
 msgid "Modified since export"
 msgstr ""
 
-#: includes/ExportTab.php:107
+#: includes/ExportTab.php:109
 msgid "All categories"
 msgstr ""
 
-#: includes/ExportTab.php:116
+#: includes/ExportTab.php:118
 msgid "All tags"
 msgstr ""
 
-#: includes/ExportTab.php:123
+#: includes/ExportTab.php:125
 msgid "All dates"
 msgstr ""
 
-#: includes/ExportTab.php:132
+#: includes/ExportTab.php:134
 #, php-format
 msgid "%d per page"
 msgstr ""
 
-#: includes/ExportTab.php:137
+#: includes/ExportTab.php:139
 msgid "Filter"
 msgstr ""
 
-#: includes/ExportTab.php:147
-msgid "Clear selection"
+#: includes/ExportTab.php:142
+msgid "Reset filters"
 msgstr ""
 
 #: includes/ExportTab.php:154
-msgid "Select all"
-msgstr ""
-
-#: includes/ExportTab.php:157
-msgid "Title"
-msgstr ""
-
-#: includes/ExportTab.php:158
-msgid "Categories"
-msgstr ""
-
-#: includes/ExportTab.php:159
-msgid "Tags"
-msgstr ""
-
-#: includes/ExportTab.php:160
-msgid "Publish date"
+msgid "Clear selection"
 msgstr ""
 
 #: includes/ExportTab.php:161
-msgid "Export status"
+msgid "Select all"
+msgstr ""
+
+#: includes/ExportTab.php:164
+msgid "Title"
+msgstr ""
+
+#: includes/ExportTab.php:165
+msgid "Categories"
 msgstr ""
 
 #: includes/ExportTab.php:166
+msgid "Tags"
+msgstr ""
+
+#: includes/ExportTab.php:167
+msgid "Publish date"
+msgstr ""
+
+#: includes/ExportTab.php:168
+msgid "Export status"
+msgstr ""
+
+#: includes/ExportTab.php:173
 msgid "No posts match the current filters."
 msgstr ""
 
-#: includes/ExportTab.php:213 includes/ExportTab.php:239
+#: includes/ExportTab.php:220 includes/ExportTab.php:246
 #: includes/Metabox.php:80 includes/Settings.php:202 includes/Settings.php:232
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/ExportTab.php:217 includes/Metabox.php:84
+#: includes/ExportTab.php:224 includes/Metabox.php:84
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr ""
 
-#: includes/ExportTab.php:415
+#: includes/ExportTab.php:302
+msgid "Total published posts"
+msgstr ""
+
+#: includes/ExportTab.php:512
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/ExportTab.php:423
+#: includes/ExportTab.php:520
 msgid "First page"
 msgstr ""
 
-#: includes/ExportTab.php:424
+#: includes/ExportTab.php:521
 msgid "Previous page"
 msgstr ""
 
-#: includes/ExportTab.php:431
+#: includes/ExportTab.php:528
 msgid "Current Page"
 msgstr ""
 
-#: includes/ExportTab.php:434
+#: includes/ExportTab.php:531
 msgid "of"
 msgstr ""
 
-#: includes/ExportTab.php:438
+#: includes/ExportTab.php:535
 msgid "Next page"
 msgstr ""
 
-#: includes/ExportTab.php:439
+#: includes/ExportTab.php:536
 msgid "Last page"
 msgstr ""
 

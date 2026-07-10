@@ -73,6 +73,8 @@ class ExportTab
         <div class="potogh-export-tab" data-nonce="<?php echo esc_attr($nonce); ?>" data-total="<?php echo esc_attr($total); ?>">
             <?php wp_nonce_field('potogh_bulk_export', 'potogh_bulk_nonce'); ?>
 
+            <?php $this->renderStats(); ?>
+
             <form method="get" action="<?php echo esc_url(admin_url('edit.php')); ?>" class="potogh-filters-form">
                 <input type="hidden" name="page" value="potogh-export">
 
@@ -135,6 +137,11 @@ class ExportTab
                         </select>
 
                         <button type="submit" class="button"><?php esc_html_e('Filter', 'post-to-github-md'); ?></button>
+                        <?php if ($this->hasActiveFilters($filters)) : ?>
+                            <a href="<?php echo esc_url(admin_url('edit.php?page=potogh-export')); ?>" class="button">
+                                <?php esc_html_e('Reset filters', 'post-to-github-md'); ?>
+                            </a>
+                        <?php endif; ?>
                     </div>
 
                     <?php $this->renderPagination($paged, $totalPages, $total); ?>
@@ -272,6 +279,96 @@ class ExportTab
             'category' => (int) ($source['category'] ?? 0),
             'tag' => sanitize_title($source['tag'] ?? ''),
             'month' => preg_match('/^\d{6}$/', $source['m'] ?? '') ? $source['m'] : '',
+        ];
+    }
+
+    private function hasActiveFilters(array $filters): bool
+    {
+        return $filters['status'] !== ''
+            || $filters['search'] !== ''
+            || $filters['category'] > 0
+            || $filters['tag'] !== ''
+            || $filters['month'] !== '';
+    }
+
+    private function renderStats(): void
+    {
+        $counts = $this->computeOverviewCounts();
+        $tiles = [
+            [
+                'status' => '',
+                'class' => 'total',
+                'count' => $counts['total'],
+                'label' => __('Total published posts', 'post-to-github-md'),
+            ],
+            [
+                'status' => ExportStatus::NEVER_EXPORTED,
+                'class' => ExportStatus::NEVER_EXPORTED,
+                'count' => $counts['never_exported'],
+                'label' => __('Never exported', 'post-to-github-md'),
+            ],
+            [
+                'status' => ExportStatus::EXPORTED,
+                'class' => ExportStatus::EXPORTED,
+                'count' => $counts['exported'],
+                'label' => __('Exported', 'post-to-github-md'),
+            ],
+            [
+                'status' => ExportStatus::MODIFIED_SINCE_EXPORT,
+                'class' => ExportStatus::MODIFIED_SINCE_EXPORT,
+                'count' => $counts['modified'],
+                'label' => __('Modified since export', 'post-to-github-md'),
+            ],
+        ];
+        ?>
+        <div class="potogh-stats">
+            <?php foreach ($tiles as $tile) : ?>
+                <a class="potogh-stat-tile potogh-stat-<?php echo esc_attr($tile['class']); ?>" href="<?php echo esc_url(admin_url('edit.php?page=potogh-export' . ($tile['status'] !== '' ? '&status=' . $tile['status'] : ''))); ?>">
+                    <span class="potogh-stat-number"><?php echo esc_html((string) $tile['count']); ?></span>
+                    <span class="potogh-stat-label"><?php echo esc_html($tile['label']); ?></span>
+                </a>
+            <?php endforeach; ?>
+        </div>
+        <?php
+    }
+
+    private function computeOverviewCounts(): array
+    {
+        $total = (int) wp_count_posts('post')->publish;
+
+        $neverExportedIds = get_posts([
+            'post_type' => 'post',
+            'post_status' => 'publish',
+            'numberposts' => -1,
+            'fields' => 'ids',
+            'meta_query' => [['key' => '_potogh_exported_at', 'compare' => 'NOT EXISTS']],
+        ]);
+
+        $exportedPosts = get_posts([
+            'post_type' => 'post',
+            'post_status' => 'publish',
+            'numberposts' => -1,
+            'meta_query' => [['key' => '_potogh_exported_at', 'compare' => 'EXISTS']],
+        ]);
+
+        $exported = 0;
+        $modified = 0;
+
+        foreach ($exportedPosts as $post) {
+            $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
+
+            if (ExportStatus::determine($exportedAt, $post->post_modified_gmt) === ExportStatus::MODIFIED_SINCE_EXPORT) {
+                $modified++;
+            } else {
+                $exported++;
+            }
+        }
+
+        return [
+            'total' => $total,
+            'never_exported' => count($neverExportedIds),
+            'exported' => $exported,
+            'modified' => $modified,
         ];
     }
 
