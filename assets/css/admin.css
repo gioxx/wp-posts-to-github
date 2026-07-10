@@ -38,11 +38,20 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 6px;
     width: 100%;
 }
 
-#potogh_export .potogh-export-progress {
+#potogh_export .potogh-export-button .dashicons {
+    width: 18px;
+    height: 18px;
+    font-size: 18px;
+    line-height: 1;
+    margin: 0;
+    float: none;
+}
+
+#potogh_export .potogh-export-progress:not([hidden]) {
     display: flex;
     align-items: center;
     gap: 8px;
