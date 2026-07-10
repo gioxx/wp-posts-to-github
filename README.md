@@ -1,100 +1,108 @@
 # Post to GitHub Markdown
 
-Plugin WordPress che esporta i tuoi articoli pubblicati come file Markdown (con front matter YAML) in un repository GitHub privato già esistente. Lo scopo è costruire nel tempo un corpus dei tuoi articoli in formato testuale, utile per addestrare o guidare uno stile di scrittura coerente in strumenti come Claude.
+*[Leggi questo in italiano](README.it.md)*
 
-Il plugin non crea il repository, non carica immagini binarie e lavora solo su articoli (`post`) con stato "pubblicato".
+A WordPress plugin that exports your published posts as Markdown files (with YAML front matter) to an existing private GitHub repository. The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
 
-## Requisiti
+The plugin does not create the repository, does not upload binary images, and only works on `post` content with a "published" status.
 
-- WordPress 6.0 o superiore
-- PHP 7.4 o superiore
-- Un repository GitHub privato già creato
-- Un Personal Access Token (PAT) di GitHub con permesso di scrittura sul repository (scope classico `repo`, oppure un fine-grained token con accesso in lettura/scrittura ai "Contents" di quel repository)
+## Requirements
 
-## Installazione
+- WordPress 6.0 or higher
+- PHP 7.4 or higher
+- An existing private GitHub repository
+- A GitHub Personal Access Token (PAT) with write access to the repository (classic `repo` scope, or a fine-grained token with read/write access to "Contents" for that repository)
 
-1. Copia l'intera cartella del plugin in `wp-content/plugins/post-to-github-md/` sul tuo sito WordPress (la cartella `vendor/` con le dipendenze è già inclusa: non serve eseguire Composer).
-2. Vai su **Plugin** nella bacheca di WordPress e attiva "Post to GitHub Markdown".
+## Installation
 
-## Configurazione
+1. Copy the whole plugin folder to `wp-content/plugins/post-to-github-md/` on your WordPress site (the `vendor/` folder with dependencies is already included: no need to run Composer).
+2. Go to **Plugins** in the WordPress dashboard and activate "Post to GitHub Markdown".
 
-Vai su **Impostazioni → Post to GitHub MD** e compila:
+## Language
 
-| Campo | Descrizione | Esempio |
+The plugin interface is in English by default; if your WordPress is set to Italian (`it_IT`), the plugin automatically loads the included Italian translation (`languages/post-to-github-md-it_IT.mo`).
+
+## Configuration
+
+Go to **Settings → Post to GitHub MD** and fill in:
+
+| Field | Description | Example |
 |---|---|---|
-| **GitHub Personal Access Token** | Il PAT con accesso in scrittura al repository di destinazione. Non viene mai mostrato in chiaro altrove nel sito. | `ghp_xxxxxxxxxxxxxxxxxxxx` |
-| **Owner/repo** | Proprietario e nome del repository GitHub, nel formato `owner/repo`. Il repository deve già esistere. | `tuonome/il-tuo-repo-privato` |
-| **Branch** | Il branch su cui scrivere i file. | `main` |
-| **Base folder** | La cartella di primo livello nel repository dove salvare gli export. | `posts` |
+| **GitHub Personal Access Token** | The PAT with write access to the target repository. Never displayed in plain text elsewhere on the site. | `ghp_xxxxxxxxxxxxxxxxxxxx` |
+| **Repository** | The target GitHub repository: enter either `owner/repo` or the full URL (`https://github.com/owner/repo`). The repository must already exist. | `yourname/your-private-repo` or `https://github.com/yourname/your-private-repo` |
+| **Branch** | The branch files are committed to. | `main` |
+| **Base folder** | The top-level repository folder exports are saved into. | `posts` |
 
-Salva le modifiche. Finché PAT e repository non sono configurati, il plugin blocca ogni tentativo di esportazione (sia dal singolo post che dall'export in blocco) mostrando un messaggio d'errore invece di tentare la chiamata a GitHub.
+Each field has a help text under the input describing the expected format. After saving (or even before, on the values currently in the form), use the **"Test connection"** button to verify the token is valid and the repository/branch are reachable: the check is read-only and never writes to the repository.
 
-### Dove creare il Personal Access Token
+Until the PAT and repository are configured, the plugin blocks every export attempt (both single-post and bulk) and shows an error message instead of calling GitHub.
 
-Su GitHub: **Settings → Developer settings → Personal access tokens**. Con un classic token basta lo scope `repo`; con un fine-grained token, assicurati che l'accesso "Contents" sia impostato su "Read and write" per il repository selezionato.
+### Where to create the Personal Access Token
 
-## Come esportare un singolo post
+On GitHub: **Settings → Developer settings → Personal access tokens** (also reachable via the direct link shown under the token field on the settings page). A classic token only needs the `repo` scope; for a fine-grained token, make sure "Contents" access is set to "Read and write" for the selected repository.
 
-1. Apri in modifica un articolo già pubblicato.
-2. Nella barra laterale trovi il box **"Export to GitHub"**, che mostra lo stato corrente:
-   - **Mai esportato** — il post non è mai stato inviato al repository.
-   - **Esportato il [data]** — l'ultima esportazione riuscita, con data e ora.
-   - **Modificato dopo l'ultima esportazione** — il post è stato aggiornato dopo l'ultimo export; conviene ri-esportarlo.
-3. Clicca **"Esporta su GitHub"**. L'operazione avviene via AJAX senza ricaricare la pagina; lo stato si aggiorna al termine.
+## Exporting a single post
 
-Se il post era già stato esportato in precedenza, il plugin aggiorna lo stesso file su GitHub (stesso percorso, stesso commit history) invece di crearne uno nuovo.
+1. Open an already-published post for editing.
+2. In the sidebar you'll find the **"Export to GitHub"** box, showing the current status:
+   - **Never exported** — the post has never been sent to the repository.
+   - **Exported on [date]** — the last successful export, with date and time.
+   - **Modified since last export** — the post was updated after the last export; re-exporting is recommended.
+3. Click **"Export to GitHub"**. The operation happens via AJAX without reloading the page; the status updates once it completes.
 
-## Come esportare più post insieme (bulk export)
+If the post was already exported before, the plugin updates the same file on GitHub (same path, same commit history) instead of creating a new one.
 
-1. Vai su **Strumenti → Export to GitHub MD**.
-2. Trovi l'elenco di tutti gli articoli pubblicati, con una colonna di stato identica a quella del box nel singolo post.
-3. Seleziona i post che vuoi esportare (c'è anche una checkbox "seleziona tutto") e clicca **"Esporta selezionati"**.
-4. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi) e aggiorna via via lo stato di ogni riga. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo.
+## Exporting multiple posts at once (bulk export)
 
-## Dove finiscono i file su GitHub
+1. Go to **Tools → Export to GitHub MD**.
+2. You'll see a list of all published posts, with a status column identical to the one in the single-post box.
+3. Select the posts you want to export (there's also a "select all" checkbox) and click **"Export selected"**.
+4. The plugin exports one post at a time (to avoid timeouts on long lists) and updates each row's status as it goes. At the end, a summary shows the number of successfully exported posts and any errors with their reason.
 
-Ogni post viene salvato come:
+## Where files end up on GitHub
+
+Each post is saved as:
 
 ```
-{base_folder}/{anno_di_pubblicazione}/{slug-del-post}.md
+{base_folder}/{publish_year}/{post-slug}.md
 ```
 
-Ad esempio, con base folder `posts`, un articolo pubblicato nel 2026 con slug `come-configurare-wordpress` diventa `posts/2026/come-configurare-wordpress.md`. L'anno è quello di **pubblicazione** del post, non dell'ultima modifica.
+For example, with base folder `posts`, a post published in 2026 with slug `how-to-configure-wordpress` becomes `posts/2026/how-to-configure-wordpress.md`. The year is the post's **publish** year, not the last modification date.
 
-Ogni file inizia con un front matter YAML seguito dal contenuto convertito in Markdown:
+Each file starts with a YAML front matter followed by the content converted to Markdown:
 
 ```yaml
 ---
-title: "Titolo del post"
-slug: come-configurare-wordpress
+title: "Post title"
+slug: how-to-configure-wordpress
 date: 2026-07-08T10:30:00+02:00
 modified: 2026-07-08T11:00:00+02:00
 wp_id: 1234
 categories: ["WordPress", "Tutorial"]
 tags: ["plugin", "github"]
-permalink: https://tuosito.it/come-configurare-wordpress/
+permalink: https://yoursite.com/how-to-configure-wordpress/
 ---
 
-# Titolo del post
+# Post title
 
-Contenuto dell'articolo in Markdown...
+Post content in Markdown...
 ```
 
-Le immagini presenti nel contenuto restano come link assoluti al tuo sito (`![alt](https://tuosito.it/wp-content/uploads/...)`): non vengono caricate né duplicate su GitHub.
+Images in the content remain as absolute links to your site (`![alt](https://yoursite.com/wp-content/uploads/...)`): they are not uploaded or duplicated to GitHub.
 
-Il messaggio di commit generato per ogni export è nel formato `Export post: {titolo} (#{id})`, così puoi seguire facilmente la cronologia degli export nel repository.
+The commit message generated for each export follows the format `Export post: {title} (#{id})`, so you can easily follow the export history in the repository.
 
-## Risoluzione dei problemi
+## Troubleshooting
 
-- **"Configura prima PAT e repository nelle impostazioni del plugin"**: il token o l'owner/repo non sono ancora impostati (o il formato `owner/repo` inserito non è valido). Controlla le impostazioni del plugin.
-- **Errore di autenticazione / repository non trovato**: verifica che il PAT sia valido, non scaduto, e abbia i permessi corretti sul repository indicato.
-- **Conflitto (409) durante l'export**: significa che il file su GitHub è stato modificato o rinominato direttamente dal repository dopo l'ultima esportazione da WordPress, e il riferimento salvato dal plugin non corrisponde più allo stato reale del file. Controlla il contenuto del repository prima di ri-esportare; se necessario, verifica manualmente il file su GitHub.
-- **Limite di rate GitHub**: se esporti molti post in blocco e ricevi un errore di rate limit, attendi qualche minuto e riprova.
-- **Un post in bozza non mostra il pulsante di export, o l'export fallisce con "Solo i post pubblicati possono essere esportati"**: per scelta di progetto, solo gli articoli con stato "pubblicato" possono essere esportati.
+- **"Configure the PAT and repository in the plugin settings first"**: the token or repository aren't set yet (or the format entered is invalid). Check the plugin settings, using the "Test connection" button to pinpoint the issue if needed.
+- **Authentication error / repository not found**: verify the PAT is valid, not expired, and has the correct permissions on the specified repository. The "Test connection" button distinguishes between the two cases.
+- **Conflict (409) during export**: this means the file on GitHub was modified or renamed directly in the repository after the last export from WordPress, and the reference saved by the plugin no longer matches the file's real state. Check the repository contents before re-exporting; if needed, manually verify the file on GitHub.
+- **GitHub rate limit**: if you export many posts in bulk and get a rate limit error, wait a few minutes and try again.
+- **A draft post doesn't show the export button, or export fails with "Only published posts can be exported"**: by design, only posts with "published" status can be exported.
 
-## Limiti noti (v1)
+## Known limitations (v1)
 
-- Solo il post type `post` è supportato (non pagine o altri tipi di contenuto personalizzati).
-- Nessuna sincronizzazione automatica alla pubblicazione: l'export va sempre avviato manualmente (singolo post o bulk).
-- Nessuna creazione automatica del repository: deve già esistere prima di configurare il plugin.
-- Nessun upload o gestione delle immagini: restano link assoluti al sito di origine.
+- Only the `post` post type is supported (not pages or other custom content types).
+- No automatic sync on publish: export must always be triggered manually (single post or bulk).
+- No automatic repository creation: it must already exist before configuring the plugin.
+- No image upload or management: they remain absolute links to the source site.

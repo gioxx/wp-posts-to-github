@@ -39,7 +39,7 @@
             renderTrace($trace, response.data.trace);
         }).fail(function (jqXHR) {
             var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
-            var message = data && data.message ? data.message : 'Errore di rete durante l\'esportazione.';
+            var message = data && data.message ? data.message : potoghMetabox.networkError;
             $message.text(message);
             renderTrace($trace, data ? data.trace : []);
         }).always(function () {

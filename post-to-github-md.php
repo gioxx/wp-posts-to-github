@@ -1,17 +1,24 @@
 <?php
 /**
  * Plugin Name: Post to GitHub Markdown
- * Description: Esporta i post pubblicati come file Markdown in un repository GitHub privato.
- * Version: 1.0.0
+ * Plugin URI: https://github.com/gioxx/wp-post-to-github-md
+ * Description: Export published posts as Markdown files to a private GitHub repository.
+ * Version: 1.1.0
  * Requires PHP: 7.4
  * Requires at least: 6.0
+ * Author: Gioxx
+ * Author URI: https://gioxx.org
+ * License: GPL v2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: post-to-github-md
+ * Domain Path: /languages
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
+define('POTOGH_VERSION', '1.1.0');
 define('POTOGH_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('POTOGH_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -19,9 +26,12 @@ require_once POTOGH_PLUGIN_DIR . 'vendor/autoload.php';
 require_once POTOGH_PLUGIN_DIR . 'includes/functions.php';
 
 add_action('plugins_loaded', function () {
+    load_plugin_textdomain('post-to-github-md', false, dirname(plugin_basename(__FILE__)) . '/languages');
+
     $settings = new \POTOGH\Settings();
     add_action('admin_menu', [$settings, 'registerPage']);
     add_action('admin_init', [$settings, 'registerSetting']);
+    add_action('wp_ajax_potogh_test_connection', [$settings, 'handleAjaxTestConnection']);
 
     $metabox = new \POTOGH\Metabox();
     add_action('add_meta_boxes', [$metabox, 'registerMetabox']);

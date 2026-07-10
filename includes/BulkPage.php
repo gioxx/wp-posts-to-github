@@ -26,20 +26,21 @@ class BulkPage
         ]);
         ?>
         <div class="wrap">
-            <h1><?php esc_html_e('Esporta post su GitHub', 'post-to-github-md'); ?></h1>
+            <h1><?php esc_html_e('Export posts to GitHub', 'post-to-github-md'); ?></h1>
             <?php wp_nonce_field('potogh_bulk_export', 'potogh_bulk_nonce'); ?>
             <p>
                 <button type="button" class="button button-primary" id="potogh-bulk-export-selected">
-                    <?php esc_html_e('Esporta selezionati', 'post-to-github-md'); ?>
+                    <span class="dashicons dashicons-cloud-upload"></span>
+                    <?php esc_html_e('Export selected', 'post-to-github-md'); ?>
                 </button>
             </p>
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
                         <th><input type="checkbox" id="potogh-select-all"></th>
-                        <th><?php esc_html_e('Titolo', 'post-to-github-md'); ?></th>
-                        <th><?php esc_html_e('Data pubblicazione', 'post-to-github-md'); ?></th>
-                        <th><?php esc_html_e('Stato export', 'post-to-github-md'); ?></th>
+                        <th><?php esc_html_e('Title', 'post-to-github-md'); ?></th>
+                        <th><?php esc_html_e('Publish date', 'post-to-github-md'); ?></th>
+                        <th><?php esc_html_e('Export status', 'post-to-github-md'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +52,10 @@ class BulkPage
                         <td><input type="checkbox" class="potogh-post-checkbox" value="<?php echo esc_attr($post->ID); ?>"></td>
                         <td><?php echo esc_html(get_the_title($post)); ?></td>
                         <td><?php echo esc_html(get_the_date('', $post)); ?></td>
-                        <td class="potogh-status-cell"><?php echo esc_html(Metabox::statusLabel($status, $exportedAt)); ?></td>
+                        <td class="potogh-status-cell potogh-status-<?php echo esc_attr($status); ?>">
+                            <span class="dashicons <?php echo esc_attr(Metabox::statusIconClass($status)); ?>"></span>
+                            <span class="potogh-status-text"><?php echo esc_html(Metabox::statusLabel($status, $exportedAt)); ?></span>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 </tbody>
@@ -67,11 +71,11 @@ class BulkPage
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Permessi insufficienti.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configura prima PAT e repository nelle impostazioni del plugin.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
         }
 
         $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;

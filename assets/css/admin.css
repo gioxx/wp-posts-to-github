@@ -1,0 +1,54 @@
+.potogh-status .dashicons,
+.potogh-status-cell .dashicons,
+.potogh-export-button .dashicons {
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+.potogh-status-exported .dashicons,
+.potogh-status-cell.potogh-status-exported .dashicons {
+    color: #46b450;
+}
+
+.potogh-status-modified_since_export .dashicons,
+.potogh-status-cell.potogh-status-modified_since_export .dashicons {
+    color: #dba617;
+}
+
+.potogh-status-never_exported .dashicons,
+.potogh-status-cell.potogh-status-never_exported .dashicons {
+    color: #787c82;
+}
+
+#potogh-test-connection-result {
+    margin-left: 8px;
+    font-weight: 600;
+}
+
+#potogh-test-connection-result.potogh-test-success {
+    color: #46b450;
+}
+
+#potogh-test-connection-result.potogh-test-error {
+    color: #d63638;
+}
+
+.potogh-settings .description code {
+    padding: 1px 4px;
+}
+
+#potogh-bulk-log {
+    max-height: 260px;
+    overflow-y: auto;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: #fff;
+    border: 1px solid #dcdcde;
+    font-family: Consolas, Monaco, monospace;
+    font-size: 12px;
+}
+
+#potogh-bulk-summary {
+    margin-top: 10px;
+    font-weight: 600;
+}

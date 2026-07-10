@@ -21,13 +21,9 @@ class Settings
         $defaults = self::defaults();
 
         $token = trim($input['token'] ?? '');
-        $ownerRepo = trim($input['owner_repo'] ?? '');
+        $ownerRepo = self::extractOwnerRepo(trim($input['owner_repo'] ?? ''));
         $branch = trim($input['branch'] ?? '') ?: $defaults['branch'];
         $baseFolder = trim($input['base_folder'] ?? '', "/ \t\n\r\0\x0B") ?: $defaults['base_folder'];
-
-        if ($ownerRepo !== '' && !preg_match('/^[\w.-]+\/[\w.-]+$/', $ownerRepo)) {
-            $ownerRepo = '';
-        }
 
         return [
             'token' => $token,
@@ -35,6 +31,19 @@ class Settings
             'branch' => $branch,
             'base_folder' => $baseFolder,
         ];
+    }
+
+    private static function extractOwnerRepo(string $input): string
+    {
+        if ($input === '') {
+            return '';
+        }
+
+        if (preg_match('#^https?://(www\.)?github\.com/([\w.-]+)/([\w.-]+?)(\.git)?/?$#', $input, $matches)) {
+            $input = $matches[2] . '/' . $matches[3];
+        }
+
+        return preg_match('/^[\w.-]+\/[\w.-]+$/', $input) ? $input : '';
     }
 
     public static function isConfigured(): bool
@@ -73,31 +82,95 @@ class Settings
     {
         $settings = self::get();
         ?>
-        <div class="wrap">
+        <div class="wrap potogh-settings">
             <h1><?php echo esc_html__('Post to GitHub MD', 'post-to-github-md'); ?></h1>
             <form method="post" action="options.php">
                 <?php settings_fields('potogh_settings_group'); ?>
                 <table class="form-table">
                     <tr>
                         <th><label for="potogh_token"><?php esc_html_e('GitHub Personal Access Token', 'post-to-github-md'); ?></label></th>
-                        <td><input type="password" id="potogh_token" name="<?php echo esc_attr(self::OPTION_NAME); ?>[token]" value="<?php echo esc_attr($settings['token']); ?>" class="regular-text" autocomplete="off"></td>
+                        <td>
+                            <input type="password" id="potogh_token" name="<?php echo esc_attr(self::OPTION_NAME); ?>[token]" value="<?php echo esc_attr($settings['token']); ?>" class="regular-text" autocomplete="off">
+                            <p class="description">
+                                <?php
+                                printf(
+                                    /* translators: %s: link to GitHub token settings page */
+                                    esc_html__('A fine-grained or classic token with %s access to the target repository. Generate one at %s.', 'post-to-github-md'),
+                                    '<code>repo</code>',
+                                    '<a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">github.com/settings/tokens</a>'
+                                );
+                                ?>
+                            </p>
+                        </td>
                     </tr>
                     <tr>
-                        <th><label for="potogh_owner_repo"><?php esc_html_e('Owner/repo', 'post-to-github-md'); ?></label></th>
-                        <td><input type="text" id="potogh_owner_repo" name="<?php echo esc_attr(self::OPTION_NAME); ?>[owner_repo]" value="<?php echo esc_attr($settings['owner_repo']); ?>" class="regular-text" placeholder="owner/repo"></td>
+                        <th><label for="potogh_owner_repo"><?php esc_html_e('Repository', 'post-to-github-md'); ?></label></th>
+                        <td>
+                            <input type="text" id="potogh_owner_repo" name="<?php echo esc_attr(self::OPTION_NAME); ?>[owner_repo]" value="<?php echo esc_attr($settings['owner_repo']); ?>" class="regular-text" placeholder="owner/repo">
+                            <p class="description">
+                                <?php esc_html_e('Enter either "owner/repo" or the full GitHub URL (e.g. https://github.com/owner/repo).', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="potogh_branch"><?php esc_html_e('Branch', 'post-to-github-md'); ?></label></th>
-                        <td><input type="text" id="potogh_branch" name="<?php echo esc_attr(self::OPTION_NAME); ?>[branch]" value="<?php echo esc_attr($settings['branch']); ?>" class="regular-text"></td>
+                        <td>
+                            <input type="text" id="potogh_branch" name="<?php echo esc_attr(self::OPTION_NAME); ?>[branch]" value="<?php echo esc_attr($settings['branch']); ?>" class="regular-text">
+                            <p class="description">
+                                <?php esc_html_e('The branch posts will be committed to (e.g. main).', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
                     </tr>
                     <tr>
                         <th><label for="potogh_base_folder"><?php esc_html_e('Base folder', 'post-to-github-md'); ?></label></th>
-                        <td><input type="text" id="potogh_base_folder" name="<?php echo esc_attr(self::OPTION_NAME); ?>[base_folder]" value="<?php echo esc_attr($settings['base_folder']); ?>" class="regular-text"></td>
+                        <td>
+                            <input type="text" id="potogh_base_folder" name="<?php echo esc_attr(self::OPTION_NAME); ?>[base_folder]" value="<?php echo esc_attr($settings['base_folder']); ?>" class="regular-text">
+                            <p class="description">
+                                <?php esc_html_e('Repository folder posts are exported into (e.g. posts).', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
                     </tr>
                 </table>
                 <?php submit_button(); ?>
             </form>
+            <p>
+                <?php wp_nonce_field('potogh_test_connection', 'potogh_test_connection_nonce'); ?>
+                <button type="button" class="button" id="potogh-test-connection">
+                    <?php esc_html_e('Test connection', 'post-to-github-md'); ?>
+                </button>
+                <span id="potogh-test-connection-result"></span>
+            </p>
         </div>
         <?php
+    }
+
+    public function handleAjaxTestConnection(): void
+    {
+        check_ajax_referer('potogh_test_connection', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+        }
+
+        $defaults = self::defaults();
+        $sanitized = self::sanitize([
+            'token' => wp_unslash($_POST['token'] ?? ''),
+            'owner_repo' => wp_unslash($_POST['owner_repo'] ?? ''),
+            'branch' => wp_unslash($_POST['branch'] ?? ''),
+            'base_folder' => $defaults['base_folder'],
+        ]);
+
+        if ($sanitized['token'] === '' || $sanitized['owner_repo'] === '') {
+            wp_send_json_error(['message' => __('Enter both a token and a valid repository before testing the connection.', 'post-to-github-md')], 400);
+        }
+
+        $client = new GithubClient($sanitized['token'], $sanitized['owner_repo'], $sanitized['branch']);
+        $result = $client->testConnection();
+
+        if (!$result['success']) {
+            wp_send_json_error(['message' => $result['message']], 400);
+        }
+
+        wp_send_json_success(['message' => $result['message']]);
     }
 }

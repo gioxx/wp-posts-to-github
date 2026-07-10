@@ -22,11 +22,13 @@ class Metabox
 
         wp_nonce_field('potogh_export_' . $post->ID, 'potogh_export_nonce');
         ?>
-        <p class="potogh-status" data-post-id="<?php echo esc_attr($post->ID); ?>">
-            <?php echo esc_html(self::statusLabel($status, $exportedAt)); ?>
+        <p class="potogh-status potogh-status-<?php echo esc_attr($status); ?>" data-post-id="<?php echo esc_attr($post->ID); ?>">
+            <span class="dashicons <?php echo esc_attr(self::statusIconClass($status)); ?>"></span>
+            <span class="potogh-status-text"><?php echo esc_html(self::statusLabel($status, $exportedAt)); ?></span>
         </p>
         <button type="button" class="button button-primary potogh-export-button" data-post-id="<?php echo esc_attr($post->ID); ?>">
-            <?php esc_html_e('Esporta su GitHub', 'post-to-github-md'); ?>
+            <span class="dashicons dashicons-cloud-upload"></span>
+            <?php esc_html_e('Export to GitHub', 'post-to-github-md'); ?>
         </button>
         <div class="potogh-export-message"></div>
         <ul class="potogh-export-trace"></ul>
@@ -37,11 +39,23 @@ class Metabox
     {
         switch ($status) {
             case ExportStatus::EXPORTED:
-                return sprintf(__('Esportato il %s', 'post-to-github-md'), $exportedAt);
+                return sprintf(__('Exported on %s', 'post-to-github-md'), $exportedAt);
             case ExportStatus::MODIFIED_SINCE_EXPORT:
-                return __("Modificato dopo l'ultima esportazione", 'post-to-github-md');
+                return __('Modified since last export', 'post-to-github-md');
             default:
-                return __('Mai esportato', 'post-to-github-md');
+                return __('Never exported', 'post-to-github-md');
+        }
+    }
+
+    public static function statusIconClass(string $status): string
+    {
+        switch ($status) {
+            case ExportStatus::EXPORTED:
+                return 'dashicons-yes-alt';
+            case ExportStatus::MODIFIED_SINCE_EXPORT:
+                return 'dashicons-warning';
+            default:
+                return 'dashicons-clock';
         }
     }
 
@@ -52,11 +66,11 @@ class Metabox
         check_ajax_referer('potogh_export_' . $postId, 'nonce');
 
         if (!current_user_can('edit_post', $postId)) {
-            wp_send_json_error(['message' => __('Permessi insufficienti.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configura prima PAT e repository nelle impostazioni del plugin.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
         }
 
         $result = export_post_by_id($postId);

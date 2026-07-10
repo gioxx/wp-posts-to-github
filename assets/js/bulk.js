@@ -43,9 +43,9 @@
 
         function next(index) {
             if (index >= ids.length) {
-                var summary = succeeded + ' post esportati con successo.';
+                var summary = potoghBulk.summarySucceeded.replace('%d', succeeded);
                 if (failed.length > 0) {
-                    summary += ' ' + failed.length + ' falliti: ' + failed.join('; ');
+                    summary += ' ' + potoghBulk.summaryFailed.replace('%d', failed.length) + ' ' + failed.join('; ');
                 }
                 $('#potogh-bulk-summary').text(summary);
                 $button.prop('disabled', false);
@@ -65,7 +65,7 @@
                 logTrace(postId, response.data.trace);
             }).fail(function (jqXHR) {
                 var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
-                var message = data && data.message ? data.message : 'errore di rete';
+                var message = data && data.message ? data.message : potoghBulk.networkError;
                 failed.push(postId + ': ' + message);
                 logTrace(postId, data ? data.trace : []);
             }).always(function () {

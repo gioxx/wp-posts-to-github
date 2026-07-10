@@ -70,6 +70,7 @@ class GithubClientTest extends TestCase
         Functions\when('is_wp_error')->justReturn(false);
         Functions\when('wp_remote_retrieve_response_code')->justReturn(409);
         Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'sha does not match']));
+        Functions\when('__')->returnArg(1);
 
         $client = new GithubClient('token', 'owner/repo', 'main');
         $result = $client->putFile('posts/2026/my-post.md', '# Hello', 'Export post: Hello (#1)', 'stale-sha');
@@ -77,7 +78,7 @@ class GithubClientTest extends TestCase
         $this->assertSame(
             [
                 'success' => false,
-                'error' => 'sha does not match (il file potrebbe essere stato modificato direttamente su GitHub: verifica il contenuto del repository prima di ri-esportare)',
+                'error' => 'sha does not match (the file may have been modified directly on GitHub: check the repository contents before re-exporting)',
                 'status' => 409,
             ],
             $result
@@ -145,6 +146,53 @@ class GithubClientTest extends TestCase
         $client = new GithubClient('token', 'owner/repo', 'main');
 
         $this->assertSame(['sha' => 'abc123'], $client->getFile('posts/2026/my-post.md'));
+    }
+
+    public function test_test_connection_succeeds_when_repo_and_branch_are_reachable(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\expect('wp_remote_get')->twice()->andReturn(['response' => ['code' => 200]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('wp_remote_retrieve_body')->justReturn('{}');
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->testConnection();
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function test_test_connection_fails_on_invalid_token(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\expect('wp_remote_get')->once()->andReturn(['response' => ['code' => 401]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(401);
+
+        $client = new GithubClient('bad-token', 'owner/repo', 'main');
+        $result = $client->testConnection();
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Invalid GitHub token.', $result['message']);
+    }
+
+    public function test_test_connection_fails_when_branch_not_found(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\expect('wp_remote_get')
+            ->twice()
+            ->andReturn(['response' => ['code' => 200]], ['response' => ['code' => 404]]);
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->justReturn('{}');
+
+        $client = new GithubClient('token', 'owner/repo', 'missing-branch');
+        $result = $client->testConnection();
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Branch "missing-branch" not found in repository.', $result['message']);
     }
 
     public function test_put_file_request_uses_put_method_and_correct_url(): void

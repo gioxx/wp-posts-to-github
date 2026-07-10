@@ -1,0 +1,179 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Post to GitHub Markdown package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Post to GitHub Markdown 1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-10 20:52+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: includes/BulkPage.php:10
+msgid "Bulk export to GitHub"
+msgstr ""
+
+#: includes/BulkPage.php:11
+msgid "Export to GitHub MD"
+msgstr ""
+
+#: includes/BulkPage.php:29
+msgid "Export posts to GitHub"
+msgstr ""
+
+#: includes/BulkPage.php:34
+msgid "Export selected"
+msgstr ""
+
+#: includes/BulkPage.php:41
+msgid "Title"
+msgstr ""
+
+#: includes/BulkPage.php:42
+msgid "Publish date"
+msgstr ""
+
+#: includes/BulkPage.php:43
+msgid "Export status"
+msgstr ""
+
+#: includes/BulkPage.php:74 includes/Metabox.php:69 includes/Settings.php:152
+msgid "Insufficient permissions."
+msgstr ""
+
+#: includes/BulkPage.php:78 includes/Metabox.php:73
+msgid "Configure the PAT and repository in the plugin settings first."
+msgstr ""
+
+#: includes/functions.php:40
+msgid "Post not found."
+msgstr ""
+
+#: includes/functions.php:44
+msgid "Only published posts can be exported."
+msgstr ""
+
+#: includes/functions.php:68
+msgid "Network error during export."
+msgstr ""
+
+#: includes/functions.php:76 includes/functions.php:89
+msgid "Network error."
+msgstr ""
+
+#: includes/functions.php:78
+#, php-format
+msgid "%d posts exported successfully."
+msgstr ""
+
+#: includes/functions.php:80
+#, php-format
+msgid "%d failed:"
+msgstr ""
+
+#: includes/functions.php:88
+msgid "Testing…"
+msgstr ""
+
+#: includes/GithubClient.php:54
+msgid "Invalid GitHub token."
+msgstr ""
+
+#: includes/GithubClient.php:58
+msgid "Repository not found or not accessible with this token."
+msgstr ""
+
+#: includes/GithubClient.php:63 includes/GithubClient.php:82
+#, php-format
+msgid "GitHub API error, HTTP %d."
+msgstr ""
+
+#: includes/GithubClient.php:78
+#, php-format
+msgid "Branch \"%s\" not found in repository."
+msgstr ""
+
+#: includes/GithubClient.php:85
+msgid "Connection successful: repository and branch are reachable."
+msgstr ""
+
+#: includes/GithubClient.php:122
+msgid ""
+"(the file may have been modified directly on GitHub: check the repository "
+"contents before re-exporting)"
+msgstr ""
+
+#: includes/Metabox.php:11 includes/Metabox.php:31
+msgid "Export to GitHub"
+msgstr ""
+
+#: includes/Metabox.php:42
+#, php-format
+msgid "Exported on %s"
+msgstr ""
+
+#: includes/Metabox.php:44
+msgid "Modified since last export"
+msgstr ""
+
+#: includes/Metabox.php:46
+msgid "Never exported"
+msgstr ""
+
+#: includes/Settings.php:64 includes/Settings.php:65 includes/Settings.php:86
+msgid "Post to GitHub MD"
+msgstr ""
+
+#: includes/Settings.php:91
+msgid "GitHub Personal Access Token"
+msgstr ""
+
+#: includes/Settings.php:98
+#, php-format
+msgid ""
+"A fine-grained or classic token with %s access to the target repository. "
+"Generate one at %s."
+msgstr ""
+
+#: includes/Settings.php:107
+msgid "Repository"
+msgstr ""
+
+#: includes/Settings.php:111
+msgid ""
+"Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
+"owner/repo)."
+msgstr ""
+
+#: includes/Settings.php:116
+msgid "Branch"
+msgstr ""
+
+#: includes/Settings.php:120
+msgid "The branch posts will be committed to (e.g. main)."
+msgstr ""
+
+#: includes/Settings.php:125
+msgid "Base folder"
+msgstr ""
+
+#: includes/Settings.php:129
+msgid "Repository folder posts are exported into (e.g. posts)."
+msgstr ""
+
+#: includes/Settings.php:139
+msgid "Test connection"
+msgstr ""
+
+#: includes/Settings.php:164
+msgid ""
+"Enter both a token and a valid repository before testing the connection."
+msgstr ""
