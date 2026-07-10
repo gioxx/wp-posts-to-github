@@ -53,6 +53,27 @@
     padding: 1px 4px;
 }
 
+.potogh-credits {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    max-width: 600px;
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid #dcdcde;
+}
+
+.potogh-credits-mascot {
+    flex-shrink: 0;
+    width: 100px;
+    height: auto;
+}
+
+.potogh-credits .description {
+    margin: 0;
+    color: #646970;
+}
+
 .potogh-bulk-footer {
     position: fixed;
     left: 0;

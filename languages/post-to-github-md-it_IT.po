@@ -3,9 +3,9 @@
 # This file is distributed under the same license as the Post to GitHub Markdown package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.6\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.7\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 22:06+0200\n"
+"POT-Creation-Date: 2026-07-10 22:15+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -155,43 +155,43 @@ msgstr "Stato export"
 msgid "No posts match the current filters."
 msgstr "Nessun post corrisponde ai filtri attuali."
 
-#: includes/ExportTab.php:210 includes/ExportTab.php:236
-#: includes/Metabox.php:80 includes/Settings.php:177 includes/Settings.php:207
+#: includes/ExportTab.php:213 includes/ExportTab.php:239
+#: includes/Metabox.php:80 includes/Settings.php:197 includes/Settings.php:227
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
-#: includes/ExportTab.php:214 includes/Metabox.php:84
+#: includes/ExportTab.php:217 includes/Metabox.php:84
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 
-#: includes/ExportTab.php:412
+#: includes/ExportTab.php:415
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] "%d elemento"
 msgstr[1] "%d elementi"
 
-#: includes/ExportTab.php:420
+#: includes/ExportTab.php:423
 msgid "First page"
 msgstr "Prima pagina"
 
-#: includes/ExportTab.php:421
+#: includes/ExportTab.php:424
 msgid "Previous page"
 msgstr "Pagina precedente"
 
-#: includes/ExportTab.php:428
+#: includes/ExportTab.php:431
 msgid "Current Page"
 msgstr "Pagina corrente"
 
-#: includes/ExportTab.php:431
+#: includes/ExportTab.php:434
 msgid "of"
 msgstr "di"
 
-#: includes/ExportTab.php:435
+#: includes/ExportTab.php:438
 msgid "Next page"
 msgstr "Pagina successiva"
 
-#: includes/ExportTab.php:436
+#: includes/ExportTab.php:439
 msgid "Last page"
 msgstr "Ultima pagina"
 
@@ -304,11 +304,20 @@ msgstr "Cerchi la funzione di export dei post? Vai su %s."
 msgid "Posts &rsaquo; Export to GitHub"
 msgstr "Articoli &rsaquo; Esporta su GitHub"
 
-#: includes/Settings.php:113
+#: includes/Settings.php:115
+#, php-format
+msgid ""
+"Post to GitHub Markdown by Gioxx, source on %1$s. Mascot artwork: %2$s by "
+"GitHub, Inc."
+msgstr ""
+"Post to GitHub Markdown di Gioxx, sorgente su %1$s. Illustrazioni: %2$s di "
+"GitHub, Inc."
+
+#: includes/Settings.php:133
 msgid "GitHub Personal Access Token"
 msgstr "Token di accesso personale GitHub"
 
-#: includes/Settings.php:120
+#: includes/Settings.php:140
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
@@ -317,11 +326,11 @@ msgstr ""
 "Un token fine-grained o classico con accesso %s al repository di "
 "destinazione. Generane uno su %s."
 
-#: includes/Settings.php:129
+#: includes/Settings.php:149
 msgid "Repository"
 msgstr "Repository"
 
-#: includes/Settings.php:133
+#: includes/Settings.php:153
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
@@ -329,23 +338,23 @@ msgstr ""
 "Inserisci \"owner/repo\" oppure l'URL completo di GitHub (es. https://"
 "github.com/owner/repo)."
 
-#: includes/Settings.php:138
+#: includes/Settings.php:158
 msgid "Branch"
 msgstr "Branch"
 
-#: includes/Settings.php:141
+#: includes/Settings.php:161
 msgid "Detect from repository"
 msgstr "Rileva dal repository"
 
-#: includes/Settings.php:144
+#: includes/Settings.php:164
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr "Il branch su cui verranno pubblicati i post (es. main)."
 
-#: includes/Settings.php:149
+#: includes/Settings.php:169
 msgid "Base folder"
 msgstr "Cartella base"
 
-#: includes/Settings.php:153
+#: includes/Settings.php:173
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
@@ -353,22 +362,22 @@ msgstr ""
 "Cartella del repository in cui vengono esportati i post (es. posts). Se "
 "lasciata vuota, viene usata \"posts\" come predefinita."
 
-#: includes/Settings.php:161
+#: includes/Settings.php:181
 msgid "Test connection"
 msgstr "Verifica connessione"
 
-#: includes/Settings.php:164
+#: includes/Settings.php:184
 msgid "Save Changes"
 msgstr "Salva modifiche"
 
-#: includes/Settings.php:189
+#: includes/Settings.php:209
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 "Inserisci sia un token che un repository valido prima di verificare la "
 "connessione."
 
-#: includes/Settings.php:219
+#: includes/Settings.php:239
 msgid "Enter both a token and a valid repository first."
 msgstr "Inserisci sia un token che un repository valido."
 

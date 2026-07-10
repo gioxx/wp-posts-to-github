@@ -199,7 +199,7 @@ class ExportTab
             </div>
             <div class="potogh-bulk-footer-body">
                 <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
-                <img src="https://octodex.github.com/images/hula_loop_octodex03.gif" alt="" aria-hidden="true" class="potogh-bulk-mascot">
+                <img src="<?php echo esc_url(POTOGH_PLUGIN_URL . 'assets/images/hulatocat.gif'); ?>" alt="" aria-hidden="true" class="potogh-bulk-mascot">
             </div>
         </div>
         <?php
