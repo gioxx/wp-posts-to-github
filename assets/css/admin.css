@@ -78,32 +78,39 @@
     font-weight: 600;
 }
 
-.potogh-filters {
+.potogh-export-tab .alignleft.actions {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
-    margin: 12px 0;
+    gap: 6px;
 }
 
-.potogh-filters select,
-.potogh-filters input[type="search"] {
+.potogh-export-tab .alignleft.actions select,
+.potogh-export-tab .search-box input[type="search"] {
     max-width: 160px;
 }
 
-.tablenav-pages {
-    margin: 8px 0;
-    text-align: right;
+#potogh-selection-summary {
+    min-height: 1.5em;
 }
 
-.tablenav-pages .displaying-num {
-    margin-right: 10px;
-    color: #646970;
+#potogh-select-all-matching-btn,
+#potogh-clear-selection-btn {
+    margin-left: 6px;
 }
 
 .potogh-export-table.wp-list-table th.check-column,
 .potogh-export-table.wp-list-table td.check-column {
     width: 2.2em;
+    padding: 8px 0 0;
+    text-align: center;
+    vertical-align: top;
+}
+
+.potogh-export-table.wp-list-table th.check-column input[type="checkbox"],
+.potogh-export-table.wp-list-table td.check-column input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
 }
 
 .potogh-export-table .column-title {
@@ -152,7 +159,7 @@
     font-size: 12px;
 }
 
-body.potogh-exporting .potogh-filters,
+body.potogh-exporting .potogh-filters-form,
 body.potogh-exporting .tablenav-pages {
     opacity: 0.6;
 }

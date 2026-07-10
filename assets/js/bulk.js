@@ -6,7 +6,7 @@
     var suppressChange = false;
 
     function currentFilterParams() {
-        var $form = $('.potogh-filters');
+        var $form = $('.potogh-filters-form');
 
         return {
             status: $form.find('[name="status"]').val() || '',
@@ -17,19 +17,40 @@
         };
     }
 
+    function totalMatching() {
+        return parseInt($('.potogh-export-tab').data('total'), 10) || 0;
+    }
+
     function updateSelectionUi() {
         var $button = $('#potogh-bulk-export-selected');
         var $count = $('#potogh-selection-count');
+        var $selectAllBtn = $('#potogh-select-all-matching-btn');
+        var $clearBtn = $('#potogh-clear-selection-btn');
         var count = selectedIds.length;
+        var total = totalMatching();
 
         $button.prop('disabled', count === 0);
 
         if (count === 0) {
             $count.text('');
-        } else if (selectAllMatching) {
+            $selectAllBtn.prop('hidden', true);
+            $clearBtn.prop('hidden', true);
+            return;
+        }
+
+        if (selectAllMatching) {
             $count.text(potoghBulk.selectionCount.replace('%d', count));
+            $selectAllBtn.prop('hidden', true);
+            $clearBtn.prop('hidden', false);
         } else {
             $count.text(count + ' ' + potoghBulk.selectedLabel);
+            $clearBtn.prop('hidden', false);
+
+            if (total > count) {
+                $selectAllBtn.text(potoghBulk.selectAllMatching.replace('%d', total)).prop('hidden', false);
+            } else {
+                $selectAllBtn.prop('hidden', true);
+            }
         }
     }
 
@@ -43,6 +64,16 @@
         selectAllMatching = false;
         selectedIds = pageCheckedIds();
         suppressChange = true;
+        $('#potogh-select-all').prop('checked', selectedIds.length > 0 && selectedIds.length === $('.potogh-post-checkbox').length);
+        suppressChange = false;
+        updateSelectionUi();
+    }
+
+    function clearSelection() {
+        selectAllMatching = false;
+        selectedIds = [];
+        suppressChange = true;
+        $('.potogh-post-checkbox').prop('checked', false);
         $('#potogh-select-all').prop('checked', false);
         suppressChange = false;
         updateSelectionUi();
@@ -63,12 +94,7 @@
         var checked = $(this).is(':checked');
 
         if (!checked) {
-            selectAllMatching = false;
-            selectedIds = [];
-            suppressChange = true;
-            $('.potogh-post-checkbox').prop('checked', false);
-            suppressChange = false;
-            updateSelectionUi();
+            clearSelection();
             return;
         }
 
@@ -76,6 +102,12 @@
         $('.potogh-post-checkbox').prop('checked', true);
         suppressChange = false;
 
+        selectAllMatching = false;
+        selectedIds = pageCheckedIds();
+        updateSelectionUi();
+    });
+
+    $('#potogh-select-all-matching-btn').on('click', function () {
         $.post(potoghBulk.ajaxUrl, $.extend({
             action: 'potogh_get_filtered_ids',
             nonce: $('.potogh-export-tab').data('nonce')
@@ -86,6 +118,10 @@
                 updateSelectionUi();
             }
         });
+    });
+
+    $('#potogh-clear-selection-btn').on('click', function () {
+        clearSelection();
     });
 
     function exportOne(postId, nonce) {
@@ -109,7 +145,7 @@
     }
 
     function setExporting(exporting) {
-        $('.potogh-filters :input').prop('disabled', exporting);
+        $('.potogh-filters-form :input').prop('disabled', exporting);
         $('.tablenav-pages a').css('pointer-events', exporting ? 'none' : '');
         $('body').toggleClass('potogh-exporting', exporting);
     }

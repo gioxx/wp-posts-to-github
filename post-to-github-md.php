@@ -3,7 +3,7 @@
  * Plugin Name: Post to GitHub Markdown
  * Plugin URI: https://github.com/gioxx/wp-post-to-github-md
  * Description: Export published posts as Markdown files to a private GitHub repository.
- * Version: 1.2.1
+ * Version: 1.2.2
  * Requires PHP: 7.4
  * Requires at least: 6.0
  * Author: Gioxx
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('POTOGH_VERSION', '1.2.1');
+define('POTOGH_VERSION', '1.2.2');
 define('POTOGH_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('POTOGH_PLUGIN_URL', plugin_dir_url(__FILE__));
 
@@ -39,6 +39,7 @@ add_action('plugins_loaded', function () {
     add_action('wp_ajax_potogh_export_post', [$metabox, 'handleAjaxExport']);
 
     $exportTab = new \POTOGH\ExportTab();
+    add_action('admin_menu', [$exportTab, 'registerPage']);
     add_action('wp_ajax_potogh_bulk_export_one', [$exportTab, 'handleAjaxExportOne']);
     add_action('wp_ajax_potogh_get_filtered_ids', [$exportTab, 'handleAjaxGetFilteredIds']);
 

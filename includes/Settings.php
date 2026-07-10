@@ -69,6 +69,11 @@ class Settings
         );
     }
 
+    public static function pageUrl(): string
+    {
+        return admin_url('options-general.php?page=potogh-settings');
+    }
+
     public function registerSetting(): void
     {
         register_setting('potogh_settings_group', self::OPTION_NAME, [
@@ -80,35 +85,24 @@ class Settings
 
     public function renderPage(): void
     {
-        $tab = $this->currentTab();
         ?>
         <div class="wrap potogh-settings">
             <h1><?php echo esc_html__('Post to GitHub MD', 'post-to-github-md'); ?></h1>
-            <h2 class="nav-tab-wrapper">
-                <a href="<?php echo esc_url(add_query_arg(['page' => 'potogh-settings', 'tab' => 'settings'], admin_url('options-general.php'))); ?>" class="nav-tab <?php echo $tab === 'settings' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Settings', 'post-to-github-md'); ?>
-                </a>
-                <a href="<?php echo esc_url(add_query_arg(['page' => 'potogh-settings', 'tab' => 'export'], admin_url('options-general.php'))); ?>" class="nav-tab <?php echo $tab === 'export' ? 'nav-tab-active' : ''; ?>">
-                    <?php esc_html_e('Export posts', 'post-to-github-md'); ?>
-                </a>
-            </h2>
-            <?php if ($tab === 'export') : ?>
-                <?php (new ExportTab())->render(); ?>
-            <?php else : ?>
-                <?php $this->renderSettingsTab(); ?>
-            <?php endif; ?>
+            <p>
+                <?php
+                printf(
+                    /* translators: %s: link to the Export posts screen under the Posts menu */
+                    esc_html__('Looking to export posts? Head over to %s.', 'post-to-github-md'),
+                    '<a href="' . esc_url(ExportTab::pageUrl()) . '">' . esc_html__('Posts &rsaquo; Export to GitHub', 'post-to-github-md') . '</a>'
+                );
+                ?>
+            </p>
+            <?php $this->renderSettingsForm(); ?>
         </div>
         <?php
     }
 
-    private function currentTab(): string
-    {
-        $tab = sanitize_key($_GET['tab'] ?? 'settings');
-
-        return $tab === 'export' ? 'export' : 'settings';
-    }
-
-    private function renderSettingsTab(): void
+    private function renderSettingsForm(): void
     {
         $settings = self::get();
         ?>

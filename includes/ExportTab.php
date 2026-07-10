@@ -8,6 +8,32 @@ class ExportTab
     private const DEFAULT_PER_PAGE = 25;
     private const PER_PAGE_META_KEY = 'potogh_export_per_page';
 
+    public function registerPage(): void
+    {
+        add_posts_page(
+            __('Export to GitHub', 'post-to-github-md'),
+            __('Export to GitHub', 'post-to-github-md'),
+            'manage_options',
+            'potogh-export',
+            [$this, 'renderPage']
+        );
+    }
+
+    public static function pageUrl(): string
+    {
+        return admin_url('edit.php?page=potogh-export');
+    }
+
+    public function renderPage(): void
+    {
+        ?>
+        <div class="wrap potogh-settings">
+            <h1><?php echo esc_html__('Export posts to GitHub', 'post-to-github-md'); ?></h1>
+            <?php $this->render(); ?>
+        </div>
+        <?php
+    }
+
     public function render(): void
     {
         $perPage = $this->resolvePerPage();
@@ -20,70 +46,85 @@ class ExportTab
         $totalPages = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $nonce = wp_create_nonce('potogh_bulk_export');
         ?>
-        <div class="potogh-export-tab" data-nonce="<?php echo esc_attr($nonce); ?>">
+        <div class="potogh-export-tab" data-nonce="<?php echo esc_attr($nonce); ?>" data-total="<?php echo esc_attr($total); ?>">
             <?php wp_nonce_field('potogh_bulk_export', 'potogh_bulk_nonce'); ?>
 
-            <form method="get" class="potogh-filters">
-                <input type="hidden" name="page" value="potogh-settings">
-                <input type="hidden" name="tab" value="export">
+            <form method="get" action="<?php echo esc_url(admin_url('edit.php')); ?>" class="potogh-filters-form">
+                <input type="hidden" name="page" value="potogh-export">
 
-                <select name="status">
-                    <option value=""><?php esc_html_e('All statuses', 'post-to-github-md'); ?></option>
-                    <option value="<?php echo esc_attr(ExportStatus::NEVER_EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::NEVER_EXPORTED); ?>><?php esc_html_e('Never exported', 'post-to-github-md'); ?></option>
-                    <option value="<?php echo esc_attr(ExportStatus::EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::EXPORTED); ?>><?php esc_html_e('Exported', 'post-to-github-md'); ?></option>
-                    <option value="<?php echo esc_attr(ExportStatus::MODIFIED_SINCE_EXPORT); ?>" <?php selected($filters['status'], ExportStatus::MODIFIED_SINCE_EXPORT); ?>><?php esc_html_e('Modified since export', 'post-to-github-md'); ?></option>
-                </select>
+                <p class="search-box">
+                    <label class="screen-reader-text" for="potogh-search-input"><?php esc_html_e('Search posts:', 'post-to-github-md'); ?></label>
+                    <input type="search" id="potogh-search-input" name="s" value="<?php echo esc_attr($filters['search']); ?>" placeholder="<?php esc_attr_e('Search title…', 'post-to-github-md'); ?>">
+                    <input type="submit" class="button" value="<?php esc_attr_e('Search Posts', 'post-to-github-md'); ?>">
+                </p>
 
-                <input type="search" name="s" value="<?php echo esc_attr($filters['search']); ?>" placeholder="<?php esc_attr_e('Search title…', 'post-to-github-md'); ?>">
+                <div class="tablenav top">
+                    <div class="alignleft actions bulkactions">
+                        <button type="button" class="button button-primary" id="potogh-bulk-export-selected" disabled>
+                            <span class="dashicons dashicons-cloud-upload"></span>
+                            <?php esc_html_e('Export selected', 'post-to-github-md'); ?>
+                        </button>
+                    </div>
 
-                <?php
-                wp_dropdown_categories([
-                    'name' => 'category',
-                    'show_option_all' => __('All categories', 'post-to-github-md'),
-                    'hide_empty' => false,
-                    'selected' => $filters['category'],
-                ]);
-                ?>
+                    <div class="alignleft actions">
+                        <select name="status">
+                            <option value=""><?php esc_html_e('All statuses', 'post-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(ExportStatus::NEVER_EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::NEVER_EXPORTED); ?>><?php esc_html_e('Never exported', 'post-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(ExportStatus::EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::EXPORTED); ?>><?php esc_html_e('Exported', 'post-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(ExportStatus::MODIFIED_SINCE_EXPORT); ?>" <?php selected($filters['status'], ExportStatus::MODIFIED_SINCE_EXPORT); ?>><?php esc_html_e('Modified since export', 'post-to-github-md'); ?></option>
+                        </select>
 
-                <select name="tag">
-                    <option value=""><?php esc_html_e('All tags', 'post-to-github-md'); ?></option>
-                    <?php foreach (get_tags(['hide_empty' => false]) as $tag) : ?>
-                        <option value="<?php echo esc_attr($tag->slug); ?>" <?php selected($filters['tag'], $tag->slug); ?>><?php echo esc_html($tag->name); ?></option>
-                    <?php endforeach; ?>
-                </select>
+                        <?php
+                        wp_dropdown_categories([
+                            'name' => 'category',
+                            'show_option_all' => __('All categories', 'post-to-github-md'),
+                            'hide_empty' => false,
+                            'selected' => $filters['category'],
+                        ]);
+                        ?>
 
-                <select name="m">
-                    <option value=""><?php esc_html_e('All dates', 'post-to-github-md'); ?></option>
-                    <?php foreach ($this->availableMonths() as $month) : ?>
-                        <option value="<?php echo esc_attr($month['value']); ?>" <?php selected($filters['month'], $month['value']); ?>><?php echo esc_html($month['label']); ?></option>
-                    <?php endforeach; ?>
-                </select>
+                        <select name="tag">
+                            <option value=""><?php esc_html_e('All tags', 'post-to-github-md'); ?></option>
+                            <?php foreach (get_tags(['hide_empty' => false]) as $tag) : ?>
+                                <option value="<?php echo esc_attr($tag->slug); ?>" <?php selected($filters['tag'], $tag->slug); ?>><?php echo esc_html($tag->name); ?></option>
+                            <?php endforeach; ?>
+                        </select>
 
-                <select name="per_page" onchange="this.form.submit()">
-                    <?php foreach (self::PER_PAGE_OPTIONS as $option) : ?>
-                        <option value="<?php echo esc_attr($option); ?>" <?php selected($perPage, $option); ?>>
-                            <?php echo esc_html(sprintf(__('%d per page', 'post-to-github-md'), $option)); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+                        <select name="m">
+                            <option value=""><?php esc_html_e('All dates', 'post-to-github-md'); ?></option>
+                            <?php foreach ($this->availableMonths() as $month) : ?>
+                                <option value="<?php echo esc_attr($month['value']); ?>" <?php selected($filters['month'], $month['value']); ?>><?php echo esc_html($month['label']); ?></option>
+                            <?php endforeach; ?>
+                        </select>
 
-                <button type="submit" class="button"><?php esc_html_e('Filter', 'post-to-github-md'); ?></button>
-            </form>
+                        <select name="per_page" onchange="this.form.submit()">
+                            <?php foreach (self::PER_PAGE_OPTIONS as $option) : ?>
+                                <option value="<?php echo esc_attr($option); ?>" <?php selected($perPage, $option); ?>>
+                                    <?php echo esc_html(sprintf(__('%d per page', 'post-to-github-md'), $option)); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
 
-            <p>
-                <button type="button" class="button button-primary" id="potogh-bulk-export-selected" disabled>
-                    <span class="dashicons dashicons-cloud-upload"></span>
-                    <?php esc_html_e('Export selected', 'post-to-github-md'); ?>
-                </button>
+                        <button type="submit" class="button"><?php esc_html_e('Filter', 'post-to-github-md'); ?></button>
+                    </div>
+
+                    <?php $this->renderPagination($paged, $totalPages, $total); ?>
+                    <br class="clear">
+                </div>
+
+            <p id="potogh-selection-summary">
                 <span id="potogh-selection-count"></span>
+                <button type="button" class="button-link" id="potogh-select-all-matching-btn" hidden></button>
+                <button type="button" class="button-link" id="potogh-clear-selection-btn" hidden><?php esc_html_e('Clear selection', 'post-to-github-md'); ?></button>
             </p>
-
-            <?php $this->renderPagination($paged, $totalPages, $total, $filters, $perPage); ?>
 
             <table class="wp-list-table widefat fixed striped potogh-export-table">
                 <thead>
                     <tr>
-                        <th scope="col" id="cb" class="manage-column column-cb check-column"><input type="checkbox" id="potogh-select-all"></th>
+                        <th scope="col" id="cb" class="manage-column column-cb check-column">
+                            <label class="screen-reader-text" for="potogh-select-all"><?php esc_html_e('Select all', 'post-to-github-md'); ?></label>
+                            <input type="checkbox" id="potogh-select-all">
+                        </th>
                         <th scope="col" class="column-title"><?php esc_html_e('Title', 'post-to-github-md'); ?></th>
                         <th scope="col" class="column-categories"><?php esc_html_e('Categories', 'post-to-github-md'); ?></th>
                         <th scope="col" class="column-tags"><?php esc_html_e('Tags', 'post-to-github-md'); ?></th>
@@ -114,7 +155,11 @@ class ExportTab
                 </tbody>
             </table>
 
-            <?php $this->renderPagination($paged, $totalPages, $total, $filters, $perPage); ?>
+            <div class="tablenav bottom">
+                <?php $this->renderPagination($paged, $totalPages, $total); ?>
+                <br class="clear">
+            </div>
+            </form>
 
             <div id="potogh-bulk-progress" class="potogh-progress" hidden>
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
@@ -285,8 +330,7 @@ class ExportTab
     private function filterUrl(array $filters, int $perPage, array $overrides = []): string
     {
         $args = array_merge([
-            'page' => 'potogh-settings',
-            'tab' => 'export',
+            'page' => 'potogh-export',
             'status' => $filters['status'],
             's' => $filters['search'],
             'category' => $filters['category'] ?: null,
@@ -300,7 +344,7 @@ class ExportTab
             return $value !== null && $value !== '';
         });
 
-        return add_query_arg($args, admin_url('options-general.php'));
+        return add_query_arg($args, admin_url('edit.php'));
     }
 
     private function termLinks(array $terms, string $type, array $filters, int $perPage): string
@@ -322,26 +366,14 @@ class ExportTab
         return implode(', ', $links);
     }
 
-    private function renderPagination(int $paged, int $totalPages, int $total, array $filters, int $perPage): void
+    private static int $paginationInstance = 0;
+
+    private function renderPagination(int $paged, int $totalPages, int $total): void
     {
-        if ($totalPages <= 1) {
-            return;
-        }
+        $baseUrl = remove_query_arg('paged');
+        $uid = 'potogh-paging-' . ++self::$paginationInstance;
 
-        $baseArgs = array_filter([
-            'page' => 'potogh-settings',
-            'tab' => 'export',
-            'status' => $filters['status'],
-            's' => $filters['search'],
-            'category' => $filters['category'] ?: null,
-            'tag' => $filters['tag'],
-            'm' => $filters['month'],
-            'per_page' => $perPage,
-        ], static function ($value) {
-            return $value !== null && $value !== '';
-        });
-
-        echo '<div class="tablenav"><div class="tablenav-pages">';
+        echo '<div class="tablenav-pages">';
         printf(
             '<span class="displaying-num">%s</span>',
             esc_html(sprintf(
@@ -350,12 +382,48 @@ class ExportTab
                 $total
             ))
         );
-        echo wp_kses_post(paginate_links([
-            'base' => add_query_arg(array_merge($baseArgs, ['paged' => '%#%']), admin_url('options-general.php')),
-            'format' => '',
-            'current' => $paged,
-            'total' => $totalPages,
-        ]));
-        echo '</div></div>';
+
+        if ($totalPages > 1) {
+            echo '<span class="pagination-links">';
+
+            $this->renderPaginationLink($paged <= 1, 'first-page', esc_url(add_query_arg('paged', 1, $baseUrl)), '&laquo;', __('First page', 'post-to-github-md'));
+            $this->renderPaginationLink($paged <= 1, 'prev-page', esc_url(add_query_arg('paged', max(1, $paged - 1), $baseUrl)), '&lsaquo;', __('Previous page', 'post-to-github-md'));
+
+            printf(
+                '<span class="paging-input"><label for="%1$s-input" class="screen-reader-text">%2$s</label>' .
+                '<input class="current-page" id="%1$s-input" type="text" name="paged" value="%3$d" size="%4$d" aria-describedby="%1$s-text">' .
+                '<span class="tablenav-paging-text" id="%1$s-text"> %5$s <span class="total-pages">%6$d</span></span></span>',
+                esc_attr($uid),
+                esc_html__('Current Page', 'post-to-github-md'),
+                $paged,
+                max(1, strlen((string) $totalPages)),
+                esc_html__('of', 'post-to-github-md'),
+                $totalPages
+            );
+
+            $this->renderPaginationLink($paged >= $totalPages, 'next-page', esc_url(add_query_arg('paged', min($totalPages, $paged + 1), $baseUrl)), '&rsaquo;', __('Next page', 'post-to-github-md'));
+            $this->renderPaginationLink($paged >= $totalPages, 'last-page', esc_url(add_query_arg('paged', $totalPages, $baseUrl)), '&raquo;', __('Last page', 'post-to-github-md'));
+
+            echo '</span>';
+        }
+
+        echo '</div>';
+    }
+
+    private function renderPaginationLink(bool $disabled, string $class, string $url, string $glyph, string $label): void
+    {
+        if ($disabled) {
+            printf('<span class="tablenav-pages-navspan button disabled" aria-hidden="true">%s</span>', $glyph);
+
+            return;
+        }
+
+        printf(
+            '<a class="%s button" href="%s"><span class="screen-reader-text">%s</span><span aria-hidden="true">%s</span></a>',
+            esc_attr($class),
+            $url,
+            esc_html($label),
+            $glyph
+        );
     }
 }

@@ -24,16 +24,16 @@ L'interfaccia del plugin è in inglese di default; se il tuo WordPress è impost
 
 ## Configurazione
 
-Vai su **Impostazioni → Post to GitHub MD** (tab **Impostazioni**) e compila:
+Vai su **Impostazioni → Post to GitHub MD** e compila:
 
 | Campo | Descrizione | Esempio |
 |---|---|---|
 | **GitHub Personal Access Token** | Il PAT con accesso in scrittura al repository di destinazione. Non viene mai mostrato in chiaro altrove nel sito. | `ghp_xxxxxxxxxxxxxxxxxxxx` |
 | **Repository** | Il repository GitHub di destinazione: puoi inserire sia `owner/repo` sia l'URL completo (`https://github.com/owner/repo`). Il repository deve già esistere. | `tuonome/il-tuo-repo-privato` oppure `https://github.com/tuonome/il-tuo-repo-privato` |
-| **Branch** | Il branch su cui scrivere i file. | `main` |
-| **Base folder** | La cartella di primo livello nel repository dove salvare gli export. | `posts` |
+| **Branch** | Il branch su cui scrivere i file. Usa il pulsante **"Detect from repository"** per rilevarlo automaticamente dal branch predefinito del repository. | `main` |
+| **Base folder** | La cartella di primo livello nel repository dove salvare gli export. Se lasciata vuota, viene usata `posts` come predefinita. | `posts` |
 
-Ogni campo ha un testo di aiuto sotto l'input con indicazioni sul formato atteso. Dopo aver salvato (o anche prima, sui valori inseriti nel form), usa il pulsante **"Test connection"** per verificare che il token sia valido e che repository/branch siano raggiungibili: il controllo è di sola lettura, non scrive nulla sul repository.
+Ogni campo ha un testo di aiuto sotto l'input con indicazioni sul formato atteso. Il pulsante **"Save Changes"** resta disabilitato finché non esegui con successo **"Test connection"** sui valori attualmente nel form (controllo di sola lettura, non scrive nulla sul repository); ritoccare token, repository o branch lo ridisabilita finché non riesegui il test.
 
 Finché PAT e repository non sono configurati, il plugin blocca ogni tentativo di esportazione (sia dal singolo post che dall'export in blocco) mostrando un messaggio d'errore invece di tentare la chiamata a GitHub.
 
@@ -54,12 +54,11 @@ Se il post era già stato esportato in precedenza, il plugin aggiorna lo stesso 
 
 ## Come esportare più post insieme (bulk export)
 
-1. Vai su **Impostazioni → Post to GitHub MD**, tab **Esporta post**.
-2. Trovi l'elenco paginato degli articoli pubblicati, con una colonna di stato identica a quella del box nel singolo post.
-3. Usa i filtri sopra la tabella per restringere l'elenco: stato export e ricerca per titolo sono sempre visibili; clicca su **"Filtri avanzati"** per categoria, tag e mese/anno di pubblicazione. Filtrare ricarica la lista, come nella gestione articoli nativa di WordPress.
-4. Scegli quanti post mostrare per pagina dal menu a discesa (10/25/50/100): la scelta viene ricordata per le prossime visite.
-5. Seleziona i post da esportare, oppure spunta **"seleziona tutto"**: questo seleziona tutti i post che corrispondono ai filtri attivi, anche su pagine non ancora visitate, non solo quelli a schermo. Spuntare/togliere manualmente una singola riga dopo torna a una selezione libera sulla pagina corrente.
-6. Clicca **"Esporta selezionati"**. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi), mostrando una progress bar e un log in tempo reale ancorato in fondo alla pagina. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo.
+1. Vai su **Articoli → Export to GitHub**.
+2. Trovi l'elenco paginato degli articoli pubblicati, con colonne Categorie e Tag (ogni valore è un link che applica il filtro corrispondente) e una colonna di stato identica a quella del box nel singolo post.
+3. Usa i filtri sopra la tabella per restringere l'elenco: stato, ricerca, categoria, tag e mese di pubblicazione stanno tutti sulla stessa riga, più un menu a discesa per gli elementi per pagina (10/25/50/100, ricordato per le prossime visite). Filtrare ricarica la lista, come nella gestione articoli nativa di WordPress, con la paginazione mostrata sia sopra che sotto la tabella.
+4. Seleziona i post da esportare, oppure spunta la checkbox in testata per selezionare tutti quelli della pagina corrente. Se ci sono più post corrispondenti ai filtri di quelli a schermo, compare un link **"Select all N items matching this filter"** per estendere la selezione a tutte le pagine; **"Clear selection"** la azzera.
+5. Clicca **"Esporta selezionati"**. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi), mostrando una progress bar e un log in tempo reale ancorato in fondo alla pagina. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo.
 
 ## Dove finiscono i file su GitHub
 

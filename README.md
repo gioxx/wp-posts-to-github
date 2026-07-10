@@ -24,16 +24,16 @@ The plugin interface is in English by default; if your WordPress is set to Itali
 
 ## Configuration
 
-Go to **Settings → Post to GitHub MD** (the **Settings** tab) and fill in:
+Go to **Settings → Post to GitHub MD** and fill in:
 
 | Field | Description | Example |
 |---|---|---|
 | **GitHub Personal Access Token** | The PAT with write access to the target repository. Never displayed in plain text elsewhere on the site. | `ghp_xxxxxxxxxxxxxxxxxxxx` |
 | **Repository** | The target GitHub repository: enter either `owner/repo` or the full URL (`https://github.com/owner/repo`). The repository must already exist. | `yourname/your-private-repo` or `https://github.com/yourname/your-private-repo` |
-| **Branch** | The branch files are committed to. | `main` |
-| **Base folder** | The top-level repository folder exports are saved into. | `posts` |
+| **Branch** | The branch files are committed to. Use the **"Detect from repository"** button to auto-fill it with the repository's actual default branch. | `main` |
+| **Base folder** | The top-level repository folder exports are saved into. Left empty, it defaults to `posts`. | `posts` |
 
-Each field has a help text under the input describing the expected format. After saving (or even before, on the values currently in the form), use the **"Test connection"** button to verify the token is valid and the repository/branch are reachable: the check is read-only and never writes to the repository.
+Each field has a help text under the input describing the expected format. The **"Save Changes"** button stays disabled until you run **"Test connection"** successfully against the values currently in the form (read-only check, it never writes to the repository); editing the token, repository or branch again re-locks Save until you test once more.
 
 Until the PAT and repository are configured, the plugin blocks every export attempt (both single-post and bulk) and shows an error message instead of calling GitHub.
 
@@ -54,12 +54,11 @@ If the post was already exported before, the plugin updates the same file on Git
 
 ## Exporting multiple posts at once (bulk export)
 
-1. Go to **Settings → Post to GitHub MD → Export posts** tab.
-2. You'll see a paginated list of published posts, with a status column identical to the one in the single-post box.
-3. Use the filters above the table to narrow down the list: export status and a title search are always visible; click **"Advanced filters"** for category, tag and publish month/year. Filtering reloads the list, same as WordPress' own post list.
-4. Pick how many posts to show per page from the dropdown (10/25/50/100) — your choice is remembered for next time.
-5. Select the posts you want to export, or check **"select all"**: this selects every post matching the current filters, even on pages you haven't visited, not just the ones on screen. Manually checking or unchecking an individual row afterwards switches back to a plain per-page selection.
-6. Click **"Export selected"**. The plugin exports one post at a time (to avoid timeouts on long lists), showing a progress bar and a running log pinned to the bottom of the screen. At the end, a summary shows the number of successfully exported posts and any errors with their reason.
+1. Go to **Posts → Export to GitHub**.
+2. You'll see a paginated list of published posts, with Categories and Tags columns (each value links back into the filters) and a status column identical to the one in the single-post box.
+3. Use the filters above the table to narrow down the list: status, search, category, tag and publish month all sit on one row, plus a per-page dropdown (10/25/50/100, remembered for next time). Filtering reloads the list, same as WordPress' own post list, with pagination shown both above and below the table.
+4. Select the posts you want to export, or check the header checkbox to select everything on the current page. If more posts match your filters than are on screen, a **"Select all N items matching this filter"** link appears to extend the selection across every page; **"Clear selection"** resets it.
+5. Click **"Export selected"**. The plugin exports one post at a time (to avoid timeouts on long lists), showing a progress bar and a running log pinned to the bottom of the screen. At the end, a summary shows the number of successfully exported posts and any errors with their reason.
 
 ## Where files end up on GitHub
 
