@@ -1,8 +1,91 @@
 (function ($) {
     'use strict';
 
+    var selectedIds = [];
+    var selectAllMatching = false;
+    var suppressChange = false;
+
+    function currentFilterParams() {
+        var $form = $('.potogh-filters');
+
+        return {
+            status: $form.find('[name="status"]').val() || '',
+            s: $form.find('[name="s"]').val() || '',
+            category: $form.find('[name="category"]').val() || '',
+            tag: $form.find('[name="tag"]').val() || '',
+            m: $form.find('[name="m"]').val() || ''
+        };
+    }
+
+    function updateSelectionUi() {
+        var $button = $('#potogh-bulk-export-selected');
+        var $count = $('#potogh-selection-count');
+        var count = selectedIds.length;
+
+        $button.prop('disabled', count === 0);
+
+        if (count === 0) {
+            $count.text('');
+        } else if (selectAllMatching) {
+            $count.text(potoghBulk.selectionCount.replace('%d', count));
+        } else {
+            $count.text(count + ' ' + potoghBulk.selectedLabel);
+        }
+    }
+
+    function pageCheckedIds() {
+        return $('.potogh-post-checkbox:checked').map(function () {
+            return parseInt($(this).val(), 10);
+        }).get();
+    }
+
+    function resetToManualSelection() {
+        selectAllMatching = false;
+        selectedIds = pageCheckedIds();
+        suppressChange = true;
+        $('#potogh-select-all').prop('checked', false);
+        suppressChange = false;
+        updateSelectionUi();
+    }
+
+    $(document).on('change', '.potogh-post-checkbox', function () {
+        if (suppressChange) {
+            return;
+        }
+        resetToManualSelection();
+    });
+
     $('#potogh-select-all').on('change', function () {
-        $('.potogh-post-checkbox').prop('checked', $(this).is(':checked'));
+        if (suppressChange) {
+            return;
+        }
+
+        var checked = $(this).is(':checked');
+
+        if (!checked) {
+            selectAllMatching = false;
+            selectedIds = [];
+            suppressChange = true;
+            $('.potogh-post-checkbox').prop('checked', false);
+            suppressChange = false;
+            updateSelectionUi();
+            return;
+        }
+
+        suppressChange = true;
+        $('.potogh-post-checkbox').prop('checked', true);
+        suppressChange = false;
+
+        $.post(potoghBulk.ajaxUrl, $.extend({
+            action: 'potogh_get_filtered_ids',
+            nonce: $('.potogh-export-tab').data('nonce')
+        }, currentFilterParams())).done(function (response) {
+            if (response.success) {
+                selectAllMatching = true;
+                selectedIds = response.data.ids;
+                updateSelectionUi();
+            }
+        });
     });
 
     function exportOne(postId, nonce) {
@@ -25,19 +108,34 @@
         });
     }
 
+    function setExporting(exporting) {
+        $('.potogh-filters :input').prop('disabled', exporting);
+        $('.tablenav-pages a').css('pointer-events', exporting ? 'none' : '');
+        $('body').toggleClass('potogh-exporting', exporting);
+    }
+
+    function updateProgress(done, total) {
+        var $progress = $('#potogh-bulk-progress');
+        var percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+        $progress.prop('hidden', false);
+        $progress.find('.potogh-progress-fill').css('width', percent + '%');
+        $('#potogh-bulk-progress-text').text(done + '/' + total);
+    }
+
     $('#potogh-bulk-export-selected').on('click', function () {
-        var $button = $(this);
-        var nonce = $('#potogh_bulk_nonce').val();
-        var ids = $('.potogh-post-checkbox:checked').map(function () {
-            return $(this).val();
-        }).get();
+        var nonce = $('.potogh-export-tab').data('nonce');
+        var ids = selectedIds.slice();
 
         if (ids.length === 0) {
             return;
         }
 
-        $button.prop('disabled', true);
+        setExporting(true);
         $('#potogh-bulk-log').empty();
+        $('#potogh-bulk-summary').text('');
+        updateProgress(0, ids.length);
+
         var succeeded = 0;
         var failed = [];
 
@@ -48,7 +146,7 @@
                     summary += ' ' + potoghBulk.summaryFailed.replace('%d', failed.length) + ' ' + failed.join('; ');
                 }
                 $('#potogh-bulk-summary').text(summary);
-                $button.prop('disabled', false);
+                setExporting(false);
                 return;
             }
 
@@ -58,7 +156,7 @@
                 var $row = $('tr[data-post-id="' + postId + '"]');
                 if (response.success) {
                     succeeded++;
-                    $row.find('.potogh-status-cell').text(response.data.message);
+                    $row.find('.potogh-status-text').text(response.data.message);
                 } else {
                     failed.push(postId + ': ' + response.data.message);
                 }
@@ -69,6 +167,7 @@
                 failed.push(postId + ': ' + message);
                 logTrace(postId, data ? data.trace : []);
             }).always(function () {
+                updateProgress(index + 1, ids.length);
                 next(index + 1);
             });
         }

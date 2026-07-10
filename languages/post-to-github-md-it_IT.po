@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Post to GitHub Markdown 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 20:52+0200\n"
+"POT-Creation-Date: 2026-07-10 21:06+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -15,39 +15,77 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Domain: post-to-github-md\n"
 
-#: includes/BulkPage.php:10
-msgid "Bulk export to GitHub"
-msgstr "Esportazione massiva su GitHub"
+#: includes/ExportTab.php:31
+msgid "All statuses"
+msgstr "Tutti gli stati"
 
-#: includes/BulkPage.php:11
-msgid "Export to GitHub MD"
-msgstr "Esporta su GitHub MD"
+#: includes/ExportTab.php:32 includes/Metabox.php:46
+msgid "Never exported"
+msgstr "Mai esportato"
 
-#: includes/BulkPage.php:29
-msgid "Export posts to GitHub"
-msgstr "Esporta post su GitHub"
+#: includes/ExportTab.php:33
+msgid "Exported"
+msgstr "Esportato"
 
-#: includes/BulkPage.php:34
+#: includes/ExportTab.php:34
+msgid "Modified since export"
+msgstr "Modificato dopo export"
+
+#: includes/ExportTab.php:37
+msgid "Search title…"
+msgstr "Cerca per titolo…"
+
+#: includes/ExportTab.php:39
+msgid "Filter"
+msgstr "Filtra"
+
+#: includes/ExportTab.php:42
+msgid "Advanced filters"
+msgstr "Filtri avanzati"
+
+#: includes/ExportTab.php:47
+msgid "All categories"
+msgstr "Tutte le categorie"
+
+#: includes/ExportTab.php:54
+msgid "All tags"
+msgstr "Tutti i tag"
+
+#: includes/ExportTab.php:61
+msgid "All dates"
+msgstr "Tutte le date"
+
+#: includes/ExportTab.php:72
+#, php-format
+msgid "%d per page"
+msgstr "%d per pagina"
+
+#: includes/ExportTab.php:81
 msgid "Export selected"
 msgstr "Esporta selezionati"
 
-#: includes/BulkPage.php:41
+#: includes/ExportTab.php:90
 msgid "Title"
 msgstr "Titolo"
 
-#: includes/BulkPage.php:42
+#: includes/ExportTab.php:91
 msgid "Publish date"
 msgstr "Data pubblicazione"
 
-#: includes/BulkPage.php:43
+#: includes/ExportTab.php:92
 msgid "Export status"
 msgstr "Stato export"
 
-#: includes/BulkPage.php:74 includes/Metabox.php:69 includes/Settings.php:152
+#: includes/ExportTab.php:97
+msgid "No posts match the current filters."
+msgstr "Nessun post corrisponde ai filtri attuali."
+
+#: includes/ExportTab.php:133 includes/ExportTab.php:159
+#: includes/Metabox.php:69 includes/Settings.php:179
 msgid "Insufficient permissions."
 msgstr "Permessi insufficienti."
 
-#: includes/BulkPage.php:78 includes/Metabox.php:73
+#: includes/ExportTab.php:137 includes/Metabox.php:73
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr "Configura prima PAT e repository nelle impostazioni del plugin."
 
@@ -63,21 +101,30 @@ msgstr "Solo i post pubblicati possono essere esportati."
 msgid "Network error during export."
 msgstr "Errore di rete durante l'esportazione."
 
-#: includes/functions.php:76 includes/functions.php:89
+#: includes/functions.php:79 includes/functions.php:93
 msgid "Network error."
 msgstr "Errore di rete."
 
-#: includes/functions.php:78
+#: includes/functions.php:81
 #, php-format
 msgid "%d posts exported successfully."
 msgstr "%d post esportati con successo."
 
-#: includes/functions.php:80
+#: includes/functions.php:83
 #, php-format
 msgid "%d failed:"
 msgstr "%d falliti:"
 
-#: includes/functions.php:88
+#: includes/functions.php:85
+#, php-format
+msgid "%d posts selected (all pages)."
+msgstr "%d post selezionati (tutte le pagine)."
+
+#: includes/functions.php:86
+msgid "selected"
+msgstr "selezionati"
+
+#: includes/functions.php:92
 msgid "Testing…"
 msgstr "Verifica in corso…"
 
@@ -124,19 +171,23 @@ msgstr "Esportato il %s"
 msgid "Modified since last export"
 msgstr "Modificato dopo l'ultima esportazione"
 
-#: includes/Metabox.php:46
-msgid "Never exported"
-msgstr "Mai esportato"
-
 #: includes/Settings.php:64 includes/Settings.php:65 includes/Settings.php:86
 msgid "Post to GitHub MD"
 msgstr "Post to GitHub MD"
 
-#: includes/Settings.php:91
+#: includes/Settings.php:89
+msgid "Settings"
+msgstr "Impostazioni"
+
+#: includes/Settings.php:92
+msgid "Export posts"
+msgstr "Esporta post"
+
+#: includes/Settings.php:119
 msgid "GitHub Personal Access Token"
 msgstr "Token di accesso personale GitHub"
 
-#: includes/Settings.php:98
+#: includes/Settings.php:126
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
@@ -145,11 +196,11 @@ msgstr ""
 "Un token fine-grained o classico con accesso %s al repository di "
 "destinazione. Generane uno su %s."
 
-#: includes/Settings.php:107
+#: includes/Settings.php:135
 msgid "Repository"
 msgstr "Repository"
 
-#: includes/Settings.php:111
+#: includes/Settings.php:139
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
@@ -157,29 +208,38 @@ msgstr ""
 "Inserisci \"owner/repo\" oppure l'URL completo di GitHub (es. https://"
 "github.com/owner/repo)."
 
-#: includes/Settings.php:116
+#: includes/Settings.php:144
 msgid "Branch"
 msgstr "Branch"
 
-#: includes/Settings.php:120
+#: includes/Settings.php:148
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr "Il branch su cui verranno pubblicati i post (es. main)."
 
-#: includes/Settings.php:125
+#: includes/Settings.php:153
 msgid "Base folder"
 msgstr "Cartella base"
 
-#: includes/Settings.php:129
+#: includes/Settings.php:157
 msgid "Repository folder posts are exported into (e.g. posts)."
 msgstr "Cartella del repository in cui vengono esportati i post (es. posts)."
 
-#: includes/Settings.php:139
+#: includes/Settings.php:167
 msgid "Test connection"
 msgstr "Verifica connessione"
 
-#: includes/Settings.php:164
+#: includes/Settings.php:191
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 "Inserisci sia un token che un repository valido prima di verificare la "
 "connessione."
+
+#~ msgid "Bulk export to GitHub"
+#~ msgstr "Esportazione massiva su GitHub"
+
+#~ msgid "Export to GitHub MD"
+#~ msgstr "Esporta su GitHub MD"
+
+#~ msgid "Export posts to GitHub"
+#~ msgstr "Esporta post su GitHub"

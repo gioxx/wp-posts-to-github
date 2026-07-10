@@ -37,18 +37,80 @@
     padding: 1px 4px;
 }
 
-#potogh-bulk-log {
-    max-height: 260px;
+.potogh-bulk-log {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9999;
+    max-height: 200px;
     overflow-y: auto;
-    margin-top: 12px;
-    padding: 8px 12px;
-    background: #fff;
-    border: 1px solid #dcdcde;
+    padding: 8px 20px;
+    background: #1d2327;
+    color: #c3c4c7;
+    border-top: 1px solid #3c434a;
     font-family: Consolas, Monaco, monospace;
     font-size: 12px;
+}
+
+.potogh-bulk-log:empty {
+    display: none;
 }
 
 #potogh-bulk-summary {
     margin-top: 10px;
     font-weight: 600;
+}
+
+.potogh-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.potogh-advanced-filters {
+    width: 100%;
+}
+
+.potogh-advanced-filters summary {
+    cursor: pointer;
+    color: #2271b1;
+}
+
+.potogh-advanced-filters p {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 0;
+}
+
+.potogh-progress {
+    margin-top: 12px;
+}
+
+.potogh-progress-bar {
+    background: #dcdcde;
+    border-radius: 3px;
+    height: 14px;
+    overflow: hidden;
+}
+
+.potogh-progress-fill {
+    background: #2271b1;
+    height: 100%;
+    width: 0;
+    transition: width 0.2s ease;
+}
+
+#potogh-bulk-progress-text {
+    display: inline-block;
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+body.potogh-exporting .potogh-filters,
+body.potogh-exporting .tablenav-pages {
+    opacity: 0.6;
 }

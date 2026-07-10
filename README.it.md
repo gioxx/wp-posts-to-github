@@ -24,7 +24,7 @@ L'interfaccia del plugin è in inglese di default; se il tuo WordPress è impost
 
 ## Configurazione
 
-Vai su **Impostazioni → Post to GitHub MD** e compila:
+Vai su **Impostazioni → Post to GitHub MD** (tab **Impostazioni**) e compila:
 
 | Campo | Descrizione | Esempio |
 |---|---|---|
@@ -54,10 +54,12 @@ Se il post era già stato esportato in precedenza, il plugin aggiorna lo stesso 
 
 ## Come esportare più post insieme (bulk export)
 
-1. Vai su **Strumenti → Export to GitHub MD**.
-2. Trovi l'elenco di tutti gli articoli pubblicati, con una colonna di stato identica a quella del box nel singolo post.
-3. Seleziona i post che vuoi esportare (c'è anche una checkbox "seleziona tutto") e clicca **"Esporta selezionati"**.
-4. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi) e aggiorna via via lo stato di ogni riga. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo.
+1. Vai su **Impostazioni → Post to GitHub MD**, tab **Esporta post**.
+2. Trovi l'elenco paginato degli articoli pubblicati, con una colonna di stato identica a quella del box nel singolo post.
+3. Usa i filtri sopra la tabella per restringere l'elenco: stato export e ricerca per titolo sono sempre visibili; clicca su **"Filtri avanzati"** per categoria, tag e mese/anno di pubblicazione. Filtrare ricarica la lista, come nella gestione articoli nativa di WordPress.
+4. Scegli quanti post mostrare per pagina dal menu a discesa (10/25/50/100): la scelta viene ricordata per le prossime visite.
+5. Seleziona i post da esportare, oppure spunta **"seleziona tutto"**: questo seleziona tutti i post che corrispondono ai filtri attivi, anche su pagine non ancora visitate, non solo quelli a schermo. Spuntare/togliere manualmente una singola riga dopo torna a una selezione libera sulla pagina corrente.
+6. Clicca **"Esporta selezionati"**. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi), mostrando una progress bar e un log in tempo reale ancorato in fondo alla pagina. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo.
 
 ## Dove finiscono i file su GitHub
 

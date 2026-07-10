@@ -69,28 +69,33 @@ function enqueue_admin_assets(string $hook): void
         ]);
     }
 
-    if ($hook === 'tools_page_potogh-bulk-export') {
-        wp_enqueue_script('potogh-bulk', POTOGH_PLUGIN_URL . 'assets/js/bulk.js', ['jquery'], POTOGH_VERSION, true);
-        wp_localize_script('potogh-bulk', 'potoghBulk', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'networkError' => __('Network error.', 'post-to-github-md'),
-            /* translators: %d: number of successfully exported posts */
-            'summarySucceeded' => __('%d posts exported successfully.', 'post-to-github-md'),
-            /* translators: %d: number of failed exports */
-            'summaryFailed' => __('%d failed:', 'post-to-github-md'),
-        ]);
-    }
-
     if ($hook === 'settings_page_potogh-settings') {
-        wp_enqueue_script('potogh-settings', POTOGH_PLUGIN_URL . 'assets/js/settings.js', ['jquery'], POTOGH_VERSION, true);
-        wp_localize_script('potogh-settings', 'potoghSettings', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
-            'testing' => __('Testing…', 'post-to-github-md'),
-            'networkError' => __('Network error.', 'post-to-github-md'),
-        ]);
+        $tab = isset($_GET['tab']) && $_GET['tab'] === 'export' ? 'export' : 'settings';
+
+        if ($tab === 'export') {
+            wp_enqueue_script('potogh-bulk', POTOGH_PLUGIN_URL . 'assets/js/bulk.js', ['jquery'], POTOGH_VERSION, true);
+            wp_localize_script('potogh-bulk', 'potoghBulk', [
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'networkError' => __('Network error.', 'post-to-github-md'),
+                /* translators: %d: number of successfully exported posts */
+                'summarySucceeded' => __('%d posts exported successfully.', 'post-to-github-md'),
+                /* translators: %d: number of failed exports */
+                'summaryFailed' => __('%d failed:', 'post-to-github-md'),
+                /* translators: %d: number of posts selected across all pages */
+                'selectionCount' => __('%d posts selected (all pages).', 'post-to-github-md'),
+                'selectedLabel' => __('selected', 'post-to-github-md'),
+            ]);
+        } else {
+            wp_enqueue_script('potogh-settings', POTOGH_PLUGIN_URL . 'assets/js/settings.js', ['jquery'], POTOGH_VERSION, true);
+            wp_localize_script('potogh-settings', 'potoghSettings', [
+                'ajaxUrl' => admin_url('admin-ajax.php'),
+                'testing' => __('Testing…', 'post-to-github-md'),
+                'networkError' => __('Network error.', 'post-to-github-md'),
+            ]);
+        }
     }
 
-    if (in_array($hook, ['settings_page_potogh-settings', 'tools_page_potogh-bulk-export', 'post.php', 'post-new.php'], true)) {
+    if (in_array($hook, ['settings_page_potogh-settings', 'post.php', 'post-new.php'], true)) {
         wp_enqueue_style('potogh-admin', POTOGH_PLUGIN_URL . 'assets/css/admin.css', [], POTOGH_VERSION);
     }
 }

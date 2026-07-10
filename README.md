@@ -24,7 +24,7 @@ The plugin interface is in English by default; if your WordPress is set to Itali
 
 ## Configuration
 
-Go to **Settings → Post to GitHub MD** and fill in:
+Go to **Settings → Post to GitHub MD** (the **Settings** tab) and fill in:
 
 | Field | Description | Example |
 |---|---|---|
@@ -54,10 +54,12 @@ If the post was already exported before, the plugin updates the same file on Git
 
 ## Exporting multiple posts at once (bulk export)
 
-1. Go to **Tools → Export to GitHub MD**.
-2. You'll see a list of all published posts, with a status column identical to the one in the single-post box.
-3. Select the posts you want to export (there's also a "select all" checkbox) and click **"Export selected"**.
-4. The plugin exports one post at a time (to avoid timeouts on long lists) and updates each row's status as it goes. At the end, a summary shows the number of successfully exported posts and any errors with their reason.
+1. Go to **Settings → Post to GitHub MD → Export posts** tab.
+2. You'll see a paginated list of published posts, with a status column identical to the one in the single-post box.
+3. Use the filters above the table to narrow down the list: export status and a title search are always visible; click **"Advanced filters"** for category, tag and publish month/year. Filtering reloads the list, same as WordPress' own post list.
+4. Pick how many posts to show per page from the dropdown (10/25/50/100) — your choice is remembered for next time.
+5. Select the posts you want to export, or check **"select all"**: this selects every post matching the current filters, even on pages you haven't visited, not just the ones on screen. Manually checking or unchecking an individual row afterwards switches back to a plain per-page selection.
+6. Click **"Export selected"**. The plugin exports one post at a time (to avoid timeouts on long lists), showing a progress bar and a running log pinned to the bottom of the screen. At the end, a summary shows the number of successfully exported posts and any errors with their reason.
 
 ## Where files end up on GitHub
 

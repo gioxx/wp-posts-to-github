@@ -80,10 +80,38 @@ class Settings
 
     public function renderPage(): void
     {
-        $settings = self::get();
+        $tab = $this->currentTab();
         ?>
         <div class="wrap potogh-settings">
             <h1><?php echo esc_html__('Post to GitHub MD', 'post-to-github-md'); ?></h1>
+            <h2 class="nav-tab-wrapper">
+                <a href="<?php echo esc_url(add_query_arg(['page' => 'potogh-settings', 'tab' => 'settings'], admin_url('options-general.php'))); ?>" class="nav-tab <?php echo $tab === 'settings' ? 'nav-tab-active' : ''; ?>">
+                    <?php esc_html_e('Settings', 'post-to-github-md'); ?>
+                </a>
+                <a href="<?php echo esc_url(add_query_arg(['page' => 'potogh-settings', 'tab' => 'export'], admin_url('options-general.php'))); ?>" class="nav-tab <?php echo $tab === 'export' ? 'nav-tab-active' : ''; ?>">
+                    <?php esc_html_e('Export posts', 'post-to-github-md'); ?>
+                </a>
+            </h2>
+            <?php if ($tab === 'export') : ?>
+                <?php (new ExportTab())->render(); ?>
+            <?php else : ?>
+                <?php $this->renderSettingsTab(); ?>
+            <?php endif; ?>
+        </div>
+        <?php
+    }
+
+    private function currentTab(): string
+    {
+        $tab = sanitize_key($_GET['tab'] ?? 'settings');
+
+        return $tab === 'export' ? 'export' : 'settings';
+    }
+
+    private function renderSettingsTab(): void
+    {
+        $settings = self::get();
+        ?>
             <form method="post" action="options.php">
                 <?php settings_fields('potogh_settings_group'); ?>
                 <table class="form-table">
@@ -140,7 +168,6 @@ class Settings
                 </button>
                 <span id="potogh-test-connection-result"></span>
             </p>
-        </div>
         <?php
     }
 
