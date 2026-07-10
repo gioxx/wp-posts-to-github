@@ -145,6 +145,17 @@ class GithubClient
             return ['success' => true, 'sha' => $body['content']['sha'] ?? null];
         }
 
+        $retryAfter = $this->rateLimitRetryAfter($response, $code);
+
+        if ($retryAfter !== null) {
+            return [
+                'success' => false,
+                'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'post-to-github-md'), $retryAfter),
+                'status' => $code,
+                'retry_after' => $retryAfter,
+            ];
+        }
+
         $error = $body['message'] ?? ('GitHub API error, HTTP ' . $code);
 
         if ($code === 409) {
@@ -156,6 +167,28 @@ class GithubClient
             'error' => $error,
             'status' => $code,
         ];
+    }
+
+    private function rateLimitRetryAfter($response, int $code): ?int
+    {
+        if ($code !== 403 && $code !== 429) {
+            return null;
+        }
+
+        $retryAfterHeader = wp_remote_retrieve_header($response, 'retry-after');
+
+        if ($retryAfterHeader !== '' && $retryAfterHeader !== null) {
+            return max(1, (int) $retryAfterHeader);
+        }
+
+        $remaining = wp_remote_retrieve_header($response, 'x-ratelimit-remaining');
+        $reset = wp_remote_retrieve_header($response, 'x-ratelimit-reset');
+
+        if ($remaining === '0' && $reset !== '' && $reset !== null) {
+            return max(1, (int) $reset - time());
+        }
+
+        return null;
     }
 
     private function headers(): array

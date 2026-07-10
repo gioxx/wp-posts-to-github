@@ -74,15 +74,55 @@ function schedule_auto_export(string $newStatus, string $oldStatus, \WP_Post $po
     wp_schedule_single_event(time(), 'potogh_auto_export_event', [$post->ID]);
 }
 
+function schedule_auto_reexport(int $postId, \WP_Post $postAfter, \WP_Post $postBefore): void
+{
+    if ($postAfter->post_type !== 'post' || $postAfter->post_status !== 'publish' || $postBefore->post_status !== 'publish') {
+        return;
+    }
+
+    if (wp_is_post_autosave($postId) || wp_is_post_revision($postId)) {
+        return;
+    }
+
+    $settings = Settings::get();
+
+    if (empty($settings['auto_reexport'])) {
+        return;
+    }
+
+    wp_schedule_single_event(time(), 'potogh_auto_export_event', [$postId]);
+}
+
 function run_auto_export(int $postId): void
 {
     $settings = Settings::get();
 
-    if (empty($settings['auto_export']) || !Settings::isConfigured()) {
+    if ((empty($settings['auto_export']) && empty($settings['auto_reexport'])) || !Settings::isConfigured()) {
         return;
     }
 
     export_post_by_id($postId);
+}
+
+function uninstall_cleanup(): void
+{
+    $settings = Settings::get();
+
+    if (empty($settings['cleanup_on_uninstall'])) {
+        return;
+    }
+
+    delete_option(Settings::OPTION_NAME);
+
+    global $wpdb;
+
+    $wpdb->query(
+        "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_potogh_path', '_potogh_sha', '_potogh_exported_at')"
+    );
+
+    $wpdb->query(
+        $wpdb->prepare("DELETE FROM {$wpdb->usermeta} WHERE meta_key = %s", 'potogh_export_per_page')
+    );
 }
 
 function enqueue_admin_assets(string $hook): void
@@ -113,6 +153,8 @@ function enqueue_admin_assets(string $hook): void
             'stopping' => __('Stopping…', 'post-to-github-md'),
             /* translators: %d: number of posts left unprocessed after stopping */
             'summaryStopped' => __('Stopped: %d posts left unprocessed.', 'post-to-github-md'),
+            /* translators: %d: seconds to wait before retrying */
+            'rateLimitWait' => __('GitHub rate limit reached, waiting %d seconds before retrying...', 'post-to-github-md'),
         ]);
     }
 

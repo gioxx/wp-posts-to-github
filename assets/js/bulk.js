@@ -215,18 +215,60 @@
         }
     }
 
+    function logLine(text) {
+        var $log = $('#potogh-bulk-log');
+        $log.append($('<div>').text(text));
+        $log.scrollTop($log[0].scrollHeight);
+    }
+
     function logTrace(postId, lines) {
         if (!lines || !lines.length) {
             return;
         }
 
-        var $log = $('#potogh-bulk-log');
-
         $.each(lines, function (i, line) {
-            $log.append($('<div>').text('#' + postId + ': ' + line));
+            logLine('#' + postId + ': ' + line);
+        });
+    }
+
+    function attemptExport(postId, nonce) {
+        var deferred = $.Deferred();
+
+        exportOne(postId, nonce).done(function (response) {
+            deferred.resolve({
+                success: !!response.success,
+                message: response.data ? response.data.message : '',
+                trace: response.data ? response.data.trace : [],
+                retryAfter: response.data ? response.data.retry_after : null
+            });
+        }).fail(function (jqXHR) {
+            var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
+            deferred.resolve({
+                success: false,
+                message: data && data.message ? data.message : potoghBulk.networkError,
+                trace: data ? data.trace : [],
+                retryAfter: data ? data.retry_after : null
+            });
         });
 
-        $log.scrollTop($log[0].scrollHeight);
+        return deferred.promise();
+    }
+
+    function exportWithRetry(postId, nonce, retried) {
+        return attemptExport(postId, nonce).then(function (result) {
+            if (!result.success && !retried && result.retryAfter) {
+                var wait = Math.min(Math.max(parseInt(result.retryAfter, 10) || 0, 1), 60);
+                logLine('#' + postId + ': ' + potoghBulk.rateLimitWait.replace('%d', wait));
+
+                var deferred = $.Deferred();
+                window.setTimeout(function () {
+                    exportWithRetry(postId, nonce, true).then(deferred.resolve);
+                }, wait * 1000);
+                return deferred.promise();
+            }
+
+            return result;
+        });
     }
 
     function setExporting(exporting) {
@@ -284,20 +326,14 @@
 
             var postId = ids[index];
 
-            exportOne(postId, nonce).done(function (response) {
-                if (response.success) {
+            exportWithRetry(postId, nonce, false).then(function (result) {
+                if (result.success) {
                     succeeded++;
-                    markRowExported(postId, response.data.message);
+                    markRowExported(postId, result.message);
                 } else {
-                    failed.push(postId + ': ' + response.data.message);
+                    failed.push(postId + ': ' + result.message);
                 }
-                logTrace(postId, response.data.trace);
-            }).fail(function (jqXHR) {
-                var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
-                var message = data && data.message ? data.message : potoghBulk.networkError;
-                failed.push(postId + ': ' + message);
-                logTrace(postId, data ? data.trace : []);
-            }).always(function () {
+                logTrace(postId, result.trace);
                 updateProgress(index + 1, ids.length);
                 next(index + 1);
             });

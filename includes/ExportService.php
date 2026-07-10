@@ -46,7 +46,12 @@ class ExportService
         if (!$result['success']) {
             $trace[] = sprintf(__('Error from GitHub: %s', 'post-to-github-md'), $result['error']);
 
-            return ['success' => false, 'error' => $result['error'], 'trace' => $trace];
+            return [
+                'success' => false,
+                'error' => $result['error'],
+                'trace' => $trace,
+                'retry_after' => $result['retry_after'] ?? null,
+            ];
         }
 
         $trace[] = sprintf(__('File saved on GitHub (sha: %s).', 'post-to-github-md'), $result['sha']);

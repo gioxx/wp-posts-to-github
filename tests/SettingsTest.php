@@ -15,6 +15,8 @@ class SettingsTest extends TestCase
             'branch' => 'main',
             'base_folder' => 'posts',
             'auto_export' => false,
+            'auto_reexport' => false,
+            'cleanup_on_uninstall' => true,
         ], Settings::defaults());
     }
 
@@ -33,6 +35,8 @@ class SettingsTest extends TestCase
             'branch' => 'main',
             'base_folder' => 'posts',
             'auto_export' => false,
+            'auto_reexport' => false,
+            'cleanup_on_uninstall' => false,
         ], $result);
     }
 
@@ -47,6 +51,31 @@ class SettingsTest extends TestCase
         ]);
 
         $this->assertTrue($result['auto_export']);
+    }
+
+    public function test_sanitize_enables_auto_reexport_when_checkbox_present(): void
+    {
+        $result = Settings::sanitize([
+            'token' => 'ghp_abc123',
+            'owner_repo' => 'gioxx/blog-style-corpus',
+            'branch' => 'main',
+            'base_folder' => 'posts',
+            'auto_reexport' => '1',
+        ]);
+
+        $this->assertTrue($result['auto_reexport']);
+    }
+
+    public function test_sanitize_disables_cleanup_on_uninstall_when_checkbox_absent(): void
+    {
+        $result = Settings::sanitize([
+            'token' => 'ghp_abc123',
+            'owner_repo' => 'gioxx/blog-style-corpus',
+            'branch' => 'main',
+            'base_folder' => 'posts',
+        ]);
+
+        $this->assertFalse($result['cleanup_on_uninstall']);
     }
 
     public function test_sanitize_rejects_invalid_owner_repo_format(): void

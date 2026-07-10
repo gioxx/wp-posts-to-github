@@ -33,6 +33,8 @@ Go to **Settings → Post to GitHub MD** and fill in:
 | **Branch** | The branch files are committed to. Use the **"Detect from repository"** button to auto-fill it with the repository's actual default branch. | `main` |
 | **Base folder** | The top-level repository folder exports are saved into. Left empty, it defaults to `posts`. | `posts` |
 | **Automatic export** | When checked, newly published posts are exported automatically a few seconds after publishing, via WP-Cron, without delaying the Publish button. Off by default. Existing posts aren't affected retroactively — use the Export posts page for those. | — |
+| **Automatic re-export** | When checked, already-published posts are re-exported automatically a few seconds after being updated, same background behavior as automatic export. Off by default. | — |
+| **Uninstall** | When checked (default), deleting the plugin removes its settings and per-post export history from the database. Uncheck to keep that data if you plan to reinstall later. | — |
 
 Each field has a help text under the input describing the expected format. The **"Save Changes"** button stays disabled until you run **"Test connection"** successfully against the values currently in the form (read-only check, it never writes to the repository); editing the token, repository or branch again re-locks Save until you test once more.
 
@@ -59,7 +61,23 @@ If the post was already exported before, the plugin updates the same file on Git
 2. You'll see a paginated list of published posts, with Categories and Tags columns (each value links back into the filters) and a status column identical to the one in the single-post box.
 3. Use the filters above the table to narrow down the list: status, search, category, tag and publish month all sit on one row, plus a per-page dropdown (10/25/50/100, remembered for next time). Filtering reloads the list, same as WordPress' own post list, with pagination shown both above and below the table.
 4. Select the posts you want to export, or check the header checkbox to select everything on the current page. If more posts match your filters than are on screen, a **"Select all N items matching this filter"** link appears to extend the selection across every page; **"Clear selection"** resets it.
-5. Click **"Export selected"**. The plugin exports one post at a time (to avoid timeouts on long lists), showing a progress bar and a running log pinned to the bottom of the screen. At the end, a summary shows the number of successfully exported posts and any errors with their reason.
+5. Click **"Export selected"**. The plugin exports one post at a time (to avoid timeouts on long lists), showing a progress bar and a running log pinned to the bottom of the screen. At the end, a summary shows the number of successfully exported posts and any errors with their reason. If GitHub's rate limit is hit mid-run, the plugin automatically waits (reading the `Retry-After` / rate-limit reset time from GitHub's response) and retries the same post once before moving on.
+6. A **"Stop"** control appears above the log while an export is running: it lets the request currently in flight finish, then skips the rest instead of aborting mid-write.
+
+## Posts exported but no longer published
+
+The stat tiles above the table include **"Exported, no longer published"**: posts that were exported to GitHub at some point but are now a draft, pending, private, scheduled, or trashed in WordPress. Selecting that tile switches to a read-only list with a link to the post and a link to the corresponding file on GitHub. The plugin never deletes files from the repository automatically — if you want the file gone, do it manually on GitHub.
+
+## WP-CLI
+
+If [WP-CLI](https://wp-cli.org/) is available, the plugin registers two commands:
+
+```
+wp potogh export <post_id>
+wp potogh bulk-export [--status=<never_exported|exported|modified_since_export>] [--dry-run]
+```
+
+`bulk-export` without `--status` considers every published post; `--dry-run` lists what would be exported without exporting it.
 
 ## Where files end up on GitHub
 
@@ -99,12 +117,12 @@ The commit message generated for each export follows the format `Export post: {t
 - **"Configure the PAT and repository in the plugin settings first"**: the token or repository aren't set yet (or the format entered is invalid). Check the plugin settings, using the "Test connection" button to pinpoint the issue if needed.
 - **Authentication error / repository not found**: verify the PAT is valid, not expired, and has the correct permissions on the specified repository. The "Test connection" button distinguishes between the two cases.
 - **Conflict (409) during export**: this means the file on GitHub was modified or renamed directly in the repository after the last export from WordPress, and the reference saved by the plugin no longer matches the file's real state. Check the repository contents before re-exporting; if needed, manually verify the file on GitHub.
-- **GitHub rate limit**: if you export many posts in bulk and get a rate limit error, wait a few minutes and try again.
+- **GitHub rate limit**: bulk export waits and retries automatically once when GitHub reports a rate limit. If a post still fails afterward, wait a few minutes and export it again.
 - **A draft post doesn't show the export button, or export fails with "Only published posts can be exported"**: by design, only posts with "published" status can be exported.
 
 ## Known limitations (v1)
 
 - Only the `post` post type is supported (not pages or other custom content types).
-- No automatic sync on publish: export must always be triggered manually (single post or bulk).
 - No automatic repository creation: it must already exist before configuring the plugin.
 - No image upload or management: they remain absolute links to the source site.
+- No automatic deletion of files from GitHub when a post is unpublished or trashed (see "Posts exported but no longer published" above).

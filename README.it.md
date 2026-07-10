@@ -33,6 +33,8 @@ Vai su **Impostazioni → Post to GitHub MD** e compila:
 | **Branch** | Il branch su cui scrivere i file. Usa il pulsante **"Detect from repository"** per rilevarlo automaticamente dal branch predefinito del repository. | `main` |
 | **Base folder** | La cartella di primo livello nel repository dove salvare gli export. Se lasciata vuota, viene usata `posts` come predefinita. | `posts` |
 | **Export automatico** | Se spuntato, i nuovi post pubblicati vengono esportati automaticamente pochi secondi dopo la pubblicazione, via WP-Cron, senza rallentare il pulsante Pubblica. Disattivato di default. I post già esistenti non vengono toccati retroattivamente: usa la pagina Export posts per quelli. | — |
+| **Re-export automatico** | Se spuntato, i post già pubblicati vengono ri-esportati automaticamente pochi secondi dopo essere stati aggiornati, stesso comportamento in background dell'export automatico. Disattivato di default. | — |
+| **Disinstallazione** | Se spuntato (default), disinstallando il plugin vengono rimossi dal database impostazioni e cronologia export per post. Deseleziona per conservare quei dati se prevedi di reinstallarlo. | — |
 
 Ogni campo ha un testo di aiuto sotto l'input con indicazioni sul formato atteso. Il pulsante **"Save Changes"** resta disabilitato finché non esegui con successo **"Test connection"** sui valori attualmente nel form (controllo di sola lettura, non scrive nulla sul repository); ritoccare token, repository o branch lo ridisabilita finché non riesegui il test.
 
@@ -59,7 +61,23 @@ Se il post era già stato esportato in precedenza, il plugin aggiorna lo stesso 
 2. Trovi l'elenco paginato degli articoli pubblicati, con colonne Categorie e Tag (ogni valore è un link che applica il filtro corrispondente) e una colonna di stato identica a quella del box nel singolo post.
 3. Usa i filtri sopra la tabella per restringere l'elenco: stato, ricerca, categoria, tag e mese di pubblicazione stanno tutti sulla stessa riga, più un menu a discesa per gli elementi per pagina (10/25/50/100, ricordato per le prossime visite). Filtrare ricarica la lista, come nella gestione articoli nativa di WordPress, con la paginazione mostrata sia sopra che sotto la tabella.
 4. Seleziona i post da esportare, oppure spunta la checkbox in testata per selezionare tutti quelli della pagina corrente. Se ci sono più post corrispondenti ai filtri di quelli a schermo, compare un link **"Select all N items matching this filter"** per estendere la selezione a tutte le pagine; **"Clear selection"** la azzera.
-5. Clicca **"Esporta selezionati"**. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi), mostrando una progress bar e un log in tempo reale ancorato in fondo alla pagina. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo.
+5. Clicca **"Esporta selezionati"**. Il plugin esporta un post alla volta (per evitare timeout su elenchi lunghi), mostrando una progress bar e un log in tempo reale ancorato in fondo alla pagina. Al termine viene mostrato un riepilogo con il numero di post esportati con successo ed eventuali errori con il motivo. Se durante il run si incontra il rate limit di GitHub, il plugin attende automaticamente (leggendo `Retry-After`/il momento di reset del rate limit dalla risposta di GitHub) e ritenta una volta lo stesso post prima di proseguire.
+6. Durante l'export compare un controllo **"Stop"** sopra il log: lascia terminare la richiesta in corso e salta il resto invece di interrompere a metà scrittura.
+
+## Post esportati ma non più pubblicati
+
+I tile statistici sopra la tabella includono **"Exported, no longer published"**: post che sono stati esportati su GitHub in qualche momento ma che ora sono bozza, in attesa, privati, programmati o cestinati su WordPress. Selezionando quel tile si passa a un elenco di sola lettura con link al post e al relativo file su GitHub. Il plugin non cancella mai automaticamente i file dal repository: se vuoi eliminare il file, va fatto manualmente su GitHub.
+
+## WP-CLI
+
+Se [WP-CLI](https://wp-cli.org/) è disponibile, il plugin registra due comandi:
+
+```
+wp potogh export <post_id>
+wp potogh bulk-export [--status=<never_exported|exported|modified_since_export>] [--dry-run]
+```
+
+`bulk-export` senza `--status` considera tutti i post pubblicati; `--dry-run` elenca cosa verrebbe esportato senza esportarlo davvero.
 
 ## Dove finiscono i file su GitHub
 
@@ -99,12 +117,12 @@ Il messaggio di commit generato per ogni export è nel formato `Export post: {ti
 - **"Configura prima PAT e repository nelle impostazioni del plugin"**: il token o il repository non sono ancora impostati (o il formato inserito non è valido). Controlla le impostazioni del plugin, eventualmente usando il pulsante "Test connection" per capire cosa non va.
 - **Errore di autenticazione / repository non trovato**: verifica che il PAT sia valido, non scaduto, e abbia i permessi corretti sul repository indicato. Il pulsante "Test connection" distingue i due casi.
 - **Conflitto (409) durante l'export**: significa che il file su GitHub è stato modificato o rinominato direttamente dal repository dopo l'ultima esportazione da WordPress, e il riferimento salvato dal plugin non corrisponde più allo stato reale del file. Controlla il contenuto del repository prima di ri-esportare; se necessario, verifica manualmente il file su GitHub.
-- **Limite di rate GitHub**: se esporti molti post in blocco e ricevi un errore di rate limit, attendi qualche minuto e riprova.
+- **Limite di rate GitHub**: il bulk export attende e ritenta automaticamente una volta quando GitHub segnala un rate limit. Se un post fallisce comunque, attendi qualche minuto e riesportalo.
 - **Un post in bozza non mostra il pulsante di export, o l'export fallisce con "Solo i post pubblicati possono essere esportati"**: per scelta di progetto, solo gli articoli con stato "pubblicato" possono essere esportati.
 
 ## Limiti noti (v1)
 
 - Solo il post type `post` è supportato (non pagine o altri tipi di contenuto personalizzati).
-- Nessuna sincronizzazione automatica alla pubblicazione: l'export va sempre avviato manualmente (singolo post o bulk).
 - Nessuna creazione automatica del repository: deve già esistere prima di configurare il plugin.
 - Nessun upload o gestione delle immagini: restano link assoluti al sito di origine.
+- Nessuna cancellazione automatica dei file da GitHub quando un post viene messo in bozza o cestinato (vedi "Post esportati ma non più pubblicati" sopra).

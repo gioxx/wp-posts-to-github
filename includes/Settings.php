@@ -14,6 +14,8 @@ class Settings
             'branch' => 'main',
             'base_folder' => 'posts',
             'auto_export' => false,
+            'auto_reexport' => false,
+            'cleanup_on_uninstall' => true,
         ];
     }
 
@@ -26,6 +28,8 @@ class Settings
         $branch = trim($input['branch'] ?? '') ?: $defaults['branch'];
         $baseFolder = trim($input['base_folder'] ?? '', "/ \t\n\r\0\x0B") ?: $defaults['base_folder'];
         $autoExport = !empty($input['auto_export']);
+        $autoReexport = !empty($input['auto_reexport']);
+        $cleanupOnUninstall = !empty($input['cleanup_on_uninstall']);
 
         return [
             'token' => $token,
@@ -33,6 +37,8 @@ class Settings
             'branch' => $branch,
             'base_folder' => $baseFolder,
             'auto_export' => $autoExport,
+            'auto_reexport' => $autoReexport,
+            'cleanup_on_uninstall' => $cleanupOnUninstall,
         ];
     }
 
@@ -187,6 +193,30 @@ class Settings
                             </label>
                             <p class="description">
                                 <?php esc_html_e('Runs a few seconds after publishing via WP-Cron, without delaying the Publish button. Existing posts are not exported retroactively — use the Export posts page for those.', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php esc_html_e('Automatic re-export', 'post-to-github-md'); ?></th>
+                        <td>
+                            <label for="potogh_auto_reexport">
+                                <input type="checkbox" id="potogh_auto_reexport" name="<?php echo esc_attr(self::OPTION_NAME); ?>[auto_reexport]" value="1" <?php checked($settings['auto_reexport']); ?>>
+                                <?php esc_html_e('Automatically re-export already-published posts to GitHub when updated.', 'post-to-github-md'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('Same background behavior as automatic export, triggered on every update to a published post instead of only its first publish.', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php esc_html_e('Uninstall', 'post-to-github-md'); ?></th>
+                        <td>
+                            <label for="potogh_cleanup_on_uninstall">
+                                <input type="checkbox" id="potogh_cleanup_on_uninstall" name="<?php echo esc_attr(self::OPTION_NAME); ?>[cleanup_on_uninstall]" value="1" <?php checked($settings['cleanup_on_uninstall']); ?>>
+                                <?php esc_html_e('Remove all plugin settings and export data when this plugin is deleted.', 'post-to-github-md'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('Uncheck to keep your GitHub connection settings and per-post export history in the database if you delete the plugin (useful before reinstalling).', 'post-to-github-md'); ?>
                             </p>
                         </td>
                     </tr>

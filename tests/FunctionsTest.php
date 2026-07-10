@@ -193,6 +193,84 @@ class FunctionsTest extends TestCase
         $this->assertConditionsMet();
     }
 
+    public function test_schedule_auto_reexport_skips_when_not_already_published(): void
+    {
+        $before = new \WP_Post();
+        $before->post_status = 'draft';
+        $after = new \WP_Post();
+        $after->post_type = 'post';
+        $after->post_status = 'publish';
+
+        Functions\when('wp_is_post_autosave')->justReturn(false);
+        Functions\when('wp_is_post_revision')->justReturn(false);
+        Functions\expect('wp_schedule_single_event')->never();
+
+        \POTOGH\schedule_auto_reexport(9, $after, $before);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_schedule_auto_reexport_skips_autosaves_and_revisions(): void
+    {
+        $before = new \WP_Post();
+        $before->post_status = 'publish';
+        $after = new \WP_Post();
+        $after->post_type = 'post';
+        $after->post_status = 'publish';
+
+        Functions\when('wp_is_post_autosave')->justReturn(true);
+        Functions\when('wp_is_post_revision')->justReturn(false);
+        Functions\expect('wp_schedule_single_event')->never();
+
+        \POTOGH\schedule_auto_reexport(9, $after, $before);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_schedule_auto_reexport_skips_when_option_disabled(): void
+    {
+        $before = new \WP_Post();
+        $before->post_status = 'publish';
+        $after = new \WP_Post();
+        $after->post_type = 'post';
+        $after->post_status = 'publish';
+
+        Functions\when('wp_is_post_autosave')->justReturn(false);
+        Functions\when('wp_is_post_revision')->justReturn(false);
+        Functions\when('get_option')->justReturn(['auto_reexport' => false]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\expect('wp_schedule_single_event')->never();
+
+        \POTOGH\schedule_auto_reexport(9, $after, $before);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_schedule_auto_reexport_schedules_event_when_enabled(): void
+    {
+        $before = new \WP_Post();
+        $before->post_status = 'publish';
+        $after = new \WP_Post();
+        $after->post_type = 'post';
+        $after->post_status = 'publish';
+
+        Functions\when('wp_is_post_autosave')->justReturn(false);
+        Functions\when('wp_is_post_revision')->justReturn(false);
+        Functions\when('get_option')->justReturn(['auto_reexport' => true]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\expect('wp_schedule_single_event')
+            ->once()
+            ->with(\Mockery::type('int'), 'potogh_auto_export_event', [9]);
+
+        \POTOGH\schedule_auto_reexport(9, $after, $before);
+
+        $this->assertConditionsMet();
+    }
+
     public function test_run_auto_export_skips_when_option_disabled(): void
     {
         Functions\when('get_option')->justReturn(['auto_export' => false]);

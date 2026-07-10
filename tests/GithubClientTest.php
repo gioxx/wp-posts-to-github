@@ -85,6 +85,77 @@ class GithubClientTest extends TestCase
         );
     }
 
+    public function test_put_file_detects_secondary_rate_limit_via_retry_after_header(): void
+    {
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 403]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(403);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'You have exceeded a secondary rate limit']));
+        Functions\when('wp_remote_retrieve_header')->alias(function ($response, $header) {
+            return $header === 'retry-after' ? '30' : '';
+        });
+        Functions\when('__')->returnArg(1);
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->putFile('posts/2026/my-post.md', '# Hello', 'Export post: Hello (#1)');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(30, $result['retry_after']);
+    }
+
+    public function test_put_file_detects_primary_rate_limit_via_remaining_and_reset_headers(): void
+    {
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 403]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(403);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'API rate limit exceeded']));
+
+        $resetAt = time() + 45;
+        Functions\when('wp_remote_retrieve_header')->alias(function ($response, $header) use ($resetAt) {
+            if ($header === 'x-ratelimit-remaining') {
+                return '0';
+            }
+            if ($header === 'x-ratelimit-reset') {
+                return (string) $resetAt;
+            }
+            return '';
+        });
+        Functions\when('__')->returnArg(1);
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->putFile('posts/2026/my-post.md', '# Hello', 'Export post: Hello (#1)');
+
+        $this->assertFalse($result['success']);
+        $this->assertGreaterThan(0, $result['retry_after']);
+        $this->assertLessThanOrEqual(45, $result['retry_after']);
+    }
+
+    public function test_put_file_does_not_treat_plain_403_as_rate_limit(): void
+    {
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 403]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(403);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'Resource not accessible by personal access token']));
+        Functions\when('wp_remote_retrieve_header')->justReturn('');
+        Functions\when('__')->returnArg(1);
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->putFile('posts/2026/my-post.md', '# Hello', 'Export post: Hello (#1)');
+
+        $this->assertFalse($result['success']);
+        $this->assertArrayNotHasKey('retry_after', $result);
+        $this->assertSame('Resource not accessible by personal access token', $result['error']);
+    }
+
     public function test_get_file_returns_null_when_response_is_wp_error(): void
     {
         Functions\expect('wp_remote_get')->once()->andReturn(new \stdClass());

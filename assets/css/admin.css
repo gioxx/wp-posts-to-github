@@ -171,6 +171,14 @@
     color: #787c82;
 }
 
+.potogh-stat-tile.potogh-stat-orphaned {
+    border-left-color: #d63638;
+}
+
+.potogh-stat-tile.potogh-stat-orphaned .potogh-stat-icon {
+    color: #d63638;
+}
+
 .potogh-stat-icon.dashicons {
     position: absolute;
     right: -10px;

@@ -7,6 +7,8 @@ class ExportTab
     private const PER_PAGE_OPTIONS = [10, 25, 50, 100];
     private const DEFAULT_PER_PAGE = 25;
     private const PER_PAGE_META_KEY = 'potogh_export_per_page';
+    private const ORPHANED_STATUS = 'orphaned';
+    private const ORPHANED_POST_STATUSES = ['draft', 'pending', 'private', 'future', 'trash'];
 
     public function registerPage(): void
     {
@@ -60,8 +62,15 @@ class ExportTab
 
     public function render(): void
     {
-        $perPage = $this->resolvePerPage();
         $filters = $this->filtersFrom($_GET);
+
+        if ($filters['status'] === self::ORPHANED_STATUS) {
+            $this->renderOrphaned($filters);
+
+            return;
+        }
+
+        $perPage = $this->resolvePerPage();
         $paged = max(1, (int) ($_GET['paged'] ?? 1));
 
         $matching = $this->queryMatchingPosts($filters);
@@ -98,6 +107,7 @@ class ExportTab
                             <option value="<?php echo esc_attr(ExportStatus::NEVER_EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::NEVER_EXPORTED); ?>><?php esc_html_e('Never exported', 'post-to-github-md'); ?></option>
                             <option value="<?php echo esc_attr(ExportStatus::EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::EXPORTED); ?>><?php esc_html_e('Exported', 'post-to-github-md'); ?></option>
                             <option value="<?php echo esc_attr(ExportStatus::MODIFIED_SINCE_EXPORT); ?>" <?php selected($filters['status'], ExportStatus::MODIFIED_SINCE_EXPORT); ?>><?php esc_html_e('Modified since export', 'post-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(self::ORPHANED_STATUS); ?>" <?php selected($filters['status'], self::ORPHANED_STATUS); ?>><?php esc_html_e('Exported, no longer published', 'post-to-github-md'); ?></option>
                         </select>
 
                         <?php
@@ -229,7 +239,12 @@ class ExportTab
         $result = export_post_by_id($postId);
 
         if (!$result['success']) {
-            wp_send_json_error(['message' => $result['error'], 'post_id' => $postId, 'trace' => $result['trace']], 500);
+            wp_send_json_error([
+                'message' => $result['error'],
+                'post_id' => $postId,
+                'trace' => $result['trace'],
+                'retry_after' => $result['retry_after'] ?? null,
+            ], 500);
         }
 
         wp_send_json_success([
@@ -324,6 +339,13 @@ class ExportTab
                 'count' => $counts['modified'],
                 'label' => __('Modified since export', 'post-to-github-md'),
             ],
+            [
+                'status' => self::ORPHANED_STATUS,
+                'class' => self::ORPHANED_STATUS,
+                'icon' => 'dashicons-trash',
+                'count' => $counts['orphaned'],
+                'label' => __('Exported, no longer published', 'post-to-github-md'),
+            ],
         ];
         ?>
         <div class="potogh-stats">
@@ -370,11 +392,20 @@ class ExportTab
             }
         }
 
+        $orphanedIds = get_posts([
+            'post_type' => 'post',
+            'post_status' => self::ORPHANED_POST_STATUSES,
+            'numberposts' => -1,
+            'fields' => 'ids',
+            'meta_query' => [['key' => '_potogh_path', 'compare' => 'EXISTS']],
+        ]);
+
         return [
             'total' => $total,
             'never_exported' => count($neverExportedIds),
             'exported' => $exported,
             'modified' => $modified,
+            'orphaned' => count($orphanedIds),
         ];
     }
 
@@ -562,5 +593,86 @@ class ExportTab
             esc_html($label),
             $glyph
         );
+    }
+
+    private function renderOrphaned(array $filters): void
+    {
+        $perPage = $this->resolvePerPage();
+        $paged = max(1, (int) ($_GET['paged'] ?? 1));
+        $matching = $this->queryOrphanedPosts($filters);
+        $total = count($matching);
+        $posts = self::paginate($matching, $paged, $perPage);
+        $totalPages = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
+        $settings = Settings::get();
+        ?>
+        <div class="potogh-export-tab">
+            <?php $this->renderStats(); ?>
+
+            <p>
+                <a href="<?php echo esc_url(admin_url('edit.php?page=potogh-export')); ?>" class="button">
+                    <?php esc_html_e('Back to published posts', 'post-to-github-md'); ?>
+                </a>
+            </p>
+
+            <?php $this->renderPagination($paged, $totalPages, $total); ?>
+
+            <table class="wp-list-table widefat fixed striped potogh-export-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="column-title"><?php esc_html_e('Title', 'post-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('Current status', 'post-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('Exported on', 'post-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('GitHub file', 'post-to-github-md'); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php if (empty($posts)) : ?>
+                    <tr><td colspan="4"><?php esc_html_e('No exported posts are currently unpublished.', 'post-to-github-md'); ?></td></tr>
+                <?php endif; ?>
+                <?php foreach ($posts as $post) :
+                    $path = get_post_meta($post->ID, '_potogh_path', true);
+                    $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
+                    $statusObj = get_post_status_object($post->post_status);
+                    $githubUrl = ($settings['owner_repo'] !== '' && $path)
+                        ? sprintf('https://github.com/%s/blob/%s/%s', $settings['owner_repo'], $settings['branch'], ltrim($path, '/'))
+                        : '';
+                ?>
+                    <tr>
+                        <td class="column-title"><a href="<?php echo esc_url(get_edit_post_link($post)); ?>"><?php echo esc_html(get_the_title($post)); ?></a></td>
+                        <td><?php echo esc_html($statusObj ? $statusObj->label : $post->post_status); ?></td>
+                        <td><?php echo esc_html($exportedAt ? Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt) : ''); ?></td>
+                        <td>
+                            <?php if ($githubUrl !== '') : ?>
+                                <a href="<?php echo esc_url($githubUrl); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($path); ?></a>
+                            <?php else : ?>
+                                <code><?php echo esc_html($path); ?></code>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <?php $this->renderPagination($paged, $totalPages, $total); ?>
+        </div>
+        <?php
+    }
+
+    private function queryOrphanedPosts(array $filters): array
+    {
+        $args = [
+            'post_type' => 'post',
+            'post_status' => self::ORPHANED_POST_STATUSES,
+            'orderby' => 'modified',
+            'order' => 'DESC',
+            'numberposts' => -1,
+            'meta_query' => [['key' => '_potogh_path', 'compare' => 'EXISTS']],
+        ];
+
+        if ($filters['search'] !== '') {
+            $args['s'] = $filters['search'];
+        }
+
+        return get_posts($args);
     }
 }

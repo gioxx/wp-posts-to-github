@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,9 +16,11 @@ Post to GitHub Markdown exports your published posts as Markdown files, with YAM
 
 Features:
 * Export a single post from its edit screen, with live status and trace log
-* Bulk export from a dedicated Posts screen: filters, pagination, multi-page selection, stoppable progress
-* Optional automatic export of newly published posts, in the background via WP-Cron
+* Bulk export from a dedicated Posts screen: filters, pagination, multi-page selection, stoppable progress, automatic retry on GitHub rate limits
+* Optional automatic export of newly published posts and automatic re-export of updated posts, both in the background via WP-Cron
+* Read-only view of posts that were exported but are no longer published (draft, private, scheduled or trashed)
 * Connection test and automatic branch detection against the configured GitHub repository
+* WP-CLI commands for scripted single or bulk exports
 * English by default, with an included Italian translation
 * Git Updater compatible for seamless updates from GitHub
 
@@ -41,6 +43,9 @@ No. Images in the post content remain absolute links to your site; nothing binar
 Only the `post` post type, with "published" status.
 
 == Changelog ==
+= 1.4.0 =
+* Add optional automatic re-export of updated posts, a read-only view of exported-but-unpublished posts, automatic retry on GitHub rate limits, uninstall data cleanup (with an opt-out setting), and WP-CLI commands.
+
 = 1.3.0 =
 * Add optional automatic export of newly published posts, scheduled via WP-Cron so the Publish button is never delayed.
 
@@ -56,5 +61,5 @@ Only the `post` post type, with "published" status.
 * Initial release: single-post and bulk export to a GitHub repository via the Contents API.
 
 == Upgrade Notice ==
-= 1.3.0 =
-New optional "Automatic export" setting in Settings → Post to GitHub MD (off by default).
+= 1.4.0 =
+Deleting the plugin now removes its data by default; uncheck "Uninstall" in Settings first if you want to keep it.
