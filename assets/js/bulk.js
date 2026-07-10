@@ -7,6 +7,10 @@
     var stopRequested = false;
     var lastCheckedCheckbox = null;
 
+    // Browsers restore checkbox state on reload independently of the rendered
+    // markup; force a clean slate so a fresh page load never starts pre-selected.
+    $('.potogh-post-checkbox, #potogh-select-all').prop('checked', false);
+
     function currentFilterParams() {
         var $form = $('.potogh-filters-form');
 
