@@ -129,4 +129,116 @@ class FunctionsTest extends TestCase
 
         $this->assertFalse($result['success']);
     }
+
+    public function test_schedule_auto_export_skips_when_not_a_new_publish(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 1;
+        $post->post_type = 'post';
+
+        Functions\expect('wp_schedule_single_event')->never();
+
+        \POTOGH\schedule_auto_export('draft', 'draft', $post);
+        \POTOGH\schedule_auto_export('publish', 'publish', $post);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_schedule_auto_export_skips_non_post_types(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 1;
+        $post->post_type = 'page';
+
+        Functions\expect('wp_schedule_single_event')->never();
+
+        \POTOGH\schedule_auto_export('publish', 'draft', $post);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_schedule_auto_export_skips_when_option_disabled(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 7;
+        $post->post_type = 'post';
+
+        Functions\when('get_option')->justReturn(['auto_export' => false]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\expect('wp_schedule_single_event')->never();
+
+        \POTOGH\schedule_auto_export('publish', 'draft', $post);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_schedule_auto_export_schedules_event_for_new_publish(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 9;
+        $post->post_type = 'post';
+
+        Functions\when('get_option')->justReturn(['auto_export' => true]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\expect('wp_schedule_single_event')
+            ->once()
+            ->with(\Mockery::type('int'), 'potogh_auto_export_event', [9]);
+
+        \POTOGH\schedule_auto_export('publish', 'draft', $post);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_run_auto_export_skips_when_option_disabled(): void
+    {
+        Functions\when('get_option')->justReturn(['auto_export' => false]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\expect('get_post')->never();
+
+        \POTOGH\run_auto_export(9);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_run_auto_export_skips_when_not_configured(): void
+    {
+        Functions\when('get_option')->justReturn(['auto_export' => true, 'token' => '', 'owner_repo' => '']);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\expect('get_post')->never();
+
+        \POTOGH\run_auto_export(9);
+
+        $this->assertConditionsMet();
+    }
+
+    public function test_run_auto_export_exports_when_enabled_and_configured(): void
+    {
+        Functions\when('get_option')->justReturn([
+            'auto_export' => true,
+            'token' => 'ghp_test',
+            'owner_repo' => 'gioxx/blog',
+        ]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\when('__')->returnArg(1);
+        Functions\expect('get_post')->once()->andReturn(null);
+
+        \POTOGH\run_auto_export(9);
+
+        $this->assertConditionsMet();
+    }
+
+    private function assertConditionsMet(): void
+    {
+        $this->assertTrue(true);
+    }
 }

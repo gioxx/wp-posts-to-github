@@ -13,6 +13,7 @@ class Settings
             'owner_repo' => '',
             'branch' => 'main',
             'base_folder' => 'posts',
+            'auto_export' => false,
         ];
     }
 
@@ -24,12 +25,14 @@ class Settings
         $ownerRepo = self::extractOwnerRepo(trim($input['owner_repo'] ?? ''));
         $branch = trim($input['branch'] ?? '') ?: $defaults['branch'];
         $baseFolder = trim($input['base_folder'] ?? '', "/ \t\n\r\0\x0B") ?: $defaults['base_folder'];
+        $autoExport = !empty($input['auto_export']);
 
         return [
             'token' => $token,
             'owner_repo' => $ownerRepo,
             'branch' => $branch,
             'base_folder' => $baseFolder,
+            'auto_export' => $autoExport,
         ];
     }
 
@@ -172,6 +175,18 @@ class Settings
                             <input type="text" id="potogh_base_folder" name="<?php echo esc_attr(self::OPTION_NAME); ?>[base_folder]" value="<?php echo esc_attr($settings['base_folder']); ?>" class="regular-text" placeholder="posts">
                             <p class="description">
                                 <?php esc_html_e('Repository folder posts are exported into (e.g. posts). Left empty, it defaults to "posts".', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php esc_html_e('Automatic export', 'post-to-github-md'); ?></th>
+                        <td>
+                            <label for="potogh_auto_export">
+                                <input type="checkbox" id="potogh_auto_export" name="<?php echo esc_attr(self::OPTION_NAME); ?>[auto_export]" value="1" <?php checked($settings['auto_export']); ?>>
+                                <?php esc_html_e('Automatically export new posts to GitHub when published.', 'post-to-github-md'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('Runs a few seconds after publishing via WP-Cron, without delaying the Publish button. Existing posts are not exported retroactively — use the Export posts page for those.', 'post-to-github-md'); ?>
                             </p>
                         </td>
                     </tr>

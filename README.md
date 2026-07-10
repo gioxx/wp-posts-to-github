@@ -32,10 +32,11 @@ Go to **Settings → Post to GitHub MD** and fill in:
 | **Repository** | The target GitHub repository: enter either `owner/repo` or the full URL (`https://github.com/owner/repo`). The repository must already exist. | `yourname/your-repo` or `https://github.com/yourname/your-repo` |
 | **Branch** | The branch files are committed to. Use the **"Detect from repository"** button to auto-fill it with the repository's actual default branch. | `main` |
 | **Base folder** | The top-level repository folder exports are saved into. Left empty, it defaults to `posts`. | `posts` |
+| **Automatic export** | When checked, newly published posts are exported automatically a few seconds after publishing, via WP-Cron, without delaying the Publish button. Off by default. Existing posts aren't affected retroactively — use the Export posts page for those. | — |
 
 Each field has a help text under the input describing the expected format. The **"Save Changes"** button stays disabled until you run **"Test connection"** successfully against the values currently in the form (read-only check, it never writes to the repository); editing the token, repository or branch again re-locks Save until you test once more.
 
-Until the PAT and repository are configured, the plugin blocks every export attempt (both single-post and bulk) and shows an error message instead of calling GitHub.
+Until the PAT and repository are configured, the plugin blocks every export attempt (both single-post and bulk) and shows an error message instead of calling GitHub. If automatic export is enabled but the connection isn't configured (or fails) when a post is published, the export is simply skipped — no error is shown to the author; the post stays "Never exported" and can be exported manually afterward.
 
 ### Where to create the Personal Access Token
 

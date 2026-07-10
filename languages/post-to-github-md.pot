@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.24\n"
+"Project-Id-Version: Post to GitHub Markdown 1.3.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 23:17+0200\n"
+"POT-Creation-Date: 2026-07-10 23:47+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -87,15 +87,15 @@ msgstr ""
 msgid "All statuses"
 msgstr ""
 
-#: includes/ExportTab.php:98 includes/ExportTab.php:310 includes/Metabox.php:50
+#: includes/ExportTab.php:98 includes/ExportTab.php:311 includes/Metabox.php:50
 msgid "Never exported"
 msgstr ""
 
-#: includes/ExportTab.php:99 includes/ExportTab.php:317
+#: includes/ExportTab.php:99 includes/ExportTab.php:318
 msgid "Exported"
 msgstr ""
 
-#: includes/ExportTab.php:100 includes/ExportTab.php:324
+#: includes/ExportTab.php:100 includes/ExportTab.php:325
 msgid "Modified since export"
 msgstr ""
 
@@ -124,83 +124,83 @@ msgstr ""
 msgid "Reset filters"
 msgstr ""
 
-#: includes/ExportTab.php:151
+#: includes/ExportTab.php:152
 msgid "Clear selection"
 msgstr ""
 
-#: includes/ExportTab.php:158
+#: includes/ExportTab.php:159
 msgid "Select all"
 msgstr ""
 
-#: includes/ExportTab.php:161
+#: includes/ExportTab.php:162
 msgid "Title"
 msgstr ""
 
-#: includes/ExportTab.php:162
+#: includes/ExportTab.php:163
 msgid "Categories"
 msgstr ""
 
-#: includes/ExportTab.php:163
+#: includes/ExportTab.php:164
 msgid "Tags"
 msgstr ""
 
-#: includes/ExportTab.php:164
+#: includes/ExportTab.php:165
 msgid "Publish date"
 msgstr ""
 
-#: includes/ExportTab.php:165
+#: includes/ExportTab.php:166
 msgid "Export status"
 msgstr ""
 
-#: includes/ExportTab.php:170
+#: includes/ExportTab.php:171
 msgid "No posts match the current filters."
 msgstr ""
 
-#: includes/ExportTab.php:201 includes/functions.php:86
+#: includes/ExportTab.php:202 includes/functions.php:112
 msgid "Stop"
 msgstr ""
 
-#: includes/ExportTab.php:220 includes/ExportTab.php:246
-#: includes/Metabox.php:84 includes/Settings.php:198 includes/Settings.php:228
+#: includes/ExportTab.php:221 includes/ExportTab.php:247
+#: includes/Metabox.php:84 includes/Settings.php:213 includes/Settings.php:243
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/ExportTab.php:224 includes/Metabox.php:88
+#: includes/ExportTab.php:225 includes/Metabox.php:88
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr ""
 
-#: includes/ExportTab.php:303
+#: includes/ExportTab.php:304
 msgid "Total published posts"
 msgstr ""
 
-#: includes/ExportTab.php:517
+#: includes/ExportTab.php:518
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/ExportTab.php:525
+#: includes/ExportTab.php:526
 msgid "First page"
 msgstr ""
 
-#: includes/ExportTab.php:526
+#: includes/ExportTab.php:527
 msgid "Previous page"
 msgstr ""
 
-#: includes/ExportTab.php:533
+#: includes/ExportTab.php:534
 msgid "Current Page"
 msgstr ""
 
-#: includes/ExportTab.php:536
+#: includes/ExportTab.php:537
 msgid "of"
 msgstr ""
 
-#: includes/ExportTab.php:540
+#: includes/ExportTab.php:541
 msgid "Next page"
 msgstr ""
 
-#: includes/ExportTab.php:541
+#: includes/ExportTab.php:542
 msgid "Last page"
 msgstr ""
 
@@ -212,48 +212,48 @@ msgstr ""
 msgid "Only published posts can be exported."
 msgstr ""
 
-#: includes/functions.php:68
+#: includes/functions.php:94
 msgid "Network error during export."
 msgstr ""
 
-#: includes/functions.php:76 includes/functions.php:98
+#: includes/functions.php:102 includes/functions.php:124
 msgid "Network error."
 msgstr ""
 
-#: includes/functions.php:78
+#: includes/functions.php:104
 #, php-format
 msgid "%d posts exported successfully."
 msgstr ""
 
-#: includes/functions.php:80
+#: includes/functions.php:106
 #, php-format
 msgid "%d failed:"
 msgstr ""
 
-#: includes/functions.php:82
+#: includes/functions.php:108
 #, php-format
 msgid "%d posts selected (all pages)."
 msgstr ""
 
-#: includes/functions.php:83
+#: includes/functions.php:109
 msgid "selected"
 msgstr ""
 
-#: includes/functions.php:85
+#: includes/functions.php:111
 #, php-format
 msgid "Select all %d items matching this filter"
 msgstr ""
 
-#: includes/functions.php:87
+#: includes/functions.php:113
 msgid "Stopping…"
 msgstr ""
 
-#: includes/functions.php:89
+#: includes/functions.php:115
 #, php-format
 msgid "Stopped: %d posts left unprocessed."
 msgstr ""
 
-#: includes/functions.php:97
+#: includes/functions.php:123
 msgid "Testing…"
 msgstr ""
 
@@ -302,25 +302,25 @@ msgstr ""
 msgid "Modified since last export"
 msgstr ""
 
-#: includes/Settings.php:64 includes/Settings.php:65 includes/Settings.php:90
+#: includes/Settings.php:67 includes/Settings.php:68 includes/Settings.php:93
 msgid "Post to GitHub MD"
 msgstr ""
 
-#: includes/Settings.php:95
+#: includes/Settings.php:98
 #, php-format
 msgid "Looking to export posts? Head over to %s."
 msgstr ""
 
-#: includes/Settings.php:96
+#: includes/Settings.php:99
 msgid "Posts &rsaquo; Export to GitHub"
 msgstr ""
 
-#: includes/Settings.php:114
+#: includes/Settings.php:117
 #, php-format
 msgid "Post to GitHub Markdown by Gioxx, source on %s."
 msgstr ""
 
-#: includes/Settings.php:120
+#: includes/Settings.php:123
 msgid ""
 "All trademarks mentioned are the property of their respective owners. Third-"
 "party trademarks, product names, trade names, corporate names and companies "
@@ -330,62 +330,77 @@ msgid ""
 "existing copyright."
 msgstr ""
 
-#: includes/Settings.php:134
+#: includes/Settings.php:137
 msgid "GitHub Personal Access Token"
 msgstr ""
 
-#: includes/Settings.php:141
+#: includes/Settings.php:144
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
 "Generate one at %s."
 msgstr ""
 
-#: includes/Settings.php:150
+#: includes/Settings.php:153
 msgid "Repository"
 msgstr ""
 
-#: includes/Settings.php:154
+#: includes/Settings.php:157
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
 msgstr ""
 
-#: includes/Settings.php:159
+#: includes/Settings.php:162
 msgid "Branch"
 msgstr ""
 
-#: includes/Settings.php:162
+#: includes/Settings.php:165
 msgid "Detect from repository"
 msgstr ""
 
-#: includes/Settings.php:165
+#: includes/Settings.php:168
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr ""
 
-#: includes/Settings.php:170
+#: includes/Settings.php:173
 msgid "Base folder"
 msgstr ""
 
-#: includes/Settings.php:174
+#: includes/Settings.php:177
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
 msgstr ""
 
 #: includes/Settings.php:182
+msgid "Automatic export"
+msgstr ""
+
+#: includes/Settings.php:186
+msgid "Automatically export new posts to GitHub when published."
+msgstr ""
+
+#: includes/Settings.php:189
+msgid ""
+"Runs a few seconds after publishing via WP-Cron, without delaying the "
+"Publish button. Existing posts are not exported retroactively — use the "
+"Export posts page for those."
+msgstr ""
+
+#: includes/Settings.php:197
 msgid "Test connection"
 msgstr ""
 
-#: includes/Settings.php:185
+#: includes/Settings.php:200
 msgid "Save Changes"
 msgstr ""
 
-#: includes/Settings.php:210
+#: includes/Settings.php:225
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 
-#: includes/Settings.php:240
+#: includes/Settings.php:255
 msgid "Enter both a token and a valid repository first."
 msgstr ""

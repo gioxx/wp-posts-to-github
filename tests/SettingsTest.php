@@ -14,6 +14,7 @@ class SettingsTest extends TestCase
             'owner_repo' => '',
             'branch' => 'main',
             'base_folder' => 'posts',
+            'auto_export' => false,
         ], Settings::defaults());
     }
 
@@ -31,7 +32,21 @@ class SettingsTest extends TestCase
             'owner_repo' => 'gioxx/blog-style-corpus',
             'branch' => 'main',
             'base_folder' => 'posts',
+            'auto_export' => false,
         ], $result);
+    }
+
+    public function test_sanitize_enables_auto_export_when_checkbox_present(): void
+    {
+        $result = Settings::sanitize([
+            'token' => 'ghp_abc123',
+            'owner_repo' => 'gioxx/blog-style-corpus',
+            'branch' => 'main',
+            'base_folder' => 'posts',
+            'auto_export' => '1',
+        ]);
+
+        $this->assertTrue($result['auto_export']);
     }
 
     public function test_sanitize_rejects_invalid_owner_repo_format(): void

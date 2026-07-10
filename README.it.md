@@ -32,10 +32,11 @@ Vai su **Impostazioni → Post to GitHub MD** e compila:
 | **Repository** | Il repository GitHub di destinazione: puoi inserire sia `owner/repo` sia l'URL completo (`https://github.com/owner/repo`). Il repository deve già esistere. | `tuonome/il-tuo-repo` oppure `https://github.com/tuonome/il-tuo-repo` |
 | **Branch** | Il branch su cui scrivere i file. Usa il pulsante **"Detect from repository"** per rilevarlo automaticamente dal branch predefinito del repository. | `main` |
 | **Base folder** | La cartella di primo livello nel repository dove salvare gli export. Se lasciata vuota, viene usata `posts` come predefinita. | `posts` |
+| **Export automatico** | Se spuntato, i nuovi post pubblicati vengono esportati automaticamente pochi secondi dopo la pubblicazione, via WP-Cron, senza rallentare il pulsante Pubblica. Disattivato di default. I post già esistenti non vengono toccati retroattivamente: usa la pagina Export posts per quelli. | — |
 
 Ogni campo ha un testo di aiuto sotto l'input con indicazioni sul formato atteso. Il pulsante **"Save Changes"** resta disabilitato finché non esegui con successo **"Test connection"** sui valori attualmente nel form (controllo di sola lettura, non scrive nulla sul repository); ritoccare token, repository o branch lo ridisabilita finché non riesegui il test.
 
-Finché PAT e repository non sono configurati, il plugin blocca ogni tentativo di esportazione (sia dal singolo post che dall'export in blocco) mostrando un messaggio d'errore invece di tentare la chiamata a GitHub.
+Finché PAT e repository non sono configurati, il plugin blocca ogni tentativo di esportazione (sia dal singolo post che dall'export in blocco) mostrando un messaggio d'errore invece di tentare la chiamata a GitHub. Se l'export automatico è attivo ma la connessione non è configurata (o fallisce) al momento della pubblicazione, l'export viene semplicemente saltato senza alcun avviso per l'autore: il post resta "Mai esportato" e può essere esportato manualmente in seguito.
 
 ### Dove creare il Personal Access Token
 

@@ -59,6 +59,32 @@ function export_post_by_id(int $postId): array
     return ['success' => true, 'path' => $result['path'], 'exported_at' => $exportedAt, 'trace' => $result['trace']];
 }
 
+function schedule_auto_export(string $newStatus, string $oldStatus, \WP_Post $post): void
+{
+    if ($newStatus !== 'publish' || $oldStatus === 'publish' || $post->post_type !== 'post') {
+        return;
+    }
+
+    $settings = Settings::get();
+
+    if (empty($settings['auto_export'])) {
+        return;
+    }
+
+    wp_schedule_single_event(time(), 'potogh_auto_export_event', [$post->ID]);
+}
+
+function run_auto_export(int $postId): void
+{
+    $settings = Settings::get();
+
+    if (empty($settings['auto_export']) || !Settings::isConfigured()) {
+        return;
+    }
+
+    export_post_by_id($postId);
+}
+
 function enqueue_admin_assets(string $hook): void
 {
     if ($hook === 'post.php' || $hook === 'post-new.php') {
