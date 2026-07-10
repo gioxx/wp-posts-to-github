@@ -21,7 +21,7 @@ class ExportService
 
         $year = gmdate('Y', strtotime($postData['date_gmt']));
         $path = $postData['existing_path'] ?? PathBuilder::build($this->baseFolder, $year, $postData['slug']);
-        $trace[] = sprintf('Percorso calcolato: %s', $path);
+        $trace[] = sprintf(__('Computed path: %s', 'post-to-github-md'), $path);
 
         $frontMatter = FrontMatter::build([
             'title' => $postData['title'],
@@ -36,20 +36,20 @@ class ExportService
 
         $markdown = $this->converter->convert($postData['content_html']);
         $fileContent = $frontMatter . "\n" . $markdown . "\n";
-        $trace[] = 'Contenuto HTML convertito in Markdown.';
+        $trace[] = __('HTML content converted to Markdown.', 'post-to-github-md');
 
         $message = sprintf('Export post: %s (#%d)', $postData['title'], $postData['wp_id']);
 
-        $trace[] = sprintf('Invio a GitHub in corso (%s)...', $path);
+        $trace[] = sprintf(__('Sending to GitHub (%s)...', 'post-to-github-md'), $path);
         $result = $this->githubClient->putFile($path, $fileContent, $message, $postData['existing_sha'] ?? null);
 
         if (!$result['success']) {
-            $trace[] = sprintf('Errore da GitHub: %s', $result['error']);
+            $trace[] = sprintf(__('Error from GitHub: %s', 'post-to-github-md'), $result['error']);
 
             return ['success' => false, 'error' => $result['error'], 'trace' => $trace];
         }
 
-        $trace[] = sprintf('File salvato su GitHub (sha: %s).', $result['sha']);
+        $trace[] = sprintf(__('File saved on GitHub (sha: %s).', 'post-to-github-md'), $result['sha']);
 
         return ['success' => true, 'path' => $path, 'sha' => $result['sha'], 'trace' => $trace];
     }

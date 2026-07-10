@@ -2,6 +2,8 @@
 
 namespace POTOGH\Tests;
 
+use Brain\Monkey;
+use Brain\Monkey\Functions;
 use PHPUnit\Framework\TestCase;
 use POTOGH\Converter;
 use POTOGH\ExportService;
@@ -9,6 +11,19 @@ use POTOGH\GithubClient;
 
 class ExportServiceTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Monkey\setUp();
+        Functions\when('__')->returnArg(1);
+    }
+
+    protected function tearDown(): void
+    {
+        Monkey\tearDown();
+        parent::tearDown();
+    }
+
     private function samplePostData(array $overrides = []): array
     {
         return array_merge([

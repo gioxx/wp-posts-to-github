@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.2.3\n"
+"Project-Id-Version: Post to GitHub Markdown 1.2.4\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-10 21:56+0200\n"
+"POT-Creation-Date: 2026-07-10 22:02+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,30 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: includes/ExportService.php:24
+#, php-format
+msgid "Computed path: %s"
+msgstr ""
+
+#: includes/ExportService.php:39
+msgid "HTML content converted to Markdown."
+msgstr ""
+
+#: includes/ExportService.php:43
+#, php-format
+msgid "Sending to GitHub (%s)..."
+msgstr ""
+
+#: includes/ExportService.php:47
+#, php-format
+msgid "Error from GitHub: %s"
+msgstr ""
+
+#: includes/ExportService.php:52
+#, php-format
+msgid "File saved on GitHub (sha: %s)."
+msgstr ""
 
 #: includes/ExportTab.php:14 includes/ExportTab.php:15 includes/Metabox.php:11
 #: includes/Metabox.php:31
