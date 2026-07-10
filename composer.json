@@ -1,6 +1,6 @@
 {
     "name": "gioxx/post-to-github-md",
-    "description": "Export published WordPress posts to Markdown files in a private GitHub repository.",
+    "description": "Export published WordPress posts to Markdown files in a GitHub repository.",
     "type": "wordpress-plugin",
     "license": "GPL-2.0-or-later",
     "require": {

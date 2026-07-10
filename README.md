@@ -2,7 +2,7 @@
 
 *[Leggi questo in italiano](README.it.md)*
 
-A WordPress plugin that exports your published posts as Markdown files (with YAML front matter) to an existing private GitHub repository. The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
+A WordPress plugin that exports your published posts as Markdown files (with YAML front matter) to an existing GitHub repository. The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
 
 The plugin does not create the repository, does not upload binary images, and only works on `post` content with a "published" status.
 
@@ -10,7 +10,7 @@ The plugin does not create the repository, does not upload binary images, and on
 
 - WordPress 6.0 or higher
 - PHP 7.4 or higher
-- An existing private GitHub repository
+- An existing GitHub repository (public or private)
 - A GitHub Personal Access Token (PAT) with write access to the repository (classic `repo` scope, or a fine-grained token with read/write access to "Contents" for that repository)
 
 ## Installation
@@ -29,7 +29,7 @@ Go to **Settings → Post to GitHub MD** and fill in:
 | Field | Description | Example |
 |---|---|---|
 | **GitHub Personal Access Token** | The PAT with write access to the target repository. Never displayed in plain text elsewhere on the site. | `ghp_xxxxxxxxxxxxxxxxxxxx` |
-| **Repository** | The target GitHub repository: enter either `owner/repo` or the full URL (`https://github.com/owner/repo`). The repository must already exist. | `yourname/your-private-repo` or `https://github.com/yourname/your-private-repo` |
+| **Repository** | The target GitHub repository: enter either `owner/repo` or the full URL (`https://github.com/owner/repo`). The repository must already exist. | `yourname/your-repo` or `https://github.com/yourname/your-repo` |
 | **Branch** | The branch files are committed to. Use the **"Detect from repository"** button to auto-fill it with the repository's actual default branch. | `main` |
 | **Base folder** | The top-level repository folder exports are saved into. Left empty, it defaults to `posts`. | `posts` |
 

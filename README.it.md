@@ -2,7 +2,7 @@
 
 *[Read this in English](README.md)*
 
-Plugin WordPress che esporta i tuoi articoli pubblicati come file Markdown (con front matter YAML) in un repository GitHub privato già esistente. Lo scopo è costruire nel tempo un corpus dei tuoi articoli in formato testuale, utile per addestrare o guidare uno stile di scrittura coerente in strumenti come Claude.
+Plugin WordPress che esporta i tuoi articoli pubblicati come file Markdown (con front matter YAML) in un repository GitHub già esistente. Lo scopo è costruire nel tempo un corpus dei tuoi articoli in formato testuale, utile per addestrare o guidare uno stile di scrittura coerente in strumenti come Claude.
 
 Il plugin non crea il repository, non carica immagini binarie e lavora solo su articoli (`post`) con stato "pubblicato".
 
@@ -10,7 +10,7 @@ Il plugin non crea il repository, non carica immagini binarie e lavora solo su a
 
 - WordPress 6.0 o superiore
 - PHP 7.4 o superiore
-- Un repository GitHub privato già creato
+- Un repository GitHub già creato (pubblico o privato)
 - Un Personal Access Token (PAT) di GitHub con permesso di scrittura sul repository (scope classico `repo`, oppure un fine-grained token con accesso in lettura/scrittura ai "Contents" di quel repository)
 
 ## Installazione
@@ -29,7 +29,7 @@ Vai su **Impostazioni → Post to GitHub MD** e compila:
 | Campo | Descrizione | Esempio |
 |---|---|---|
 | **GitHub Personal Access Token** | Il PAT con accesso in scrittura al repository di destinazione. Non viene mai mostrato in chiaro altrove nel sito. | `ghp_xxxxxxxxxxxxxxxxxxxx` |
-| **Repository** | Il repository GitHub di destinazione: puoi inserire sia `owner/repo` sia l'URL completo (`https://github.com/owner/repo`). Il repository deve già esistere. | `tuonome/il-tuo-repo-privato` oppure `https://github.com/tuonome/il-tuo-repo-privato` |
+| **Repository** | Il repository GitHub di destinazione: puoi inserire sia `owner/repo` sia l'URL completo (`https://github.com/owner/repo`). Il repository deve già esistere. | `tuonome/il-tuo-repo` oppure `https://github.com/tuonome/il-tuo-repo` |
 | **Branch** | Il branch su cui scrivere i file. Usa il pulsante **"Detect from repository"** per rilevarlo automaticamente dal branch predefinito del repository. | `main` |
 | **Base folder** | La cartella di primo livello nel repository dove salvare gli export. Se lasciata vuota, viene usata `posts` come predefinita. | `posts` |
 
