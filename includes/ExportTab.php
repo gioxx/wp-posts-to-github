@@ -197,15 +197,15 @@ class ExportTab
             <div id="potogh-bulk-summary"></div>
         </div>
         <div id="potogh-bulk-footer" class="potogh-bulk-footer" hidden>
+            <button type="button" class="potogh-bulk-stop-label" id="potogh-bulk-stop" hidden>
+                <?php esc_html_e('Stop', 'post-to-github-md'); ?>
+            </button>
             <div id="potogh-bulk-progress" class="potogh-progress">
                 <span class="potogh-spinner" aria-hidden="true"></span>
                 <div class="potogh-progress-bar"><div class="potogh-progress-fill"></div></div>
                 <span id="potogh-bulk-progress-text"></span>
             </div>
             <div class="potogh-bulk-log-wrap">
-                <button type="button" class="potogh-bulk-stop-label" id="potogh-bulk-stop" hidden>
-                    <?php esc_html_e('Stop', 'post-to-github-md'); ?>
-                </button>
                 <div id="potogh-bulk-log" class="potogh-bulk-log"></div>
             </div>
         </div>
