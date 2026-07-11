@@ -468,7 +468,7 @@
         $('#potogh-bulk-summary').text('');
         updateProgress(0, ids.length);
 
-        if (potoghBulk.batchCommit) {
+        if (potoghBulk.batchCommit && ids.length > 1) {
             runBatchExport(ids, nonce);
         } else {
             runLegacyExport(ids, nonce);

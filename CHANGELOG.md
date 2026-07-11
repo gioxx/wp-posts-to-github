@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.1] - 2026-07-11
+### Added
+- Category and tag dropdown filters on the bulk export screen now show a live post count per term, computed against the currently active filters (e.g. selecting "Never exported" updates the counts shown next to each category/tag).
+
+### Changed
+- The single-commit batch export method now only kicks in when 2 or more posts are selected. Exporting exactly one post always uses the per-post commit flow, even when "Bulk export method" is enabled.
+
 ## [1.5.0] - 2026-07-11
 ### Added
 - Single-commit bulk export: instead of one commit (and one push) per post, the plugin now prepares every selected post's Markdown locally and writes the whole batch to GitHub via the Git Data API in one commit and one push. Cuts a bulk export of N posts from ~2N GitHub API calls down to about 5, largely sidestepping rate limits.

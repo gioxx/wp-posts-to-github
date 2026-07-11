@@ -78,6 +78,8 @@ class ExportTab
         $posts = self::paginate($matching, $paged, $perPage);
         $totalPages = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $nonce = wp_create_nonce('potogh_bulk_export');
+        $categoryCounts = $this->termCounts($filters, 'category');
+        $tagCounts = $this->termCounts($filters, 'tag');
         ?>
         <div class="potogh-export-tab" data-nonce="<?php echo esc_attr($nonce); ?>" data-total="<?php echo esc_attr($total); ?>">
             <?php wp_nonce_field('potogh_bulk_export', 'potogh_bulk_nonce'); ?>
@@ -110,21 +112,21 @@ class ExportTab
                             <option value="<?php echo esc_attr(self::ORPHANED_STATUS); ?>" <?php selected($filters['status'], self::ORPHANED_STATUS); ?>><?php esc_html_e('Exported, no longer published', 'post-to-github-md'); ?></option>
                         </select>
 
-                        <?php
-                        wp_dropdown_categories([
-                            'name' => 'category',
-                            'show_option_all' => __('All categories', 'post-to-github-md'),
-                            'hide_empty' => false,
-                            'selected' => $filters['category'],
-                            'orderby' => 'name',
-                            'order' => 'ASC',
-                        ]);
-                        ?>
+                        <select name="category">
+                            <option value="0"><?php esc_html_e('All categories', 'post-to-github-md'); ?></option>
+                            <?php foreach (get_categories(['hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC']) as $category) : ?>
+                                <option value="<?php echo esc_attr($category->term_id); ?>" <?php selected($filters['category'], $category->term_id); ?>>
+                                    <?php echo esc_html($category->name); ?> (<?php echo esc_html((string) ($categoryCounts[$category->term_id] ?? 0)); ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
 
                         <select name="tag">
                             <option value=""><?php esc_html_e('All tags', 'post-to-github-md'); ?></option>
                             <?php foreach (get_tags(['hide_empty' => false]) as $tag) : ?>
-                                <option value="<?php echo esc_attr($tag->slug); ?>" <?php selected($filters['tag'], $tag->slug); ?>><?php echo esc_html($tag->name); ?></option>
+                                <option value="<?php echo esc_attr($tag->slug); ?>" <?php selected($filters['tag'], $tag->slug); ?>>
+                                    <?php echo esc_html($tag->name); ?> (<?php echo esc_html((string) ($tagCounts[$tag->term_id] ?? 0)); ?>)
+                                </option>
                             <?php endforeach; ?>
                         </select>
 
@@ -528,6 +530,30 @@ class ExportTab
         }
 
         return $posts;
+    }
+
+    private function termCounts(array $filters, string $taxonomy): array
+    {
+        $filtersForQuery = $filters;
+
+        if ($taxonomy === 'category') {
+            $filtersForQuery['category'] = 0;
+        } else {
+            $filtersForQuery['tag'] = '';
+        }
+
+        $posts = $this->queryMatchingPosts($filtersForQuery);
+        $counts = [];
+
+        foreach ($posts as $post) {
+            $termIds = wp_get_post_terms($post->ID, $taxonomy, ['fields' => 'ids']);
+
+            foreach ($termIds as $termId) {
+                $counts[$termId] = ($counts[$termId] ?? 0) + 1;
+            }
+        }
+
+        return $counts;
     }
 
     private function resolvePerPage(): int
