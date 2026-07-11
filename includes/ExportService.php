@@ -15,7 +15,7 @@ class ExportService
         $this->baseFolder = $baseFolder;
     }
 
-    public function exportPost(array $postData): array
+    public function prepareExport(array $postData): array
     {
         $trace = [];
 
@@ -37,6 +37,16 @@ class ExportService
         $markdown = $this->converter->convert($postData['content_html']);
         $fileContent = $frontMatter . "\n" . $markdown . "\n";
         $trace[] = __('HTML content converted to Markdown.', 'post-to-github-md');
+
+        return ['path' => $path, 'content' => $fileContent, 'trace' => $trace];
+    }
+
+    public function exportPost(array $postData): array
+    {
+        $prepared = $this->prepareExport($postData);
+        $path = $prepared['path'];
+        $fileContent = $prepared['content'];
+        $trace = $prepared['trace'];
 
         $message = sprintf('Export post: %s (#%d)', $postData['title'], $postData['wp_id']);
 

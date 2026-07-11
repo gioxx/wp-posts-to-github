@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.4.0\n"
+"Project-Id-Version: Post to GitHub Markdown 1.5.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-11 00:09+0200\n"
+"POT-Creation-Date: 2026-07-11 13:54+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,6 +19,7 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: includes/Cli.php:28 includes/Cli.php:69 includes/ExportTab.php:235
+#: includes/ExportTab.php:283 includes/ExportTab.php:305
 #: includes/Metabox.php:88
 msgid "Configure the PAT and repository in the plugin settings first."
 msgstr ""
@@ -32,17 +33,17 @@ msgstr ""
 msgid "HTML content converted to Markdown."
 msgstr ""
 
-#: includes/ExportService.php:43
+#: includes/ExportService.php:53
 #, php-format
 msgid "Sending to GitHub (%s)..."
 msgstr ""
 
-#: includes/ExportService.php:47
+#: includes/ExportService.php:57
 #, php-format
 msgid "Error from GitHub: %s"
 msgstr ""
 
-#: includes/ExportService.php:57
+#: includes/ExportService.php:67
 #, php-format
 msgid "File saved on GitHub (sha: %s)."
 msgstr ""
@@ -92,20 +93,20 @@ msgstr ""
 msgid "All statuses"
 msgstr ""
 
-#: includes/ExportTab.php:107 includes/ExportTab.php:326
+#: includes/ExportTab.php:107 includes/ExportTab.php:398
 #: includes/Metabox.php:50
 msgid "Never exported"
 msgstr ""
 
-#: includes/ExportTab.php:108 includes/ExportTab.php:333
+#: includes/ExportTab.php:108 includes/ExportTab.php:405
 msgid "Exported"
 msgstr ""
 
-#: includes/ExportTab.php:109 includes/ExportTab.php:340
+#: includes/ExportTab.php:109 includes/ExportTab.php:412
 msgid "Modified since export"
 msgstr ""
 
-#: includes/ExportTab.php:110 includes/ExportTab.php:347
+#: includes/ExportTab.php:110 includes/ExportTab.php:419
 msgid "Exported, no longer published"
 msgstr ""
 
@@ -142,7 +143,7 @@ msgstr ""
 msgid "Select all"
 msgstr ""
 
-#: includes/ExportTab.php:172 includes/ExportTab.php:622
+#: includes/ExportTab.php:172 includes/ExportTab.php:694
 msgid "Title"
 msgstr ""
 
@@ -166,125 +167,154 @@ msgstr ""
 msgid "No posts match the current filters."
 msgstr ""
 
-#: includes/ExportTab.php:212 includes/functions.php:152
+#: includes/ExportTab.php:212 includes/functions.php:231
 msgid "Stop"
 msgstr ""
 
 #: includes/ExportTab.php:231 includes/ExportTab.php:262
-#: includes/Metabox.php:84 includes/Settings.php:243 includes/Settings.php:273
+#: includes/ExportTab.php:279 includes/ExportTab.php:301
+#: includes/Metabox.php:84 includes/Settings.php:258 includes/Settings.php:288
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/ExportTab.php:319
+#: includes/ExportTab.php:312 includes/ExportTab.php:331
+msgid "No posts to commit."
+msgstr ""
+
+#: includes/ExportTab.php:391
 msgid "Total published posts"
 msgstr ""
 
-#: includes/ExportTab.php:549
+#: includes/ExportTab.php:621
 #, php-format
 msgid "%d item"
 msgid_plural "%d items"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/ExportTab.php:557
+#: includes/ExportTab.php:629
 msgid "First page"
 msgstr ""
 
-#: includes/ExportTab.php:558
+#: includes/ExportTab.php:630
 msgid "Previous page"
 msgstr ""
 
-#: includes/ExportTab.php:565
+#: includes/ExportTab.php:637
 msgid "Current Page"
 msgstr ""
 
-#: includes/ExportTab.php:568
+#: includes/ExportTab.php:640
 msgid "of"
 msgstr ""
 
-#: includes/ExportTab.php:572
+#: includes/ExportTab.php:644
 msgid "Next page"
 msgstr ""
 
-#: includes/ExportTab.php:573
+#: includes/ExportTab.php:645
 msgid "Last page"
 msgstr ""
 
-#: includes/ExportTab.php:613
+#: includes/ExportTab.php:685
 msgid "Back to published posts"
 msgstr ""
 
-#: includes/ExportTab.php:623
+#: includes/ExportTab.php:695
 msgid "Current status"
 msgstr ""
 
-#: includes/ExportTab.php:624
+#: includes/ExportTab.php:696
 msgid "Exported on"
 msgstr ""
 
-#: includes/ExportTab.php:625
+#: includes/ExportTab.php:697
 msgid "GitHub file"
 msgstr ""
 
-#: includes/ExportTab.php:630
+#: includes/ExportTab.php:702
 msgid "No exported posts are currently unpublished."
 msgstr ""
 
-#: includes/functions.php:40
+#: includes/functions.php:40 includes/functions.php:67
 msgid "Post not found."
 msgstr ""
 
-#: includes/functions.php:44
+#: includes/functions.php:44 includes/functions.php:71
 msgid "Only published posts can be exported."
 msgstr ""
 
-#: includes/functions.php:134
+#: includes/functions.php:210
 msgid "Network error during export."
 msgstr ""
 
-#: includes/functions.php:142 includes/functions.php:166
+#: includes/functions.php:221 includes/functions.php:254
 msgid "Network error."
 msgstr ""
 
-#: includes/functions.php:144
+#: includes/functions.php:223
 #, php-format
 msgid "%d posts exported successfully."
 msgstr ""
 
-#: includes/functions.php:146
+#: includes/functions.php:225
 #, php-format
 msgid "%d failed:"
 msgstr ""
 
-#: includes/functions.php:148
+#: includes/functions.php:227
 #, php-format
 msgid "%d posts selected (all pages)."
 msgstr ""
 
-#: includes/functions.php:149
+#: includes/functions.php:228
 msgid "selected"
 msgstr ""
 
-#: includes/functions.php:151
+#: includes/functions.php:230
 #, php-format
 msgid "Select all %d items matching this filter"
 msgstr ""
 
-#: includes/functions.php:153
+#: includes/functions.php:232
 msgid "Stopping…"
 msgstr ""
 
-#: includes/functions.php:155
+#: includes/functions.php:234
 #, php-format
 msgid "Stopped: %d posts left unprocessed."
 msgstr ""
 
-#: includes/functions.php:157
+#: includes/functions.php:236
 #, php-format
 msgid "GitHub rate limit reached, waiting %d seconds before retrying..."
 msgstr ""
 
-#: includes/functions.php:165
+#: includes/functions.php:238
+#, php-format
+msgid "Preparing #%d..."
+msgstr ""
+
+#: includes/functions.php:239
+msgid "Committing to GitHub..."
+msgstr ""
+
+#: includes/functions.php:241
+#, php-format
+msgid "%d posts committed to GitHub in a single commit."
+msgstr ""
+
+#: includes/functions.php:243
+#, php-format
+msgid "%d could not be prepared:"
+msgstr ""
+
+#: includes/functions.php:245
+#, php-format
+msgid "Commit failed: %s"
+msgstr ""
+
+#: includes/functions.php:253
 msgid "Testing…"
 msgstr ""
 
@@ -294,6 +324,7 @@ msgid "Branch \"%s\" not found in repository."
 msgstr ""
 
 #: includes/GithubClient.php:64 includes/GithubClient.php:109
+#: includes/GithubClient.php:386
 #, php-format
 msgid "GitHub API error, HTTP %d."
 msgstr ""
@@ -314,7 +345,7 @@ msgstr ""
 msgid "Repository not found or not accessible with this token."
 msgstr ""
 
-#: includes/GithubClient.php:153
+#: includes/GithubClient.php:153 includes/GithubClient.php:377
 #, php-format
 msgid "GitHub rate limit reached. Retrying automatically in %d seconds."
 msgstr ""
@@ -338,25 +369,25 @@ msgstr ""
 msgid "Modified since last export"
 msgstr ""
 
-#: includes/Settings.php:73 includes/Settings.php:74 includes/Settings.php:99
+#: includes/Settings.php:76 includes/Settings.php:77 includes/Settings.php:102
 msgid "Post to GitHub MD"
 msgstr ""
 
-#: includes/Settings.php:104
+#: includes/Settings.php:107
 #, php-format
 msgid "Looking to export posts? Head over to %s."
 msgstr ""
 
-#: includes/Settings.php:105
+#: includes/Settings.php:108
 msgid "Posts &rsaquo; Export to GitHub"
 msgstr ""
 
-#: includes/Settings.php:123
+#: includes/Settings.php:126
 #, php-format
 msgid "Post to GitHub Markdown by Gioxx, source on %s."
 msgstr ""
 
-#: includes/Settings.php:129
+#: includes/Settings.php:132
 msgid ""
 "All trademarks mentioned are the property of their respective owners. Third-"
 "party trademarks, product names, trade names, corporate names and companies "
@@ -366,105 +397,122 @@ msgid ""
 "existing copyright."
 msgstr ""
 
-#: includes/Settings.php:143
+#: includes/Settings.php:146
 msgid "GitHub Personal Access Token"
 msgstr ""
 
-#: includes/Settings.php:150
+#: includes/Settings.php:153
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
 "Generate one at %s."
 msgstr ""
 
-#: includes/Settings.php:159
+#: includes/Settings.php:162
 msgid "Repository"
 msgstr ""
 
-#: includes/Settings.php:163
+#: includes/Settings.php:166
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
 msgstr ""
 
-#: includes/Settings.php:168
+#: includes/Settings.php:171
 msgid "Branch"
 msgstr ""
 
-#: includes/Settings.php:171
+#: includes/Settings.php:174
 msgid "Detect from repository"
 msgstr ""
 
-#: includes/Settings.php:174
+#: includes/Settings.php:177
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr ""
 
-#: includes/Settings.php:179
+#: includes/Settings.php:182
 msgid "Base folder"
 msgstr ""
 
-#: includes/Settings.php:183
+#: includes/Settings.php:186
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
 msgstr ""
 
-#: includes/Settings.php:188
+#: includes/Settings.php:191
 msgid "Automatic export"
 msgstr ""
 
-#: includes/Settings.php:192
+#: includes/Settings.php:195
 msgid "Automatically export new posts to GitHub when published."
 msgstr ""
 
-#: includes/Settings.php:195
+#: includes/Settings.php:198
 msgid ""
 "Runs a few seconds after publishing via WP-Cron, without delaying the "
 "Publish button. Existing posts are not exported retroactively — use the "
 "Export posts page for those."
 msgstr ""
 
-#: includes/Settings.php:200
+#: includes/Settings.php:203
 msgid "Automatic re-export"
 msgstr ""
 
-#: includes/Settings.php:204
+#: includes/Settings.php:207
 msgid "Automatically re-export already-published posts to GitHub when updated."
 msgstr ""
 
-#: includes/Settings.php:207
+#: includes/Settings.php:210
 msgid ""
 "Same background behavior as automatic export, triggered on every update to a "
 "published post instead of only its first publish."
 msgstr ""
 
-#: includes/Settings.php:212
-msgid "Uninstall"
-msgstr ""
-
-#: includes/Settings.php:216
-msgid "Remove all plugin settings and export data when this plugin is deleted."
+#: includes/Settings.php:215
+msgid "Bulk export method"
 msgstr ""
 
 #: includes/Settings.php:219
+msgid "Combine bulk exports into a single commit (recommended)."
+msgstr ""
+
+#: includes/Settings.php:222
+msgid ""
+"When checked, bulk export prepares all selected posts locally and writes "
+"them to GitHub in one commit and one push, instead of one commit per post. "
+"Much faster and far less likely to hit GitHub rate limits. Uncheck to go "
+"back to a separate commit per post, e.g. to keep one commit per post in your "
+"repository history."
+msgstr ""
+
+#: includes/Settings.php:227
+msgid "Uninstall"
+msgstr ""
+
+#: includes/Settings.php:231
+msgid "Remove all plugin settings and export data when this plugin is deleted."
+msgstr ""
+
+#: includes/Settings.php:234
 msgid ""
 "Uncheck to keep your GitHub connection settings and per-post export history "
 "in the database if you delete the plugin (useful before reinstalling)."
 msgstr ""
 
-#: includes/Settings.php:227
+#: includes/Settings.php:242
 msgid "Test connection"
 msgstr ""
 
-#: includes/Settings.php:230
+#: includes/Settings.php:245
 msgid "Save Changes"
 msgstr ""
 
-#: includes/Settings.php:255
+#: includes/Settings.php:270
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 
-#: includes/Settings.php:285
+#: includes/Settings.php:300
 msgid "Enter both a token and a valid repository first."
 msgstr ""

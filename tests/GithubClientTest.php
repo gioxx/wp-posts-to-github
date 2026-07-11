@@ -326,4 +326,161 @@ class GithubClientTest extends TestCase
 
         $this->assertSame(['success' => true, 'sha' => 'def456'], $result);
     }
+
+    public function test_commit_files_creates_one_commit_for_multiple_files(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('is_wp_error')->justReturn(false);
+
+        Functions\expect('wp_remote_get')
+            ->twice()
+            ->andReturn(
+                ['response' => ['code' => 200], 'body_json' => ['object' => ['sha' => 'parent-sha']]],
+                ['response' => ['code' => 200], 'body_json' => ['tree' => ['sha' => 'base-tree-sha']]]
+            );
+
+        Functions\expect('wp_remote_request')
+            ->times(3)
+            ->andReturn(
+                [
+                    'response' => ['code' => 201],
+                    'body_json' => [
+                        'sha' => 'new-tree-sha',
+                        'tree' => [
+                            ['path' => 'posts/2026/a.md', 'sha' => 'blob-a'],
+                            ['path' => 'posts/2026/b.md', 'sha' => 'blob-b'],
+                        ],
+                    ],
+                ],
+                ['response' => ['code' => 201], 'body_json' => ['sha' => 'new-commit-sha']],
+                ['response' => ['code' => 200], 'body_json' => []]
+            );
+
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->alias(function ($response) {
+            return json_encode($response['body_json']);
+        });
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->commitFiles(
+            [
+                ['path' => 'posts/2026/a.md', 'content' => '# A'],
+                ['path' => 'posts/2026/b.md', 'content' => '# B'],
+            ],
+            'Bulk export: 2 posts'
+        );
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('new-commit-sha', $result['commit_sha']);
+        $this->assertSame(
+            ['posts/2026/a.md' => 'blob-a', 'posts/2026/b.md' => 'blob-b'],
+            $result['blob_shas']
+        );
+    }
+
+    public function test_commit_files_handles_empty_branch_with_no_prior_commits(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('is_wp_error')->justReturn(false);
+
+        Functions\expect('wp_remote_get')
+            ->once()
+            ->andReturn(['response' => ['code' => 404], 'body_json' => []]);
+
+        Functions\expect('wp_remote_request')
+            ->times(3)
+            ->with(\Mockery::any(), \Mockery::on(function ($args) {
+                return true;
+            }))
+            ->andReturn(
+                ['response' => ['code' => 201], 'body_json' => ['sha' => 'new-tree-sha', 'tree' => []]],
+                ['response' => ['code' => 201], 'body_json' => ['sha' => 'new-commit-sha']],
+                ['response' => ['code' => 201], 'body_json' => []]
+            );
+
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->alias(function ($response) {
+            return json_encode($response['body_json']);
+        });
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->commitFiles([['path' => 'posts/2026/a.md', 'content' => '# A']], 'Bulk export: 1 post');
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('new-commit-sha', $result['commit_sha']);
+    }
+
+    public function test_commit_files_stops_and_returns_error_when_get_commit_fails(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('is_wp_error')->justReturn(false);
+
+        Functions\expect('wp_remote_get')
+            ->twice()
+            ->andReturn(
+                ['response' => ['code' => 200], 'body_json' => ['object' => ['sha' => 'parent-sha']]],
+                ['response' => ['code' => 500], 'body_json' => ['message' => 'Server error']]
+            );
+
+        Functions\expect('wp_remote_request')->never();
+
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->alias(function ($response) {
+            return json_encode($response['body_json']);
+        });
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->commitFiles([['path' => 'posts/2026/a.md', 'content' => '# A']], 'Bulk export: 1 post');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('Server error', $result['error']);
+    }
+
+    public function test_commit_files_detects_rate_limit_on_tree_creation(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('is_wp_error')->justReturn(false);
+
+        Functions\expect('wp_remote_get')
+            ->twice()
+            ->andReturn(
+                ['response' => ['code' => 200], 'body_json' => ['object' => ['sha' => 'parent-sha']]],
+                ['response' => ['code' => 200], 'body_json' => ['tree' => ['sha' => 'base-tree-sha']]]
+            );
+
+        Functions\expect('wp_remote_request')
+            ->once()
+            ->andReturn(['response' => ['code' => 403], 'body_json' => ['message' => 'rate limited']]);
+
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->alias(function ($response) {
+            return json_encode($response['body_json']);
+        });
+        Functions\when('wp_remote_retrieve_header')->alias(function ($response, $header) {
+            return $header === 'retry-after' ? '20' : '';
+        });
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->commitFiles([['path' => 'posts/2026/a.md', 'content' => '# A']], 'Bulk export: 1 post');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame(20, $result['retry_after']);
+    }
 }

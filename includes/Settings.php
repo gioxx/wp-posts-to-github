@@ -16,6 +16,7 @@ class Settings
             'auto_export' => false,
             'auto_reexport' => false,
             'cleanup_on_uninstall' => true,
+            'batch_commit' => true,
         ];
     }
 
@@ -30,6 +31,7 @@ class Settings
         $autoExport = !empty($input['auto_export']);
         $autoReexport = !empty($input['auto_reexport']);
         $cleanupOnUninstall = !empty($input['cleanup_on_uninstall']);
+        $batchCommit = !empty($input['batch_commit']);
 
         return [
             'token' => $token,
@@ -39,6 +41,7 @@ class Settings
             'auto_export' => $autoExport,
             'auto_reexport' => $autoReexport,
             'cleanup_on_uninstall' => $cleanupOnUninstall,
+            'batch_commit' => $batchCommit,
         ];
     }
 
@@ -205,6 +208,18 @@ class Settings
                             </label>
                             <p class="description">
                                 <?php esc_html_e('Same background behavior as automatic export, triggered on every update to a published post instead of only its first publish.', 'post-to-github-md'); ?>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><?php esc_html_e('Bulk export method', 'post-to-github-md'); ?></th>
+                        <td>
+                            <label for="potogh_batch_commit">
+                                <input type="checkbox" id="potogh_batch_commit" name="<?php echo esc_attr(self::OPTION_NAME); ?>[batch_commit]" value="1" <?php checked($settings['batch_commit']); ?>>
+                                <?php esc_html_e('Combine bulk exports into a single commit (recommended).', 'post-to-github-md'); ?>
+                            </label>
+                            <p class="description">
+                                <?php esc_html_e('When checked, bulk export prepares all selected posts locally and writes them to GitHub in one commit and one push, instead of one commit per post. Much faster and far less likely to hit GitHub rate limits. Uncheck to go back to a separate commit per post, e.g. to keep one commit per post in your repository history.', 'post-to-github-md'); ?>
                             </p>
                         </td>
                     </tr>

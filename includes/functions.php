@@ -59,6 +59,82 @@ function export_post_by_id(int $postId): array
     return ['success' => true, 'path' => $result['path'], 'exported_at' => $exportedAt, 'trace' => $result['trace']];
 }
 
+function prepare_export_data(int $postId): array
+{
+    $post = get_post($postId);
+
+    if (!$post instanceof \WP_Post) {
+        return ['success' => false, 'error' => __('Post not found.', 'post-to-github-md')];
+    }
+
+    if ($post->post_status !== 'publish' || $post->post_type !== 'post') {
+        return ['success' => false, 'error' => __('Only published posts can be exported.', 'post-to-github-md')];
+    }
+
+    $settings = Settings::get();
+    $service = new ExportService(new Converter(), new GithubClient($settings['token'], $settings['owner_repo'], $settings['branch']), $settings['base_folder']);
+    $prepared = $service->prepareExport(post_to_export_data($post));
+
+    return [
+        'success' => true,
+        'post_id' => $postId,
+        'title' => get_the_title($post),
+        'path' => $prepared['path'],
+        'content' => $prepared['content'],
+        'trace' => $prepared['trace'],
+    ];
+}
+
+function build_batch_commit_message(array $items): string
+{
+    $subject = sprintf('Bulk export: %d posts', count($items));
+
+    $lines = array_map(static function (array $item): string {
+        return sprintf('- %s (#%d)', $item['title'], $item['post_id']);
+    }, $items);
+
+    return $subject . "\n\n" . implode("\n", $lines);
+}
+
+function commit_batch(array $items): array
+{
+    $settings = Settings::get();
+    $client = new GithubClient($settings['token'], $settings['owner_repo'], $settings['branch']);
+
+    $files = array_map(static function (array $item): array {
+        return ['path' => $item['path'], 'content' => $item['content']];
+    }, $items);
+
+    $result = $client->commitFiles($files, build_batch_commit_message($items));
+
+    if (!$result['success']) {
+        return $result;
+    }
+
+    $exportedAt = gmdate('c');
+    $exported = [];
+
+    foreach ($items as $item) {
+        $sha = $result['blob_shas'][ltrim($item['path'], '/')] ?? null;
+
+        update_post_meta($item['post_id'], '_potogh_path', $item['path']);
+        update_post_meta($item['post_id'], '_potogh_sha', $sha);
+        update_post_meta($item['post_id'], '_potogh_exported_at', $exportedAt);
+
+        $exported[] = [
+            'post_id' => $item['post_id'],
+            'message' => Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt),
+        ];
+    }
+
+    return [
+        'success' => true,
+        'commit_sha' => $result['commit_sha'],
+        'exported_at' => $exportedAt,
+        'exported' => $exported,
+    ];
+}
+
 function schedule_auto_export(string $newStatus, string $oldStatus, \WP_Post $post): void
 {
     if ($newStatus !== 'publish' || $oldStatus === 'publish' || $post->post_type !== 'post') {
@@ -136,9 +212,12 @@ function enqueue_admin_assets(string $hook): void
     }
 
     if ($hook === 'posts_page_potogh-export') {
+        $settings = Settings::get();
+
         wp_enqueue_script('potogh-bulk', POTOGH_PLUGIN_URL . 'assets/js/bulk.js', ['jquery'], POTOGH_VERSION, true);
         wp_localize_script('potogh-bulk', 'potoghBulk', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
+            'batchCommit' => !empty($settings['batch_commit']),
             'networkError' => __('Network error.', 'post-to-github-md'),
             /* translators: %d: number of successfully exported posts */
             'summarySucceeded' => __('%d posts exported successfully.', 'post-to-github-md'),
@@ -155,6 +234,15 @@ function enqueue_admin_assets(string $hook): void
             'summaryStopped' => __('Stopped: %d posts left unprocessed.', 'post-to-github-md'),
             /* translators: %d: seconds to wait before retrying */
             'rateLimitWait' => __('GitHub rate limit reached, waiting %d seconds before retrying...', 'post-to-github-md'),
+            /* translators: %d: number of prepared posts */
+            'preparing' => __('Preparing #%d...', 'post-to-github-md'),
+            'committing' => __('Committing to GitHub...', 'post-to-github-md'),
+            /* translators: %d: number of posts included in the commit */
+            'summaryCommitted' => __('%d posts committed to GitHub in a single commit.', 'post-to-github-md'),
+            /* translators: %d: number of posts that could not be prepared */
+            'summaryPrepareFailed' => __('%d could not be prepared:', 'post-to-github-md'),
+            /* translators: %s: error message returned by GitHub */
+            'commitFailed' => __('Commit failed: %s', 'post-to-github-md'),
         ]);
     }
 

@@ -89,6 +89,19 @@ class ExportServiceTest extends TestCase
         $this->assertSame('updated-sha', $result['sha']);
     }
 
+    public function test_prepare_export_computes_path_and_content_without_calling_github(): void
+    {
+        $githubClient = $this->createMock(GithubClient::class);
+        $githubClient->expects($this->never())->method('putFile');
+
+        $service = new ExportService(new Converter(), $githubClient, 'posts');
+        $prepared = $service->prepareExport($this->samplePostData());
+
+        $this->assertSame('posts/2026/come-configurare-wordpress.md', $prepared['path']);
+        $this->assertStringContainsString('# Titolo', $prepared['content']);
+        $this->assertNotEmpty($prepared['trace']);
+    }
+
     public function test_returns_error_when_github_client_fails(): void
     {
         $githubClient = $this->createMock(GithubClient::class);

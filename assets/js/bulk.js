@@ -286,25 +286,14 @@
         $('#potogh-bulk-progress-text').text(done + '/' + total);
     }
 
-    $('#potogh-bulk-stop').on('click', function () {
-        stopRequested = true;
-        $(this).prop('disabled', true).text(potoghBulk.stopping);
-    });
+    function finishAndReload(summary) {
+        $('#potogh-bulk-summary').text(summary);
+        window.setTimeout(function () {
+            window.location.reload();
+        }, 1200);
+    }
 
-    $('#potogh-bulk-export-selected').on('click', function () {
-        var nonce = $('.potogh-export-tab').data('nonce');
-        var ids = selectedIds.slice();
-
-        if (ids.length === 0) {
-            return;
-        }
-
-        stopRequested = false;
-        setExporting(true);
-        $('#potogh-bulk-log').empty();
-        $('#potogh-bulk-summary').text('');
-        updateProgress(0, ids.length);
-
+    function runLegacyExport(ids, nonce) {
         var succeeded = 0;
         var failed = [];
 
@@ -317,10 +306,7 @@
                 if (stopRequested && index < ids.length) {
                     summary += ' ' + potoghBulk.summaryStopped.replace('%d', ids.length - index);
                 }
-                $('#potogh-bulk-summary').text(summary);
-                window.setTimeout(function () {
-                    window.location.reload();
-                }, 1200);
+                finishAndReload(summary);
                 return;
             }
 
@@ -340,5 +326,152 @@
         }
 
         next(0);
+    }
+
+    function prepareOne(postId, nonce) {
+        var deferred = $.Deferred();
+
+        $.post(potoghBulk.ajaxUrl, {
+            action: 'potogh_bulk_prepare_one',
+            post_id: postId,
+            nonce: nonce
+        }).done(function (response) {
+            deferred.resolve({ success: !!response.success, message: response.data ? response.data.message : '', data: response.data || {} });
+        }).fail(function (jqXHR) {
+            var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
+            deferred.resolve({
+                success: false,
+                message: data && data.message ? data.message : potoghBulk.networkError,
+                data: data || {}
+            });
+        });
+
+        return deferred.promise();
+    }
+
+    function commitBatch(items, nonce, retried) {
+        var deferred = $.Deferred();
+
+        $.post(potoghBulk.ajaxUrl, {
+            action: 'potogh_bulk_commit_batch',
+            nonce: nonce,
+            items: JSON.stringify(items)
+        }).done(function (response) {
+            deferred.resolve({ success: !!response.success, data: response.data || {} });
+        }).fail(function (jqXHR) {
+            var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
+            deferred.resolve({ success: false, data: data || {} });
+        });
+
+        return deferred.promise().then(function (result) {
+            if (!result.success && !retried && result.data.retry_after) {
+                var wait = Math.min(Math.max(parseInt(result.data.retry_after, 10) || 0, 1), 60);
+                logLine(potoghBulk.rateLimitWait.replace('%d', wait));
+
+                var retryDeferred = $.Deferred();
+                window.setTimeout(function () {
+                    commitBatch(items, nonce, true).then(retryDeferred.resolve);
+                }, wait * 1000);
+                return retryDeferred.promise();
+            }
+
+            return result;
+        });
+    }
+
+    function runBatchExport(ids, nonce) {
+        var prepared = [];
+        var failed = [];
+
+        function prepareNext(index) {
+            if (stopRequested || index >= ids.length) {
+                commitPrepared(ids.length - (prepared.length + failed.length));
+                return;
+            }
+
+            var postId = ids[index];
+
+            prepareOne(postId, nonce).then(function (result) {
+                if (result.success) {
+                    prepared.push({
+                        post_id: postId,
+                        title: result.data.title,
+                        path: result.data.path,
+                        content: result.data.content
+                    });
+                    logLine(potoghBulk.preparing.replace('%d', postId));
+                    logTrace(postId, result.data.trace);
+                } else {
+                    failed.push(postId + ': ' + result.message);
+                }
+                updateProgress(index + 1, ids.length);
+                prepareNext(index + 1);
+            });
+        }
+
+        function commitPrepared(skippedCount) {
+            if (prepared.length === 0) {
+                finishAndReload(buildBatchSummary(0, failed, skippedCount));
+                return;
+            }
+
+            logLine(potoghBulk.committing);
+            $('#potogh-bulk-progress-text').text(potoghBulk.committing);
+
+            commitBatch(prepared, nonce, false).then(function (result) {
+                if (result.success) {
+                    $.each(result.data.exported, function (i, item) {
+                        markRowExported(item.post_id, item.message);
+                    });
+                    finishAndReload(buildBatchSummary(result.data.exported.length, failed, skippedCount));
+                } else {
+                    var message = potoghBulk.commitFailed.replace('%s', result.data.message || potoghBulk.networkError);
+                    logLine(message);
+                    finishAndReload(message);
+                }
+            });
+        }
+
+        function buildBatchSummary(committedCount, failedList, skippedCount) {
+            var summary = potoghBulk.summaryCommitted.replace('%d', committedCount);
+
+            if (failedList.length > 0) {
+                summary += ' ' + potoghBulk.summaryPrepareFailed.replace('%d', failedList.length) + ' ' + failedList.join('; ');
+            }
+
+            if (skippedCount > 0) {
+                summary += ' ' + potoghBulk.summaryStopped.replace('%d', skippedCount);
+            }
+
+            return summary;
+        }
+
+        prepareNext(0);
+    }
+
+    $('#potogh-bulk-stop').on('click', function () {
+        stopRequested = true;
+        $(this).prop('disabled', true).text(potoghBulk.stopping);
+    });
+
+    $('#potogh-bulk-export-selected').on('click', function () {
+        var nonce = $('.potogh-export-tab').data('nonce');
+        var ids = selectedIds.slice();
+
+        if (ids.length === 0) {
+            return;
+        }
+
+        stopRequested = false;
+        setExporting(true);
+        $('#potogh-bulk-log').empty();
+        $('#potogh-bulk-summary').text('');
+        updateProgress(0, ids.length);
+
+        if (potoghBulk.batchCommit) {
+            runBatchExport(ids, nonce);
+        } else {
+            runLegacyExport(ids, nonce);
+        }
     });
 })(jQuery);

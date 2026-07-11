@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.0] - 2026-07-11
+### Added
+- Single-commit bulk export: instead of one commit (and one push) per post, the plugin now prepares every selected post's Markdown locally and writes the whole batch to GitHub via the Git Data API in one commit and one push. Cuts a bulk export of N posts from ~2N GitHub API calls down to about 5, largely sidestepping rate limits.
+- New "Bulk export method" setting (checked by default) to opt back into the previous one-commit-per-post behavior, e.g. to keep a dedicated commit per post in the repository history.
+
 ## [1.4.0] - 2026-07-11
 ### Added
 - Automatic re-export of already-published posts when updated (separate opt-in setting from automatic export on publish).

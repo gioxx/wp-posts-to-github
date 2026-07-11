@@ -169,6 +169,224 @@ class GithubClient
         ];
     }
 
+    public function commitFiles(array $files, string $message): array
+    {
+        $ref = $this->getRef();
+
+        if (!$ref['success'] && empty($ref['not_found'])) {
+            return $ref;
+        }
+
+        $parentSha = null;
+        $baseTreeSha = null;
+
+        if ($ref['success']) {
+            $parentSha = $ref['sha'];
+            $commit = $this->getCommit($parentSha);
+
+            if (!$commit['success']) {
+                return $commit;
+            }
+
+            $baseTreeSha = $commit['tree_sha'];
+        }
+
+        $tree = $this->createTree($baseTreeSha, $files);
+
+        if (!$tree['success']) {
+            return $tree;
+        }
+
+        $commitResult = $this->createCommit($message, $tree['sha'], $parentSha);
+
+        if (!$commitResult['success']) {
+            return $commitResult;
+        }
+
+        $refResult = $this->updateRef($commitResult['sha'], $parentSha === null);
+
+        if (!$refResult['success']) {
+            return $refResult;
+        }
+
+        return [
+            'success' => true,
+            'commit_sha' => $commitResult['sha'],
+            'blob_shas' => $tree['blob_shas'],
+        ];
+    }
+
+    private function getRef(): array
+    {
+        $url = sprintf('https://api.github.com/repos/%s/git/ref/heads/%s', $this->ownerRepo, rawurlencode($this->branch));
+        $response = wp_remote_get($url, ['headers' => $this->headers()]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'error' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code === 404) {
+            return ['success' => false, 'not_found' => true];
+        }
+
+        if ($code < 200 || $code >= 300) {
+            return $this->apiError($response, $code);
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        return ['success' => true, 'sha' => $body['object']['sha'] ?? null];
+    }
+
+    private function getCommit(string $sha): array
+    {
+        $url = sprintf('https://api.github.com/repos/%s/git/commits/%s', $this->ownerRepo, $sha);
+        $response = wp_remote_get($url, ['headers' => $this->headers()]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'error' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code < 200 || $code >= 300) {
+            return $this->apiError($response, $code);
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        return ['success' => true, 'tree_sha' => $body['tree']['sha'] ?? null];
+    }
+
+    private function createTree(?string $baseTreeSha, array $files): array
+    {
+        $payload = [
+            'tree' => array_map(static function (array $file): array {
+                return [
+                    'path' => ltrim($file['path'], '/'),
+                    'mode' => '100644',
+                    'type' => 'blob',
+                    'content' => $file['content'],
+                ];
+            }, $files),
+        ];
+
+        if ($baseTreeSha !== null) {
+            $payload['base_tree'] = $baseTreeSha;
+        }
+
+        $url = sprintf('https://api.github.com/repos/%s/git/trees', $this->ownerRepo);
+        $response = wp_remote_request($url, [
+            'method' => 'POST',
+            'headers' => $this->headers(),
+            'body' => wp_json_encode($payload),
+        ]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'error' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code < 200 || $code >= 300) {
+            return $this->apiError($response, $code);
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        $blobShas = [];
+
+        foreach ($body['tree'] ?? [] as $entry) {
+            if (isset($entry['path'], $entry['sha'])) {
+                $blobShas[$entry['path']] = $entry['sha'];
+            }
+        }
+
+        return ['success' => true, 'sha' => $body['sha'] ?? null, 'blob_shas' => $blobShas];
+    }
+
+    private function createCommit(string $message, string $treeSha, ?string $parentSha): array
+    {
+        $payload = [
+            'message' => $message,
+            'tree' => $treeSha,
+            'parents' => $parentSha !== null ? [$parentSha] : [],
+        ];
+
+        $url = sprintf('https://api.github.com/repos/%s/git/commits', $this->ownerRepo);
+        $response = wp_remote_request($url, [
+            'method' => 'POST',
+            'headers' => $this->headers(),
+            'body' => wp_json_encode($payload),
+        ]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'error' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code < 200 || $code >= 300) {
+            return $this->apiError($response, $code);
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        return ['success' => true, 'sha' => $body['sha'] ?? null];
+    }
+
+    private function updateRef(string $commitSha, bool $create): array
+    {
+        if ($create) {
+            $url = sprintf('https://api.github.com/repos/%s/git/refs', $this->ownerRepo);
+            $method = 'POST';
+            $payload = ['ref' => 'refs/heads/' . $this->branch, 'sha' => $commitSha];
+        } else {
+            $url = sprintf('https://api.github.com/repos/%s/git/refs/heads/%s', $this->ownerRepo, rawurlencode($this->branch));
+            $method = 'PATCH';
+            $payload = ['sha' => $commitSha];
+        }
+
+        $response = wp_remote_request($url, [
+            'method' => $method,
+            'headers' => $this->headers(),
+            'body' => wp_json_encode($payload),
+        ]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'error' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code < 200 || $code >= 300) {
+            return $this->apiError($response, $code);
+        }
+
+        return ['success' => true];
+    }
+
+    private function apiError($response, int $code): array
+    {
+        $retryAfter = $this->rateLimitRetryAfter($response, $code);
+
+        if ($retryAfter !== null) {
+            return [
+                'success' => false,
+                'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'post-to-github-md'), $retryAfter),
+                'retry_after' => $retryAfter,
+            ];
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+
+        return [
+            'success' => false,
+            'error' => $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $code),
+        ];
+    }
+
     private function rateLimitRetryAfter($response, int $code): ?int
     {
         if ($code !== 403 && $code !== 429) {

@@ -315,6 +315,179 @@ class FunctionsTest extends TestCase
         $this->assertConditionsMet();
     }
 
+    public function test_build_batch_commit_message_lists_each_post(): void
+    {
+        $message = \POTOGH\build_batch_commit_message([
+            ['post_id' => 12, 'title' => 'Come configurare WordPress'],
+            ['post_id' => 34, 'title' => 'Un altro post'],
+        ]);
+
+        $this->assertStringStartsWith('Bulk export: 2 posts', $message);
+        $this->assertStringContainsString('- Come configurare WordPress (#12)', $message);
+        $this->assertStringContainsString('- Un altro post (#34)', $message);
+    }
+
+    public function test_prepare_export_data_returns_error_when_post_not_found(): void
+    {
+        Functions\when('get_post')->justReturn(null);
+        Functions\when('__')->returnArg(1);
+
+        $result = \POTOGH\prepare_export_data(999);
+
+        $this->assertFalse($result['success']);
+    }
+
+    public function test_prepare_export_data_rejects_non_published_post(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 42;
+        $post->post_status = 'draft';
+        $post->post_type = 'post';
+
+        Functions\when('get_post')->justReturn($post);
+        Functions\when('__')->returnArg(1);
+
+        $result = \POTOGH\prepare_export_data(42);
+
+        $this->assertFalse($result['success']);
+    }
+
+    public function test_prepare_export_data_computes_path_and_content_without_calling_github(): void
+    {
+        $post = new \WP_Post();
+        $post->ID = 1234;
+        $post->post_name = 'come-configurare-wordpress';
+        $post->post_content = '<p>Corpo</p>';
+        $post->post_date_gmt = '2026-07-08 08:30:00';
+        $post->post_status = 'publish';
+        $post->post_type = 'post';
+
+        Functions\when('get_post')->justReturn($post);
+        Functions\when('get_option')->justReturn([
+            'token' => 'ghp_test',
+            'owner_repo' => 'gioxx/blog',
+            'branch' => 'main',
+            'base_folder' => 'posts',
+        ]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\when('get_the_title')->justReturn('Come configurare WordPress');
+        Functions\when('get_the_category')->justReturn([]);
+        Functions\when('get_the_tags')->justReturn([]);
+        Functions\when('wp_list_pluck')->justReturn([]);
+        Functions\when('get_permalink')->justReturn('https://tuosito.it/come-configurare-wordpress/');
+        Functions\when('get_post_time')->justReturn('2026-07-08T10:30:00+02:00');
+        Functions\when('get_post_modified_time')->justReturn('2026-07-08T11:00:00+02:00');
+        Functions\when('apply_filters')->justReturn('<p>Corpo</p>');
+        Functions\when('get_post_meta')->justReturn('');
+        Functions\when('__')->returnArg(1);
+        Functions\expect('wp_remote_get')->never();
+        Functions\expect('wp_remote_request')->never();
+
+        $result = \POTOGH\prepare_export_data(1234);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('posts/2026/come-configurare-wordpress.md', $result['path']);
+        $this->assertStringContainsString('Corpo', $result['content']);
+    }
+
+    public function test_commit_batch_updates_meta_for_each_item_on_success(): void
+    {
+        Functions\when('get_option')->alias(function ($name) {
+            if ($name === 'date_format') {
+                return 'Y-m-d';
+            }
+            if ($name === 'time_format') {
+                return 'H:i';
+            }
+            return [
+                'token' => 'ghp_test',
+                'owner_repo' => 'gioxx/blog',
+                'branch' => 'main',
+            ];
+        });
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\when('__')->returnArg(1);
+        Functions\when('wp_date')->justReturn('2026-07-11 12:00');
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('is_wp_error')->justReturn(false);
+
+        Functions\expect('wp_remote_get')
+            ->twice()
+            ->andReturn(
+                ['response' => ['code' => 200], 'body_json' => ['object' => ['sha' => 'parent-sha']]],
+                ['response' => ['code' => 200], 'body_json' => ['tree' => ['sha' => 'base-tree-sha']]]
+            );
+
+        Functions\expect('wp_remote_request')
+            ->times(3)
+            ->andReturn(
+                [
+                    'response' => ['code' => 201],
+                    'body_json' => [
+                        'sha' => 'new-tree-sha',
+                        'tree' => [['path' => 'posts/2026/a.md', 'sha' => 'blob-a']],
+                    ],
+                ],
+                ['response' => ['code' => 201], 'body_json' => ['sha' => 'new-commit-sha']],
+                ['response' => ['code' => 200], 'body_json' => []]
+            );
+
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->alias(function ($response) {
+            return json_encode($response['body_json']);
+        });
+
+        Functions\expect('update_post_meta')->times(3);
+
+        $result = \POTOGH\commit_batch([
+            ['post_id' => 1, 'title' => 'Post A', 'path' => 'posts/2026/a.md', 'content' => '# A'],
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('new-commit-sha', $result['commit_sha']);
+    }
+
+    public function test_commit_batch_does_not_update_meta_on_failure(): void
+    {
+        Functions\when('get_option')->justReturn([
+            'token' => 'ghp_test',
+            'owner_repo' => 'gioxx/blog',
+            'branch' => 'main',
+        ]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\when('__')->returnArg(1);
+        Functions\when('is_wp_error')->justReturn(false);
+
+        Functions\expect('wp_remote_get')
+            ->once()
+            ->andReturn(['response' => ['code' => 500], 'body_json' => ['message' => 'Server error']]);
+        Functions\expect('wp_remote_request')->never();
+        Functions\expect('update_post_meta')->never();
+
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
+        Functions\when('wp_remote_retrieve_body')->alias(function ($response) {
+            return json_encode($response['body_json']);
+        });
+
+        $result = \POTOGH\commit_batch([
+            ['post_id' => 1, 'title' => 'Post A', 'path' => 'posts/2026/a.md', 'content' => '# A'],
+        ]);
+
+        $this->assertFalse($result['success']);
+    }
+
     private function assertConditionsMet(): void
     {
         $this->assertTrue(true);

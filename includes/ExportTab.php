@@ -271,6 +271,78 @@ class ExportTab
         wp_send_json_success(['ids' => $ids, 'total' => count($ids)]);
     }
 
+    public function handleAjaxPrepareOne(): void
+    {
+        check_ajax_referer('potogh_bulk_export', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+        }
+
+        if (!Settings::isConfigured()) {
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+        }
+
+        $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
+        $result = prepare_export_data($postId);
+
+        if (!$result['success']) {
+            wp_send_json_error(['message' => $result['error'], 'post_id' => $postId], 500);
+        }
+
+        wp_send_json_success($result);
+    }
+
+    public function handleAjaxCommitBatch(): void
+    {
+        check_ajax_referer('potogh_bulk_export', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+        }
+
+        if (!Settings::isConfigured()) {
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+        }
+
+        $raw = isset($_POST['items']) ? wp_unslash($_POST['items']) : '[]';
+        $items = json_decode((string) $raw, true);
+
+        if (!is_array($items) || empty($items)) {
+            wp_send_json_error(['message' => __('No posts to commit.', 'post-to-github-md')], 400);
+        }
+
+        $sanitized = [];
+
+        foreach ($items as $item) {
+            if (!isset($item['post_id'], $item['path'], $item['content'], $item['title'])) {
+                continue;
+            }
+
+            $sanitized[] = [
+                'post_id' => (int) $item['post_id'],
+                'path' => ltrim(str_replace(['../', '..\\'], '', (string) $item['path']), '/'),
+                'content' => (string) $item['content'],
+                'title' => sanitize_text_field($item['title']),
+            ];
+        }
+
+        if (empty($sanitized)) {
+            wp_send_json_error(['message' => __('No posts to commit.', 'post-to-github-md')], 400);
+        }
+
+        $result = commit_batch($sanitized);
+
+        if (!$result['success']) {
+            wp_send_json_error([
+                'message' => $result['error'],
+                'retry_after' => $result['retry_after'] ?? null,
+            ], 500);
+        }
+
+        wp_send_json_success($result);
+    }
+
     public static function filterByStatus(array $postsWithStatus, string $status): array
     {
         return array_values(array_filter($postsWithStatus, static function ($item) use ($status) {

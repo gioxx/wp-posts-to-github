@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,7 +16,8 @@ Post to GitHub Markdown exports your published posts as Markdown files, with YAM
 
 Features:
 * Export a single post from its edit screen, with live status and trace log
-* Bulk export from a dedicated Posts screen: filters, pagination, multi-page selection, stoppable progress, automatic retry on GitHub rate limits
+* Bulk export from a dedicated Posts screen: filters, pagination, multi-page selection, stoppable progress
+* Single commit and push for the whole bulk export batch by default (opt out for one commit per post), with automatic retry on GitHub rate limits either way
 * Optional automatic export of newly published posts and automatic re-export of updated posts, both in the background via WP-Cron
 * Read-only view of posts that were exported but are no longer published (draft, private, scheduled or trashed)
 * Connection test and automatic branch detection against the configured GitHub repository
@@ -43,6 +44,9 @@ No. Images in the post content remain absolute links to your site; nothing binar
 Only the `post` post type, with "published" status.
 
 == Changelog ==
+= 1.5.0 =
+* Bulk export now writes the whole selected batch to GitHub in a single commit and push (via the Git Data API) instead of one commit per post, cutting API calls from ~2N to about 5 and largely avoiding rate limits. Opt-out setting included to keep one commit per post.
+
 = 1.4.0 =
 * Add optional automatic re-export of updated posts, a read-only view of exported-but-unpublished posts, automatic retry on GitHub rate limits, uninstall data cleanup (with an opt-out setting), and WP-CLI commands.
 
@@ -61,5 +65,5 @@ Only the `post` post type, with "published" status.
 * Initial release: single-post and bulk export to a GitHub repository via the Contents API.
 
 == Upgrade Notice ==
-= 1.4.0 =
-Deleting the plugin now removes its data by default; uncheck "Uninstall" in Settings first if you want to keep it.
+= 1.5.0 =
+Bulk export now uses one commit for the whole batch by default; uncheck "Bulk export method" in Settings to keep one commit per post.

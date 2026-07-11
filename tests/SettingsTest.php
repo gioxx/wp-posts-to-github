@@ -17,6 +17,7 @@ class SettingsTest extends TestCase
             'auto_export' => false,
             'auto_reexport' => false,
             'cleanup_on_uninstall' => true,
+            'batch_commit' => true,
         ], Settings::defaults());
     }
 
@@ -37,7 +38,21 @@ class SettingsTest extends TestCase
             'auto_export' => false,
             'auto_reexport' => false,
             'cleanup_on_uninstall' => false,
+            'batch_commit' => false,
         ], $result);
+    }
+
+    public function test_sanitize_enables_batch_commit_when_checkbox_present(): void
+    {
+        $result = Settings::sanitize([
+            'token' => 'ghp_abc123',
+            'owner_repo' => 'gioxx/blog-style-corpus',
+            'branch' => 'main',
+            'base_folder' => 'posts',
+            'batch_commit' => '1',
+        ]);
+
+        $this->assertTrue($result['batch_commit']);
     }
 
     public function test_sanitize_enables_auto_export_when_checkbox_present(): void
