@@ -8,6 +8,10 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 - The single-commit batch export method now only kicks in when 2 or more posts are selected. Exporting exactly one post always uses the per-post commit flow, even when "Bulk export method" is enabled.
+- Bulk export no longer force-reloads the page when it finishes; row status icons and the stat tiles were already updated live, so the reload was redundant.
+
+### Fixed
+- Fatal error on the export screen caused by `termCounts()` using the wrong taxonomy name for tags (`tag` instead of `post_tag`).
 
 ## [1.5.0] - 2026-07-11
 ### Added

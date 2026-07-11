@@ -286,11 +286,9 @@
         $('#potogh-bulk-progress-text').text(done + '/' + total);
     }
 
-    function finishAndReload(summary) {
+    function finishExport(summary) {
         $('#potogh-bulk-summary').text(summary);
-        window.setTimeout(function () {
-            window.location.reload();
-        }, 1200);
+        setExporting(false);
     }
 
     function runLegacyExport(ids, nonce) {
@@ -306,7 +304,7 @@
                 if (stopRequested && index < ids.length) {
                     summary += ' ' + potoghBulk.summaryStopped.replace('%d', ids.length - index);
                 }
-                finishAndReload(summary);
+                finishExport(summary);
                 return;
             }
 
@@ -411,7 +409,7 @@
 
         function commitPrepared(skippedCount) {
             if (prepared.length === 0) {
-                finishAndReload(buildBatchSummary(0, failed, skippedCount));
+                finishExport(buildBatchSummary(0, failed, skippedCount));
                 return;
             }
 
@@ -423,11 +421,11 @@
                     $.each(result.data.exported, function (i, item) {
                         markRowExported(item.post_id, item.message);
                     });
-                    finishAndReload(buildBatchSummary(result.data.exported.length, failed, skippedCount));
+                    finishExport(buildBatchSummary(result.data.exported.length, failed, skippedCount));
                 } else {
                     var message = potoghBulk.commitFailed.replace('%s', result.data.message || potoghBulk.networkError);
                     logLine(message);
-                    finishAndReload(message);
+                    finishExport(message);
                 }
             });
         }
