@@ -544,9 +544,14 @@ class ExportTab
 
         $posts = $this->queryMatchingPosts($filtersForQuery);
         $counts = [];
+        $wpTaxonomy = $taxonomy === 'tag' ? 'post_tag' : $taxonomy;
 
         foreach ($posts as $post) {
-            $termIds = wp_get_post_terms($post->ID, $taxonomy, ['fields' => 'ids']);
+            $termIds = wp_get_post_terms($post->ID, $wpTaxonomy, ['fields' => 'ids']);
+
+            if (!is_array($termIds)) {
+                continue;
+            }
 
             foreach ($termIds as $termId) {
                 $counts[$termId] = ($counts[$termId] ?? 0) + 1;
