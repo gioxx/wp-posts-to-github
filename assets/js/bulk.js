@@ -286,25 +286,56 @@
         $('#potogh-bulk-progress-text').text(done + '/' + total);
     }
 
-    function finishExport(summary) {
+    function finishExport(summary, exportedIds) {
         $('#potogh-bulk-summary').text(summary);
         setExporting(false);
+        deselectExported(exportedIds || []);
+    }
+
+    function deselectExported(ids) {
+        if (!ids.length) {
+            return;
+        }
+
+        var idSet = {};
+        ids.forEach(function (id) {
+            idSet[id] = true;
+        });
+
+        suppressChange = true;
+        $('.potogh-post-checkbox').each(function () {
+            if (idSet[parseInt($(this).val(), 10)]) {
+                $(this).prop('checked', false);
+            }
+        });
+        $('#potogh-select-all').prop('checked', false);
+        suppressChange = false;
+
+        selectedIds = selectedIds.filter(function (id) {
+            return !idSet[id];
+        });
+
+        if (selectedIds.length === 0) {
+            selectAllMatching = false;
+        }
+
+        updateSelectionUi();
     }
 
     function runLegacyExport(ids, nonce) {
-        var succeeded = 0;
+        var succeededIds = [];
         var failed = [];
 
         function next(index) {
             if (stopRequested || index >= ids.length) {
-                var summary = potoghBulk.summarySucceeded.replace('%d', succeeded);
+                var summary = potoghBulk.summarySucceeded.replace('%d', succeededIds.length);
                 if (failed.length > 0) {
                     summary += ' ' + potoghBulk.summaryFailed.replace('%d', failed.length) + ' ' + failed.join('; ');
                 }
                 if (stopRequested && index < ids.length) {
                     summary += ' ' + potoghBulk.summaryStopped.replace('%d', ids.length - index);
                 }
-                finishExport(summary);
+                finishExport(summary, succeededIds);
                 return;
             }
 
@@ -312,7 +343,7 @@
 
             exportWithRetry(postId, nonce, false).then(function (result) {
                 if (result.success) {
-                    succeeded++;
+                    succeededIds.push(postId);
                     markRowExported(postId, result.message);
                 } else {
                     failed.push(postId + ': ' + result.message);
@@ -409,7 +440,7 @@
 
         function commitPrepared(skippedCount) {
             if (prepared.length === 0) {
-                finishExport(buildBatchSummary(0, failed, skippedCount));
+                finishExport(buildBatchSummary(0, failed, skippedCount), []);
                 return;
             }
 
@@ -418,14 +449,17 @@
 
             commitBatch(prepared, nonce, false).then(function (result) {
                 if (result.success) {
+                    var exportedIds = $.map(result.data.exported, function (item) {
+                        return item.post_id;
+                    });
                     $.each(result.data.exported, function (i, item) {
                         markRowExported(item.post_id, item.message);
                     });
-                    finishExport(buildBatchSummary(result.data.exported.length, failed, skippedCount));
+                    finishExport(buildBatchSummary(result.data.exported.length, failed, skippedCount), exportedIds);
                 } else {
                     var message = potoghBulk.commitFailed.replace('%s', result.data.message || potoghBulk.networkError);
                     logLine(message);
-                    finishExport(message);
+                    finishExport(message, []);
                 }
             });
         }

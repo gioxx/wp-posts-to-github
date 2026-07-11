@@ -47,7 +47,7 @@ Only the `post` post type, with "published" status.
 = 1.5.1 =
 * Category and tag filters on the bulk export screen now show a live post count per term, computed against the currently active filters.
 * Bulk export now uses the single-commit batch method only when 2 or more posts are selected; exporting a single post always uses the per-post commit flow, regardless of the "Bulk export method" setting.
-* Bulk export no longer force-reloads the page when done; status icons and stat tiles already update live.
+* Bulk export no longer force-reloads the page when done; status icons and stat tiles already update live, and successfully exported posts are automatically deselected.
 * Fixed a fatal error on the export screen caused by the wrong taxonomy name being used for tag counts.
 
 = 1.5.0 =
