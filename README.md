@@ -1,6 +1,6 @@
 # WordPress Posts to GitHub
 
-*[Leggi questo in italiano](README.it.md)*
+*[README disponibile anche italiano](README.it.md)*
 
 A WordPress plugin that exports your published posts as Markdown files (with YAML front matter) to an existing GitHub repository. The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
 
