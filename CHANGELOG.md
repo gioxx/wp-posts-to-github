@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.6] - 2026-07-12
+### Changed
+- Bulk export screen: "posts per page" is now set via the native WordPress Screen Options panel instead of a custom dropdown, persisted the standard WordPress way (per-user meta tied to the screen option).
+- Bulk export screen: pagination now happens at the database level (`WP_Query` with `posts_per_page`/`paged`) for the filter combinations that don't require computing export status per post (no status filter, "Never exported", and the orphaned-posts view), instead of always loading every matching post into memory and slicing in PHP. The "Exported" and "Modified since export" filters keep the previous full-fetch behavior since their status can't be expressed as a database query.
+
 ## [1.5.5] - 2026-07-12
 ### Changed
 - Plugin renamed from "WordPress Posts to GitHub" to "Posts to GitHub", ahead of submission to the official WordPress.org plugin directory, to comply with the WordPress trademark policy (third-party plugins may not use "WordPress" in the plugin name). Internal identifiers (text domain, PHP prefixes, plugin folder name, option names) are unchanged, so existing installs are unaffected.

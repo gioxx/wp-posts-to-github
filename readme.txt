@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.5
+Stable tag: 1.5.6
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,10 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.6 =
+* The bulk export screen's "posts per page" is now set via the native WordPress Screen Options panel instead of a custom dropdown.
+* Faster pagination on the bulk export screen: most filter combinations now paginate at the database level instead of loading every matching post into memory.
+
 = 1.5.5 =
 * Plugin renamed from "WordPress Posts to GitHub" to "Posts to GitHub" to comply with the WordPress trademark policy.
 
