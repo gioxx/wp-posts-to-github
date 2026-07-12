@@ -50,6 +50,7 @@ jobs:
             | grep -v '^phpunit\.xml\.dist$' \
             | grep -v '^\.github/' \
             | grep -v '^\.gitignore$' \
+            | grep -v '^vendor/' \
             | rsync -a --files-from=- . "$STAGING/"
           cp -r vendor "$STAGING/vendor"
           cd /tmp
