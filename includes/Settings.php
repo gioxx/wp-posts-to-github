@@ -139,6 +139,7 @@ class Settings
     private function renderSettingsForm(): void
     {
         $settings = self::get();
+        $repoLocked = $settings['owner_repo'] !== '';
         ?>
             <form method="post" action="options.php">
                 <?php settings_fields('potogh_settings_group'); ?>
@@ -162,9 +163,17 @@ class Settings
                     <tr>
                         <th><label for="potogh_owner_repo"><?php esc_html_e('Repository', 'post-to-github-md'); ?></label></th>
                         <td>
-                            <input type="text" id="potogh_owner_repo" name="<?php echo esc_attr(self::OPTION_NAME); ?>[owner_repo]" value="<?php echo esc_attr($settings['owner_repo']); ?>" class="regular-text" placeholder="owner/repo">
+                            <input type="text" id="potogh_owner_repo" name="<?php echo esc_attr(self::OPTION_NAME); ?>[owner_repo]" value="<?php echo esc_attr($settings['owner_repo']); ?>" class="regular-text" placeholder="owner/repo" <?php echo $repoLocked ? 'readonly' : ''; ?>>
+                            <?php if ($repoLocked) : ?>
+                                <button type="button" class="button" id="potogh-edit-repo"><?php esc_html_e('Change repository', 'post-to-github-md'); ?></button>
+                            <?php endif; ?>
+                            <button type="button" class="button" id="potogh-test-connection"><?php esc_html_e('Test connection', 'post-to-github-md'); ?></button>
+                            <span id="potogh-test-connection-result"></span>
                             <p class="description">
                                 <?php esc_html_e('Enter either "owner/repo" or the full GitHub URL (e.g. https://github.com/owner/repo).', 'post-to-github-md'); ?>
+                                <?php if ($repoLocked) : ?>
+                                    <?php esc_html_e('Locked to avoid accidental changes — click "Change repository" to edit it.', 'post-to-github-md'); ?>
+                                <?php endif; ?>
                             </p>
                         </td>
                     </tr>
@@ -239,13 +248,9 @@ class Settings
                 </table>
                 <p class="submit potogh-submit-row">
                     <?php wp_nonce_field('potogh_test_connection', 'potogh_test_connection_nonce'); ?>
-                    <button type="button" class="button" id="potogh-test-connection">
-                        <?php esc_html_e('Test connection', 'post-to-github-md'); ?>
-                    </button>
                     <button type="submit" class="button button-primary" id="potogh-save-settings" <?php disabled(!self::isConfigured()); ?>>
                         <?php esc_html_e('Save Changes', 'post-to-github-md'); ?>
                     </button>
-                    <span id="potogh-test-connection-result"></span>
                 </p>
             </form>
         <?php

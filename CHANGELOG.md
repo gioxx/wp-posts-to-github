@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.4] - 2026-07-12
+### Changed
+- "Test connection" moved next to the Repository field instead of the bottom submit row.
+- The Repository field is now locked (read-only) once a repository is configured, to avoid accidental edits; a "Change repository" button unlocks it for editing.
+
 ## [1.5.3] - 2026-07-12
 ### Changed
 - "Save Changes" on the Settings page is no longer forced to re-run "Test connection" on every visit. It only requires a successful test the first time you configure the token/repository, or after editing token, repository or branch — toggling other settings no longer re-locks it.

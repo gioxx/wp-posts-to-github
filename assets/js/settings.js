@@ -7,6 +7,12 @@
         $save.prop('disabled', true);
     });
 
+    $(document).on('click', '#potogh-edit-repo', function () {
+        $('#potogh_owner_repo').prop('readonly', false).trigger('focus');
+        $(this).remove();
+        $save.prop('disabled', true);
+    });
+
     $(document).on('click', '#potogh-test-connection', function () {
         var $button = $(this);
         var $result = $('#potogh-test-connection-result');

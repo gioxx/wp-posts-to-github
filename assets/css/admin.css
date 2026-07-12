@@ -232,6 +232,16 @@
     margin-left: 6px;
 }
 
+#potogh_owner_repo[readonly] {
+    background: #f0f0f1;
+    color: #646970;
+}
+
+#potogh-edit-repo,
+#potogh-test-connection {
+    margin-left: 6px;
+}
+
 .potogh-settings .description code {
     padding: 1px 4px;
 }

@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.3
+Stable tag: 1.5.4
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,10 @@ No. Images in the post content remain absolute links to your site; nothing binar
 Only the `post` post type, with "published" status.
 
 == Changelog ==
+= 1.5.4 =
+* "Test connection" moved next to the Repository field.
+* The Repository field is now locked (read-only) once a repository is configured; click "Change repository" to unlock and edit it.
+
 = 1.5.3 =
 * "Save Changes" on the Settings page no longer requires re-running "Test connection" on every visit; only the first setup or changes to token/repository/branch require it.
 

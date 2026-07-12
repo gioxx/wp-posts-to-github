@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: WordPress Posts to GitHub 1.5.2\n"
+"Project-Id-Version: WordPress Posts to GitHub 1.5.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 10:51+0200\n"
+"POT-Creation-Date: 2026-07-12 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -140,87 +140,100 @@ msgid ""
 "existing copyright."
 msgstr ""
 
-#: includes/Settings.php:147
+#: includes/Settings.php:148
 msgid "GitHub Personal Access Token"
 msgstr ""
 
-#: includes/Settings.php:154
+#: includes/Settings.php:155
 #, php-format
 msgid ""
 "A fine-grained or classic token with %s access to the target repository. "
 "Generate one at %s."
 msgstr ""
 
-#: includes/Settings.php:163
+#: includes/Settings.php:164
 msgid "Repository"
 msgstr ""
 
-#: includes/Settings.php:167
+#: includes/Settings.php:168
+msgid "Change repository"
+msgstr ""
+
+#: includes/Settings.php:170
+msgid "Test connection"
+msgstr ""
+
+#: includes/Settings.php:173
 msgid ""
 "Enter either \"owner/repo\" or the full GitHub URL (e.g. https://github.com/"
 "owner/repo)."
 msgstr ""
 
-#: includes/Settings.php:172
+#: includes/Settings.php:175
+msgid ""
+"Locked to avoid accidental changes — click \"Change repository\" to edit it."
+msgstr ""
+
+#: includes/Settings.php:181
 msgid "Branch"
 msgstr ""
 
-#: includes/Settings.php:175
+#: includes/Settings.php:184
 msgid "Detect from repository"
 msgstr ""
 
-#: includes/Settings.php:178
+#: includes/Settings.php:187
 msgid "The branch posts will be committed to (e.g. main)."
 msgstr ""
 
-#: includes/Settings.php:183
+#: includes/Settings.php:192
 msgid "Base folder"
 msgstr ""
 
-#: includes/Settings.php:187
+#: includes/Settings.php:196
 msgid ""
 "Repository folder posts are exported into (e.g. posts). Left empty, it "
 "defaults to \"posts\"."
 msgstr ""
 
-#: includes/Settings.php:192
+#: includes/Settings.php:201
 msgid "Automatic export"
 msgstr ""
 
-#: includes/Settings.php:196
+#: includes/Settings.php:205
 msgid "Automatically export new posts to GitHub when published."
 msgstr ""
 
-#: includes/Settings.php:199
+#: includes/Settings.php:208
 msgid ""
 "Runs a few seconds after publishing via WP-Cron, without delaying the "
 "Publish button. Existing posts are not exported retroactively — use the "
 "Export posts page for those."
 msgstr ""
 
-#: includes/Settings.php:204
+#: includes/Settings.php:213
 msgid "Automatic re-export"
 msgstr ""
 
-#: includes/Settings.php:208
+#: includes/Settings.php:217
 msgid "Automatically re-export already-published posts to GitHub when updated."
 msgstr ""
 
-#: includes/Settings.php:211
+#: includes/Settings.php:220
 msgid ""
 "Same background behavior as automatic export, triggered on every update to a "
 "published post instead of only its first publish."
 msgstr ""
 
-#: includes/Settings.php:216
+#: includes/Settings.php:225
 msgid "Bulk export method"
 msgstr ""
 
-#: includes/Settings.php:220
+#: includes/Settings.php:229
 msgid "Combine bulk exports into a single commit (recommended)."
 msgstr ""
 
-#: includes/Settings.php:223
+#: includes/Settings.php:232
 msgid ""
 "When checked, bulk export prepares all selected posts locally and writes "
 "them to GitHub in one commit and one push, instead of one commit per post. "
@@ -229,40 +242,36 @@ msgid ""
 "repository history."
 msgstr ""
 
-#: includes/Settings.php:228
+#: includes/Settings.php:237
 msgid "Uninstall"
 msgstr ""
 
-#: includes/Settings.php:232
+#: includes/Settings.php:241
 msgid "Remove all plugin settings and export data when this plugin is deleted."
 msgstr ""
 
-#: includes/Settings.php:235
+#: includes/Settings.php:244
 msgid ""
 "Uncheck to keep your GitHub connection settings and per-post export history "
 "in the database if you delete the plugin (useful before reinstalling)."
 msgstr ""
 
-#: includes/Settings.php:243
-msgid "Test connection"
-msgstr ""
-
-#: includes/Settings.php:246
+#: includes/Settings.php:252
 msgid "Save Changes"
 msgstr ""
 
-#: includes/Settings.php:259 includes/Settings.php:289 includes/Metabox.php:84
+#: includes/Settings.php:264 includes/Settings.php:294 includes/Metabox.php:84
 #: includes/ExportTab.php:233 includes/ExportTab.php:264
 #: includes/ExportTab.php:281 includes/ExportTab.php:303
 msgid "Insufficient permissions."
 msgstr ""
 
-#: includes/Settings.php:271
+#: includes/Settings.php:276
 msgid ""
 "Enter both a token and a valid repository before testing the connection."
 msgstr ""
 
-#: includes/Settings.php:301
+#: includes/Settings.php:306
 msgid "Enter both a token and a valid repository first."
 msgstr ""
 
