@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - post-to-github-md.php
+  workflow_dispatch: {}
 
 permissions:
   contents: write
