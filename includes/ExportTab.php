@@ -4,21 +4,46 @@ namespace POTOGH;
 
 class ExportTab
 {
-    private const PER_PAGE_OPTIONS = [10, 25, 50, 100];
     private const DEFAULT_PER_PAGE = 25;
-    private const PER_PAGE_META_KEY = 'potogh_export_per_page';
+    private const PER_PAGE_OPTION_KEY = 'potogh_export_per_page';
     private const ORPHANED_STATUS = 'orphaned';
     private const ORPHANED_POST_STATUSES = ['draft', 'pending', 'private', 'future', 'trash'];
 
     public function registerPage(): void
     {
-        add_posts_page(
+        $hook = add_posts_page(
             __('Export to GitHub', 'post-to-github-md'),
             __('Export to GitHub', 'post-to-github-md'),
             'manage_options',
             'potogh-export',
             [$this, 'renderPage']
         );
+
+        if ($hook) {
+            add_action("load-{$hook}", [$this, 'registerScreenOptions']);
+        }
+
+        add_filter('set-screen-option', [__CLASS__, 'saveScreenOption'], 10, 3);
+    }
+
+    public function registerScreenOptions(): void
+    {
+        add_screen_option('per_page', [
+            'label' => __('Posts per page', 'post-to-github-md'),
+            'default' => self::DEFAULT_PER_PAGE,
+            'option' => self::PER_PAGE_OPTION_KEY,
+        ]);
+    }
+
+    public static function saveScreenOption($status, string $option, $value)
+    {
+        if ($option !== self::PER_PAGE_OPTION_KEY) {
+            return $status;
+        }
+
+        $value = (int) $value;
+
+        return ($value >= 1 && $value <= 100) ? $value : false;
     }
 
     public static function pageUrl(): string
@@ -73,9 +98,9 @@ class ExportTab
         $perPage = $this->resolvePerPage();
         $paged = max(1, (int) ($_GET['paged'] ?? 1));
 
-        $matching = $this->queryMatchingPosts($filters);
-        $total = count($matching);
-        $posts = self::paginate($matching, $paged, $perPage);
+        $page = $this->queryMatchingPostsPage($filters, $perPage, $paged);
+        $posts = $page['posts'];
+        $total = $page['total'];
         $totalPages = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $nonce = wp_create_nonce('potogh_bulk_export');
         $categoryCounts = $this->termCounts($filters, 'category');
@@ -137,14 +162,6 @@ class ExportTab
                             <?php endforeach; ?>
                         </select>
 
-                        <select name="per_page" onchange="this.form.submit()">
-                            <?php foreach (self::PER_PAGE_OPTIONS as $option) : ?>
-                                <option value="<?php echo esc_attr($option); ?>" <?php selected($perPage, $option); ?>>
-                                    <?php echo esc_html(sprintf(__('%d per page', 'post-to-github-md'), $option)); ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-
                         <button type="submit" class="button"><?php esc_html_e('Filter', 'post-to-github-md'); ?></button>
                         <?php if ($this->hasActiveFilters($filters)) : ?>
                             <a href="<?php echo esc_url(admin_url('edit.php?page=potogh-export')); ?>" class="button">
@@ -189,8 +206,8 @@ class ExportTab
                     <tr data-post-id="<?php echo esc_attr($post->ID); ?>">
                         <th scope="row" class="check-column"><input type="checkbox" class="potogh-post-checkbox" value="<?php echo esc_attr($post->ID); ?>"></th>
                         <td class="column-title"><a href="<?php echo esc_url(get_edit_post_link($post)); ?>"><?php echo esc_html(get_the_title($post)); ?></a></td>
-                        <td class="column-categories"><?php echo wp_kses_post($this->termLinks(get_the_category($post->ID), 'category', $filters, $perPage)); ?></td>
-                        <td class="column-tags"><?php echo wp_kses_post($this->termLinks(get_the_tags($post->ID) ?: [], 'tag', $filters, $perPage)); ?></td>
+                        <td class="column-categories"><?php echo wp_kses_post($this->termLinks(get_the_category($post->ID), 'category', $filters)); ?></td>
+                        <td class="column-tags"><?php echo wp_kses_post($this->termLinks(get_the_tags($post->ID) ?: [], 'tag', $filters)); ?></td>
                         <td class="column-date"><?php echo esc_html(get_the_date('', $post)); ?></td>
                         <td class="column-status potogh-status-cell potogh-status-<?php echo esc_attr($status); ?>">
                             <span class="dashicons <?php echo esc_attr(Metabox::statusIconClass($status)); ?>"></span>
@@ -483,7 +500,7 @@ class ExportTab
         ];
     }
 
-    private function queryMatchingPosts(array $filters): array
+    private function matchingPostsArgs(array $filters): array
     {
         $args = [
             'post_type' => 'post',
@@ -515,7 +532,18 @@ class ExportTab
             $args['meta_query'] = [['key' => '_potogh_exported_at', 'compare' => 'EXISTS']];
         }
 
-        $posts = get_posts($args);
+        return $args;
+    }
+
+    /**
+     * Fetches every post matching the filters (no DB-level pagination). Needed
+     * whenever the computed export status (EXPORTED / MODIFIED_SINCE_EXPORT)
+     * is part of the filter, since that status can't be expressed as a
+     * meta_query and must be computed per post.
+     */
+    private function queryMatchingPosts(array $filters): array
+    {
+        $posts = get_posts($this->matchingPostsArgs($filters));
 
         if (in_array($filters['status'], [ExportStatus::EXPORTED, ExportStatus::MODIFIED_SINCE_EXPORT], true)) {
             $withStatus = array_map(static function ($post) {
@@ -530,6 +558,33 @@ class ExportTab
         }
 
         return $posts;
+    }
+
+    /**
+     * Returns one page of matching posts plus the total count. Paginates at
+     * the database level (posts_per_page/paged) when the status filter
+     * doesn't require computing status per post; otherwise falls back to a
+     * full fetch and an in-memory slice.
+     */
+    private function queryMatchingPostsPage(array $filters, int $perPage, int $paged): array
+    {
+        if (in_array($filters['status'], [ExportStatus::EXPORTED, ExportStatus::MODIFIED_SINCE_EXPORT], true)) {
+            $matching = $this->queryMatchingPosts($filters);
+
+            return [
+                'posts' => self::paginate($matching, $paged, $perPage),
+                'total' => count($matching),
+            ];
+        }
+
+        $args = $this->matchingPostsArgs($filters);
+        unset($args['numberposts']);
+        $args['posts_per_page'] = $perPage;
+        $args['paged'] = $paged;
+
+        $query = new \WP_Query($args);
+
+        return ['posts' => $query->posts, 'total' => (int) $query->found_posts];
     }
 
     private function termCounts(array $filters, string $taxonomy): array
@@ -563,18 +618,9 @@ class ExportTab
 
     private function resolvePerPage(): int
     {
-        $userId = get_current_user_id();
+        $stored = (int) get_user_meta(get_current_user_id(), self::PER_PAGE_OPTION_KEY, true);
 
-        if (isset($_GET['per_page']) && in_array((int) $_GET['per_page'], self::PER_PAGE_OPTIONS, true)) {
-            $perPage = (int) $_GET['per_page'];
-            update_user_meta($userId, self::PER_PAGE_META_KEY, $perPage);
-
-            return $perPage;
-        }
-
-        $stored = (int) get_user_meta($userId, self::PER_PAGE_META_KEY, true);
-
-        return in_array($stored, self::PER_PAGE_OPTIONS, true) ? $stored : self::DEFAULT_PER_PAGE;
+        return ($stored >= 1 && $stored <= 100) ? $stored : self::DEFAULT_PER_PAGE;
     }
 
     private function availableMonths(): array
@@ -598,7 +644,7 @@ class ExportTab
         return $months;
     }
 
-    private function filterUrl(array $filters, int $perPage, array $overrides = []): string
+    private function filterUrl(array $filters, array $overrides = []): string
     {
         $args = array_merge([
             'page' => 'potogh-export',
@@ -607,7 +653,6 @@ class ExportTab
             'category' => $filters['category'] ?: null,
             'tag' => $filters['tag'],
             'm' => $filters['month'],
-            'per_page' => $perPage,
             'paged' => 1,
         ], $overrides);
 
@@ -618,18 +663,18 @@ class ExportTab
         return add_query_arg($args, admin_url('edit.php'));
     }
 
-    private function termLinks(array $terms, string $type, array $filters, int $perPage): string
+    private function termLinks(array $terms, string $type, array $filters): string
     {
         if (empty($terms)) {
             return '&#8212;';
         }
 
-        $links = array_map(function ($term) use ($type, $filters, $perPage) {
+        $links = array_map(function ($term) use ($type, $filters) {
             $override = $type === 'category' ? ['category' => $term->term_id] : ['tag' => $term->slug];
 
             return sprintf(
                 '<a href="%s">%s</a>',
-                esc_url($this->filterUrl($filters, $perPage, $override)),
+                esc_url($this->filterUrl($filters, $override)),
                 esc_html($term->name)
             );
         }, $terms);
@@ -702,9 +747,9 @@ class ExportTab
     {
         $perPage = $this->resolvePerPage();
         $paged = max(1, (int) ($_GET['paged'] ?? 1));
-        $matching = $this->queryOrphanedPosts($filters);
-        $total = count($matching);
-        $posts = self::paginate($matching, $paged, $perPage);
+        $page = $this->queryOrphanedPostsPage($filters, $perPage, $paged);
+        $posts = $page['posts'];
+        $total = $page['total'];
         $totalPages = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $settings = Settings::get();
         ?>
@@ -761,7 +806,7 @@ class ExportTab
         <?php
     }
 
-    private function queryOrphanedPosts(array $filters): array
+    private function orphanedPostsArgs(array $filters): array
     {
         $args = [
             'post_type' => 'post',
@@ -776,6 +821,22 @@ class ExportTab
             $args['s'] = $filters['search'];
         }
 
-        return get_posts($args);
+        return $args;
+    }
+
+    /**
+     * Orphaned status doesn't require any per-post computation, so this can
+     * always paginate at the database level.
+     */
+    private function queryOrphanedPostsPage(array $filters, int $perPage, int $paged): array
+    {
+        $args = $this->orphanedPostsArgs($filters);
+        unset($args['numberposts']);
+        $args['posts_per_page'] = $perPage;
+        $args['paged'] = $paged;
+
+        $query = new \WP_Query($args);
+
+        return ['posts' => $query->posts, 'total' => (int) $query->found_posts];
     }
 }
