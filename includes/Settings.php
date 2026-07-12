@@ -73,7 +73,7 @@ class Settings
     public function registerPage(): void
     {
         add_options_page(
-            __('Post to GitHub MD', 'post-to-github-md'),
+            __('Export posts to GitHub: Settings', 'post-to-github-md'),
             __('Post to GitHub MD', 'post-to-github-md'),
             'manage_options',
             'potogh-settings',
@@ -99,7 +99,7 @@ class Settings
     {
         ?>
         <div class="wrap potogh-settings">
-            <h1><?php echo esc_html__('Post to GitHub MD', 'post-to-github-md'); ?></h1>
+            <h1><?php echo esc_html__('Export posts to GitHub: Settings', 'post-to-github-md'); ?></h1>
             <p>
                 <?php
                 printf(
@@ -122,8 +122,9 @@ class Settings
             <p class="description">
                 <?php
                 printf(
-                    /* translators: %s: link to the plugin repository */
-                    esc_html__('Post to GitHub Markdown by Gioxx, source on %s.', 'post-to-github-md'),
+                    /* translators: 1: link to the author's site, 2: link to the plugin repository */
+                    esc_html__('Post to GitHub Markdown by %1$s, source on %2$s.', 'post-to-github-md'),
+                    '<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
                     '<a href="https://github.com/gioxx/wp-post-to-github-md" target="_blank" rel="noopener noreferrer">GitHub</a>'
                 );
                 ?>

@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.2] - 2026-07-12
+### Added
+- "Settings" quick link on the Plugins list screen, next to Activate/Deactivate.
+- The author's name in the Settings page footer now links to gioxx.org.
+
+### Changed
+- Settings page title changed to "Export posts to GitHub: Settings" for clarity.
+
 ## [1.5.1] - 2026-07-11
 ### Added
 - Category and tag dropdown filters on the bulk export screen now show a live post count per term, computed against the currently active filters (e.g. selecting "Never exported" updates the counts shown next to each category/tag).

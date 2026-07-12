@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.1
+Stable tag: 1.5.2
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,11 @@ No. Images in the post content remain absolute links to your site; nothing binar
 Only the `post` post type, with "published" status.
 
 == Changelog ==
+= 1.5.2 =
+* Added a "Settings" quick link on the Plugins list screen.
+* The author's name in the Settings page footer now links to gioxx.org.
+* Settings page title changed to "Export posts to GitHub: Settings" for clarity.
+
 = 1.5.1 =
 * Category and tag filters on the bulk export screen now show a live post count per term, computed against the currently active filters.
 * Bulk export now uses the single-commit batch method only when 2 or more posts are selected; exporting a single post always uses the per-post commit flow, regardless of the "Bulk export method" setting.
