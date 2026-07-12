@@ -1,18 +1,18 @@
-=== WordPress Posts to GitHub ===
+=== Posts to GitHub ===
 Contributors: gioxx
 GitHub Plugin URI: https://github.com/gioxx/wp-posts-to-github
 Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.4
+Stable tag: 1.5.5
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Export published WordPress posts as Markdown files (with YAML front matter) to a GitHub repository.
 
 == Description ==
-WordPress Posts to GitHub exports your published posts as Markdown files, with YAML front matter, to an existing GitHub repository (public or private). The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
+Posts to GitHub exports your published posts as Markdown files, with YAML front matter, to an existing GitHub repository (public or private). The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
 
 Features:
 * Export a single post from its edit screen, with live status and trace log
@@ -43,7 +43,17 @@ No. Images in the post content remain absolute links to your site; nothing binar
 = What post types are supported? =
 Only the `post` post type, with "published" status.
 
+== External services ==
+This plugin connects to GitHub's REST API (`api.github.com`) to write your exported posts to a repository you own and configure. It is a core, opt-in part of the plugin's function: nothing is sent until you set a Personal Access Token and target repository in Settings and trigger an export (manually, in bulk, or via the optional automatic-export setting).
+
+On each export, the plugin sends the post title, content converted to Markdown, and basic metadata (date, categories, tags, slug) as the file content of a commit to the repository and branch you configured. It also calls the API to test the connection, detect the default branch, and read/create the file/commit needed for the export. No data is sent to any third party other than GitHub, and no data is sent unless you have explicitly configured the plugin.
+
+This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
+
 == Changelog ==
+= 1.5.5 =
+* Plugin renamed from "WordPress Posts to GitHub" to "Posts to GitHub" to comply with the WordPress trademark policy.
+
 = 1.5.4 =
 * "Test connection" moved next to the Repository field.
 * The Repository field is now locked (read-only) once a repository is configured; click "Change repository" to unlock and edit it.

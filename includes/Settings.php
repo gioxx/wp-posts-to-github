@@ -123,7 +123,7 @@ class Settings
                 <?php
                 printf(
                     /* translators: 1: link to the author's site, 2: link to the plugin repository */
-                    esc_html__('WordPress Posts to GitHub by %1$s, source on %2$s.', 'post-to-github-md'),
+                    esc_html__('Posts to GitHub by %1$s, source on %2$s.', 'post-to-github-md'),
                     '<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
                     '<a href="https://github.com/gioxx/wp-posts-to-github" target="_blank" rel="noopener noreferrer">GitHub</a>'
                 );

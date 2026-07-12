@@ -1,12 +1,12 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Gioxx
-# This file is distributed under the same license as the WordPress Posts to GitHub package.
+# This file is distributed under the same license as the Posts to GitHub package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: WordPress Posts to GitHub 1.5.3\n"
+"Project-Id-Version: Posts to GitHub 1.5.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2026-07-12 11:12+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
@@ -127,7 +127,7 @@ msgstr ""
 
 #: includes/Settings.php:126
 #, php-format
-msgid "WordPress Posts to GitHub by %1$s, source on %2$s."
+msgid "Posts to GitHub by %1$s, source on %2$s."
 msgstr ""
 
 #: includes/Settings.php:133

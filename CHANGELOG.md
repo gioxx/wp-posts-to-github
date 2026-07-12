@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.5] - 2026-07-12
+### Changed
+- Plugin renamed from "WordPress Posts to GitHub" to "Posts to GitHub", ahead of submission to the official WordPress.org plugin directory, to comply with the WordPress trademark policy (third-party plugins may not use "WordPress" in the plugin name). Internal identifiers (text domain, PHP prefixes, plugin folder name, option names) are unchanged, so existing installs are unaffected.
+
 ## [1.5.4] - 2026-07-12
 ### Changed
 - "Test connection" moved next to the Repository field instead of the bottom submit row.
