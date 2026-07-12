@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.3] - 2026-07-12
+### Changed
+- "Save Changes" on the Settings page is no longer forced to re-run "Test connection" on every visit. It only requires a successful test the first time you configure the token/repository, or after editing token, repository or branch — toggling other settings no longer re-locks it.
+
 ## [1.5.2] - 2026-07-12
 ### Added
 - "Settings" quick link on the Plugins list screen, next to Activate/Deactivate.

@@ -242,7 +242,7 @@ class Settings
                     <button type="button" class="button" id="potogh-test-connection">
                         <?php esc_html_e('Test connection', 'post-to-github-md'); ?>
                     </button>
-                    <button type="submit" class="button button-primary" id="potogh-save-settings" disabled>
+                    <button type="submit" class="button button-primary" id="potogh-save-settings" <?php disabled(!self::isConfigured()); ?>>
                         <?php esc_html_e('Save Changes', 'post-to-github-md'); ?>
                     </button>
                     <span id="potogh-test-connection-result"></span>

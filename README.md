@@ -37,7 +37,7 @@ Go to **Settings → Posts to GitHub** and fill in:
 | **Bulk export method** | When checked (default), bulk export writes all selected posts to GitHub in a single commit and push instead of one commit per post — much faster and far less likely to hit rate limits. Uncheck to go back to a separate commit per post. | — |
 | **Uninstall** | When checked (default), deleting the plugin removes its settings and per-post export history from the database. Uncheck to keep that data if you plan to reinstall later. | — |
 
-Each field has a help text under the input describing the expected format. The **"Save Changes"** button stays disabled until you run **"Test connection"** successfully against the values currently in the form (read-only check, it never writes to the repository); editing the token, repository or branch again re-locks Save until you test once more.
+Each field has a help text under the input describing the expected format. The **"Save Changes"** button only requires a successful **"Test connection"** (read-only check, it never writes to the repository) the first time you configure the token/repository, or whenever you edit the token, repository or branch afterward — changing any other setting (automatic export, bulk export method, etc.) doesn't re-lock Save.
 
 Until the PAT and repository are configured, the plugin blocks every export attempt (both single-post and bulk) and shows an error message instead of calling GitHub. If automatic export is enabled but the connection isn't configured (or fails) when a post is published, the export is simply skipped — no error is shown to the author; the post stays "Never exported" and can be exported manually afterward.
 
