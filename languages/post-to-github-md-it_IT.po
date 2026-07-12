@@ -1,11 +1,11 @@
-# Italian translation for Post to GitHub Markdown.
+# Italian translation for WordPress Posts to GitHub.
 # Copyright (C) 2026 Gioxx
-# This file is distributed under the same license as the Post to GitHub Markdown package.
+# This file is distributed under the same license as the WordPress Posts to GitHub package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.5.0\n"
+"Project-Id-Version: WordPress Posts to GitHub 1.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 10:44+0200\n"
+"POT-Creation-Date: 2026-07-12 10:51+0200\n"
 "PO-Revision-Date: 2026-07-10 20:52+0200\n"
 "Last-Translator: Gioxx <giovanni@solone.it>\n"
 "Language-Team: Italian\n"
@@ -111,8 +111,8 @@ msgid "Export posts to GitHub: Settings"
 msgstr "Esporta articoli su GitHub: Impostazioni"
 
 #: includes/Settings.php:77
-msgid "Post to GitHub MD"
-msgstr "Post to GitHub MD"
+msgid "Posts to GitHub"
+msgstr "Posts to GitHub"
 
 #: includes/Settings.php:107
 #, php-format
@@ -125,8 +125,8 @@ msgstr "Articoli &rsaquo; Esporta su GitHub"
 
 #: includes/Settings.php:126
 #, php-format
-msgid "Post to GitHub Markdown by %1$s, source on %2$s."
-msgstr "Post to GitHub Markdown di %1$s, sorgente su %2$s."
+msgid "WordPress Posts to GitHub by %1$s, source on %2$s."
+msgstr "WordPress Posts to GitHub di %1$s, sorgente su %2$s."
 
 #: includes/Settings.php:133
 msgid ""
@@ -379,8 +379,8 @@ msgstr ""
 "esportare i post."
 
 #: includes/ExportTab.php:42 includes/ExportTab.php:53
-msgid "Post to GitHub MD settings"
-msgstr "Impostazioni Post to GitHub MD"
+msgid "the plugin settings"
+msgstr "le impostazioni del plugin"
 
 #: includes/ExportTab.php:52
 #, php-format
@@ -558,6 +558,9 @@ msgstr "Errore da GitHub: %s"
 #, php-format
 msgid "File saved on GitHub (sha: %s)."
 msgstr "File salvato su GitHub (sha: %s)."
+
+#~ msgid "Post to GitHub MD settings"
+#~ msgstr "Impostazioni Post to GitHub MD"
 
 #~ msgid "Export posts"
 #~ msgstr "Esporta post"

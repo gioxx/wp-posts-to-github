@@ -1,4 +1,4 @@
-# Post to GitHub Markdown
+# WordPress Posts to GitHub
 
 *[Leggi questo in italiano](README.it.md)*
 
@@ -16,7 +16,7 @@ The plugin does not create the repository, does not upload binary images, and on
 ## Installation
 
 1. Copy the whole plugin folder to `wp-content/plugins/post-to-github-md/` on your WordPress site (the `vendor/` folder with dependencies is already included: no need to run Composer).
-2. Go to **Plugins** in the WordPress dashboard and activate "Post to GitHub Markdown".
+2. Go to **Plugins** in the WordPress dashboard and activate "WordPress Posts to GitHub".
 
 ## Language
 
@@ -24,7 +24,7 @@ The plugin interface is in English by default; if your WordPress is set to Itali
 
 ## Configuration
 
-Go to **Settings → Post to GitHub MD** and fill in:
+Go to **Settings → Posts to GitHub** and fill in:
 
 | Field | Description | Example |
 |---|---|---|

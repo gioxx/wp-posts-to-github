@@ -1,6 +1,6 @@
-=== Post to GitHub Markdown ===
+=== WordPress Posts to GitHub ===
 Contributors: gioxx
-GitHub Plugin URI: https://github.com/gioxx/wp-post-to-github-md
+GitHub Plugin URI: https://github.com/gioxx/wp-posts-to-github
 Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
@@ -12,7 +12,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Export published WordPress posts as Markdown files (with YAML front matter) to a GitHub repository.
 
 == Description ==
-Post to GitHub Markdown exports your published posts as Markdown files, with YAML front matter, to an existing GitHub repository (public or private). The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
+WordPress Posts to GitHub exports your published posts as Markdown files, with YAML front matter, to an existing GitHub repository (public or private). The goal is to build, over time, a text corpus of your writing that's useful for training or guiding a consistent writing style in tools like Claude.
 
 Features:
 * Export a single post from its edit screen, with live status and trace log
@@ -30,7 +30,7 @@ The plugin never creates the repository, never uploads binary images (they stay 
 == Installation ==
 1. Copy the whole plugin folder to `wp-content/plugins/post-to-github-md/` (the `vendor/` folder with dependencies is already included: no need to run Composer).
 2. Activate the plugin through the 'Plugins' menu in WordPress.
-3. Go to **Settings → Post to GitHub MD** and configure a GitHub Personal Access Token and target repository.
+3. Go to **Settings → Posts to GitHub** and configure a GitHub Personal Access Token and target repository.
 4. Export posts individually from the post edit screen, in bulk from **Posts → Export to GitHub**, or automatically on publish via the "Automatic export" setting.
 
 == Frequently Asked Questions ==

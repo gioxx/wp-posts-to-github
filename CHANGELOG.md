@@ -9,6 +9,7 @@ All notable changes to this project are documented in this file.
 
 ### Changed
 - Settings page title changed to "Export posts to GitHub: Settings" for clarity.
+- Plugin renamed from "Post to GitHub Markdown" to "WordPress Posts to GitHub" (the previous name read as ambiguous, as if posting *to* GitHub rather than exporting WordPress posts as Markdown). The GitHub repository moved from `wp-post-to-github-md` to `wp-posts-to-github` (GitHub redirects the old URL automatically). Internal identifiers (text domain, PHP prefixes, plugin folder name, option names) are unchanged, so existing installs are unaffected.
 
 ## [1.5.1] - 2026-07-11
 ### Added

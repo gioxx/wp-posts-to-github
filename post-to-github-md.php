@@ -1,7 +1,7 @@
 <?php
 /**
- * Plugin Name: Post to GitHub Markdown
- * Plugin URI: https://github.com/gioxx/wp-post-to-github-md
+ * Plugin Name: WordPress Posts to GitHub
+ * Plugin URI: https://github.com/gioxx/wp-posts-to-github
  * Description: Export published posts as Markdown files to a GitHub repository.
  * Version: 1.5.2
  * Requires PHP: 7.4
@@ -13,7 +13,7 @@
  * Text Domain: post-to-github-md
  * Domain Path: /languages
  *
- * GitHub Plugin URI: gioxx/wp-post-to-github-md
+ * GitHub Plugin URI: gioxx/wp-posts-to-github
  * GitHub Branch: main
  * GitHub Languages: true
  */

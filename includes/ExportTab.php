@@ -39,7 +39,7 @@ class ExportTab
                         printf(
                             /* translators: %s: link to the plugin settings screen */
                             esc_html__('Configure the GitHub Personal Access Token and repository in %s before exporting posts.', 'post-to-github-md'),
-                            '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('Post to GitHub MD settings', 'post-to-github-md') . '</a>'
+                            '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'post-to-github-md') . '</a>'
                         );
                         ?>
                     </p>
@@ -50,7 +50,7 @@ class ExportTab
                     printf(
                         /* translators: %s: link to the plugin settings screen */
                         esc_html__('Need to change the GitHub connection? Head over to %s.', 'post-to-github-md'),
-                        '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('Post to GitHub MD settings', 'post-to-github-md') . '</a>'
+                        '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'post-to-github-md') . '</a>'
                     );
                     ?>
                 </p>

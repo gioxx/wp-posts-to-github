@@ -74,7 +74,7 @@ class Settings
     {
         add_options_page(
             __('Export posts to GitHub: Settings', 'post-to-github-md'),
-            __('Post to GitHub MD', 'post-to-github-md'),
+            __('Posts to GitHub', 'post-to-github-md'),
             'manage_options',
             'potogh-settings',
             [$this, 'renderPage']
@@ -123,9 +123,9 @@ class Settings
                 <?php
                 printf(
                     /* translators: 1: link to the author's site, 2: link to the plugin repository */
-                    esc_html__('Post to GitHub Markdown by %1$s, source on %2$s.', 'post-to-github-md'),
+                    esc_html__('WordPress Posts to GitHub by %1$s, source on %2$s.', 'post-to-github-md'),
                     '<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
-                    '<a href="https://github.com/gioxx/wp-post-to-github-md" target="_blank" rel="noopener noreferrer">GitHub</a>'
+                    '<a href="https://github.com/gioxx/wp-posts-to-github" target="_blank" rel="noopener noreferrer">GitHub</a>'
                 );
                 ?>
             </p>

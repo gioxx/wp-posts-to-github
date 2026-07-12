@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Gioxx
-# This file is distributed under the same license as the Post to GitHub Markdown package.
+# This file is distributed under the same license as the WordPress Posts to GitHub package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Post to GitHub Markdown 1.5.1\n"
+"Project-Id-Version: WordPress Posts to GitHub 1.5.2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-12 10:44+0200\n"
+"POT-Creation-Date: 2026-07-12 10:51+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -113,7 +113,7 @@ msgid "Export posts to GitHub: Settings"
 msgstr ""
 
 #: includes/Settings.php:77
-msgid "Post to GitHub MD"
+msgid "Posts to GitHub"
 msgstr ""
 
 #: includes/Settings.php:107
@@ -127,7 +127,7 @@ msgstr ""
 
 #: includes/Settings.php:126
 #, php-format
-msgid "Post to GitHub Markdown by %1$s, source on %2$s."
+msgid "WordPress Posts to GitHub by %1$s, source on %2$s."
 msgstr ""
 
 #: includes/Settings.php:133
@@ -345,7 +345,7 @@ msgid ""
 msgstr ""
 
 #: includes/ExportTab.php:42 includes/ExportTab.php:53
-msgid "Post to GitHub MD settings"
+msgid "the plugin settings"
 msgstr ""
 
 #: includes/ExportTab.php:52
