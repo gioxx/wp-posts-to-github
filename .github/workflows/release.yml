@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - post-to-github-md.php
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read plugin version
+        id: version
+        run: |
+          VERSION=$(grep -m1 '^ \* Version:' post-to-github-md.php | sed -E 's/.*Version:\s*//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Check whether this version was already released
+        id: check
+        run: |
+          if git ls-remote --tags origin | grep -q "refs/tags/${{ steps.version.outputs.tag }}$"; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Install production dependencies
+        if: steps.check.outputs.exists == 'false'
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Build plugin zip
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          SLUG=post-to-github-md
+          STAGING="/tmp/$SLUG"
+          rm -rf "$STAGING"
+          mkdir -p "$STAGING"
+          git ls-files \
+            | grep -v '^tests/' \
+            | grep -v '^phpunit\.xml\.dist$' \
+            | grep -v '^\.github/' \
+            | grep -v '^\.gitignore$' \
+            | rsync -a --files-from=- . "$STAGING/"
+          cp -r vendor "$STAGING/vendor"
+          cd /tmp
+          zip -r -q "$SLUG-${{ steps.version.outputs.version }}.zip" "$SLUG"
+
+      - name: Extract changelog section
+        if: steps.check.outputs.exists == 'false'
+        id: notes
+        run: |
+          awk '/^## \[${{ steps.version.outputs.version }}\]/{flag=1; next} /^## \[/{flag=0} flag' CHANGELOG.md > /tmp/release-notes.md
+          if [ ! -s /tmp/release-notes.md ]; then
+            echo "See CHANGELOG.md." > /tmp/release-notes.md
+          fi
+
+      - name: Create tag
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
+
+      - name: Create GitHub release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            "/tmp/post-to-github-md-${{ steps.version.outputs.version }}.zip" \
+            --title "${{ steps.version.outputs.tag }}" \
+            --notes-file /tmp/release-notes.md
