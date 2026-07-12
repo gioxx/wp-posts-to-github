@@ -63,6 +63,10 @@ jobs:
           if [ ! -s /tmp/release-notes.md ]; then
             echo "See CHANGELOG.md." > /tmp/release-notes.md
           fi
+          {
+            echo ""
+            echo "For the full version history, see [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)."
+          } >> /tmp/release-notes.md
 
       - name: Create tag
         if: steps.check.outputs.exists == 'false'
