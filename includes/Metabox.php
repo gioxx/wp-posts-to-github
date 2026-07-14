@@ -19,6 +19,7 @@ class Metabox
     {
         $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
         $status = ExportStatus::determine($exportedAt, $post->post_modified_gmt);
+        $lastError = get_post_meta($post->ID, '_potogh_last_error', true) ?: null;
 
         wp_nonce_field('potogh_export_' . $post->ID, 'potogh_export_nonce');
         ?>
@@ -26,6 +27,12 @@ class Metabox
             <span class="dashicons <?php echo esc_attr(self::statusIconClass($status)); ?>"></span>
             <span class="potogh-status-text"><?php echo esc_html(self::statusLabel($status, $exportedAt)); ?></span>
         </p>
+        <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
+            <p class="potogh-last-error notice notice-error inline">
+                <span class="dashicons dashicons-warning"></span>
+                <?php echo esc_html(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>
+            </p>
+        <?php endif; ?>
         <button type="button" class="button button-primary potogh-export-button" data-post-id="<?php echo esc_attr($post->ID); ?>">
             <span class="dashicons dashicons-cloud-upload"></span>
             <?php esc_html_e('Export to GitHub', 'post-to-github-md'); ?>

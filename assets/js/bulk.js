@@ -506,4 +506,63 @@
             runLegacyExport(ids, nonce);
         }
     });
+
+    function removeOrphanRow(postId) {
+        $('tr[data-post-id="' + postId + '"]').fadeOut(200, function () {
+            $(this).remove();
+        });
+    }
+
+    $(document).on('click', '.potogh-orphan-ignore', function () {
+        var $btn = $(this);
+        var postId = $btn.data('post-id');
+        var nonce = $('.potogh-export-tab').data('nonce');
+
+        $btn.prop('disabled', true);
+
+        $.post(potoghBulk.ajaxUrl, {
+            action: 'potogh_ignore_orphan',
+            post_id: postId,
+            nonce: nonce
+        }).done(function (response) {
+            if (response.success) {
+                removeOrphanRow(postId);
+            } else {
+                window.alert(potoghBulk.networkError);
+                $btn.prop('disabled', false);
+            }
+        }).fail(function () {
+            window.alert(potoghBulk.networkError);
+            $btn.prop('disabled', false);
+        });
+    });
+
+    $(document).on('click', '.potogh-orphan-delete', function () {
+        var $btn = $(this);
+        var postId = $btn.data('post-id');
+        var nonce = $('.potogh-export-tab').data('nonce');
+
+        if (!window.confirm(potoghBulk.confirmDeleteFromGithub)) {
+            return;
+        }
+
+        $btn.prop('disabled', true);
+
+        $.post(potoghBulk.ajaxUrl, {
+            action: 'potogh_delete_from_github',
+            post_id: postId,
+            nonce: nonce
+        }).done(function (response) {
+            if (response.success) {
+                removeOrphanRow(postId);
+            } else {
+                window.alert(response.data && response.data.message ? response.data.message : potoghBulk.networkError);
+                $btn.prop('disabled', false);
+            }
+        }).fail(function (jqXHR) {
+            var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
+            window.alert(data && data.message ? data.message : potoghBulk.networkError);
+            $btn.prop('disabled', false);
+        });
+    });
 })(jQuery);

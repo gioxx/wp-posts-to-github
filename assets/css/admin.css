@@ -20,6 +20,18 @@
     color: #787c82;
 }
 
+.potogh-status-cell .potogh-last-error-icon.dashicons,
+.potogh-last-error-icon.dashicons,
+.potogh-last-error.dashicons {
+    color: #d63638 !important;
+}
+
+.potogh-last-error {
+    margin: 8px 0 0;
+    padding: 6px 8px;
+    font-size: 12px;
+}
+
 #potogh_export .potogh-status {
     display: flex;
     align-items: flex-start;

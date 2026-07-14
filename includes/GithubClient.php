@@ -169,6 +169,33 @@ class GithubClient
         ];
     }
 
+    public function deleteFile(string $path, string $sha, string $message): array
+    {
+        $url = sprintf('https://api.github.com/repos/%s/contents/%s', $this->ownerRepo, ltrim($path, '/'));
+
+        $response = wp_remote_request($url, [
+            'method' => 'DELETE',
+            'headers' => $this->headers(),
+            'body' => wp_json_encode([
+                'message' => $message,
+                'sha' => $sha,
+                'branch' => $this->branch,
+            ]),
+        ]);
+
+        if (is_wp_error($response)) {
+            return ['success' => false, 'error' => $response->get_error_message()];
+        }
+
+        $code = wp_remote_retrieve_response_code($response);
+
+        if ($code >= 200 && $code < 300) {
+            return ['success' => true];
+        }
+
+        return $this->apiError($response, $code);
+    }
+
     public function commitFiles(array $files, string $message): array
     {
         $ref = $this->getRef();

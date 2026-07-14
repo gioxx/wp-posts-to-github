@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.7] - 2026-07-14
+### Added
+- Failed exports (automatic or manual, single-post or batch) now record the error message on the post (`_potogh_last_error`), surfaced as a warning next to the export status in the post edit metabox, the bulk export table, and the "Exported, no longer published" view. Previously, a failed background auto-(re)export was completely silent.
+- "Exported, no longer published" view: added two actions per row, "Delete from GitHub" (removes the file from the repository via a dedicated commit, using the GitHub Contents API) and "Ignore" (clears the local export record without touching GitHub, e.g. when the post is intentionally being reworked before republishing).
+
+### Fixed
+- "Invalid request. \"sha\" wasn't supplied" error from GitHub when re-exporting a post whose local `_potogh_sha` meta was missing or out of sync. The plugin now falls back to looking up the file's current sha directly from GitHub (via the Contents API) before writing, instead of only trusting the cached post meta.
+
 ## [1.5.6] - 2026-07-12
 ### Changed
 - Bulk export screen: "posts per page" is now set via the native WordPress Screen Options panel instead of a custom dropdown, persisted the standard WordPress way (per-user meta tied to the screen option).

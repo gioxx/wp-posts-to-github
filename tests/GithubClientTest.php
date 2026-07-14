@@ -191,6 +191,53 @@ class GithubClientTest extends TestCase
         );
     }
 
+    public function test_delete_file_returns_success(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\expect('wp_remote_request')
+            ->once()
+            ->with(
+                'https://api.github.com/repos/owner/repo/contents/posts/2026/my-post.md',
+                \Mockery::on(function ($args) {
+                    $body = json_decode($args['body'], true);
+
+                    return $args['method'] === 'DELETE'
+                        && $body['sha'] === 'abc123'
+                        && $body['branch'] === 'main';
+                })
+            )
+            ->andReturn(['response' => ['code' => 200]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('wp_remote_retrieve_body')->justReturn('{}');
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->deleteFile('posts/2026/my-post.md', 'abc123', 'Remove exported post: Hello (#1)');
+
+        $this->assertSame(['success' => true], $result);
+    }
+
+    public function test_delete_file_returns_error_on_sha_mismatch(): void
+    {
+        Functions\when('__')->returnArg(1);
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 409]]);
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(409);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'sha does not match']));
+
+        $client = new GithubClient('token', 'owner/repo', 'main');
+        $result = $client->deleteFile('posts/2026/my-post.md', 'stale-sha', 'Remove exported post: Hello (#1)');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('sha does not match', $result['error']);
+    }
+
     public function test_get_file_request_uses_correct_url_and_headers(): void
     {
         Functions\expect('wp_remote_get')

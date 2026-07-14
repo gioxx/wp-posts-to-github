@@ -48,10 +48,21 @@ class ExportService
         $fileContent = $prepared['content'];
         $trace = $prepared['trace'];
 
+        $sha = $postData['existing_sha'] ?? null;
+
+        if ($sha === null) {
+            $remote = $this->githubClient->getFile($path);
+
+            if ($remote !== null && $remote['sha'] !== null) {
+                $sha = $remote['sha'];
+                $trace[] = sprintf(__('Found existing file on GitHub (sha: %s).', 'post-to-github-md'), $sha);
+            }
+        }
+
         $message = sprintf('Export post: %s (#%d)', $postData['title'], $postData['wp_id']);
 
         $trace[] = sprintf(__('Sending to GitHub (%s)...', 'post-to-github-md'), $path);
-        $result = $this->githubClient->putFile($path, $fileContent, $message, $postData['existing_sha'] ?? null);
+        $result = $this->githubClient->putFile($path, $fileContent, $message, $sha);
 
         if (!$result['success']) {
             $trace[] = sprintf(__('Error from GitHub: %s', 'post-to-github-md'), $result['error']);

@@ -202,6 +202,7 @@ class ExportTab
                 <?php foreach ($posts as $post) :
                     $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
                     $status = ExportStatus::determine($exportedAt, $post->post_modified_gmt);
+                    $lastError = get_post_meta($post->ID, '_potogh_last_error', true) ?: null;
                 ?>
                     <tr data-post-id="<?php echo esc_attr($post->ID); ?>">
                         <th scope="row" class="check-column"><input type="checkbox" class="potogh-post-checkbox" value="<?php echo esc_attr($post->ID); ?>"></th>
@@ -212,6 +213,9 @@ class ExportTab
                         <td class="column-status potogh-status-cell potogh-status-<?php echo esc_attr($status); ?>">
                             <span class="dashicons <?php echo esc_attr(Metabox::statusIconClass($status)); ?>"></span>
                             <span class="potogh-status-text"><?php echo esc_html(Metabox::statusLabel($status, $exportedAt)); ?></span>
+                            <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
+                                <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -271,6 +275,42 @@ class ExportTab
             'message' => Metabox::statusLabel(ExportStatus::EXPORTED, $result['exported_at']),
             'trace' => $result['trace'],
         ]);
+    }
+
+    public function handleAjaxDeleteFromGithub(): void
+    {
+        check_ajax_referer('potogh_bulk_export', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+        }
+
+        if (!Settings::isConfigured()) {
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+        }
+
+        $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
+        $result = delete_export_by_id($postId);
+
+        if (!$result['success']) {
+            wp_send_json_error(['message' => $result['error'], 'post_id' => $postId], 500);
+        }
+
+        wp_send_json_success(['post_id' => $postId]);
+    }
+
+    public function handleAjaxIgnoreOrphan(): void
+    {
+        check_ajax_referer('potogh_bulk_export', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+        }
+
+        $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
+        ignore_orphaned_export($postId);
+
+        wp_send_json_success(['post_id' => $postId]);
     }
 
     public function handleAjaxGetFilteredIds(): void
@@ -752,8 +792,9 @@ class ExportTab
         $total = $page['total'];
         $totalPages = $perPage > 0 ? (int) ceil($total / $perPage) : 1;
         $settings = Settings::get();
+        $nonce = wp_create_nonce('potogh_bulk_export');
         ?>
-        <div class="potogh-export-tab">
+        <div class="potogh-export-tab" data-nonce="<?php echo esc_attr($nonce); ?>">
             <?php $this->renderStats(); ?>
 
             <p>
@@ -771,29 +812,46 @@ class ExportTab
                         <th scope="col"><?php esc_html_e('Current status', 'post-to-github-md'); ?></th>
                         <th scope="col"><?php esc_html_e('Exported on', 'post-to-github-md'); ?></th>
                         <th scope="col"><?php esc_html_e('GitHub file', 'post-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('Actions', 'post-to-github-md'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($posts)) : ?>
-                    <tr><td colspan="4"><?php esc_html_e('No exported posts are currently unpublished.', 'post-to-github-md'); ?></td></tr>
+                    <tr><td colspan="5"><?php esc_html_e('No exported posts are currently unpublished.', 'post-to-github-md'); ?></td></tr>
                 <?php endif; ?>
                 <?php foreach ($posts as $post) :
                     $path = get_post_meta($post->ID, '_potogh_path', true);
                     $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
+                    $lastError = get_post_meta($post->ID, '_potogh_last_error', true) ?: null;
                     $statusObj = get_post_status_object($post->post_status);
                     $githubUrl = ($settings['owner_repo'] !== '' && $path)
                         ? sprintf('https://github.com/%s/blob/%s/%s', $settings['owner_repo'], $settings['branch'], ltrim($path, '/'))
                         : '';
                 ?>
-                    <tr>
+                    <tr data-post-id="<?php echo esc_attr($post->ID); ?>">
                         <td class="column-title"><a href="<?php echo esc_url(get_edit_post_link($post)); ?>"><?php echo esc_html(get_the_title($post)); ?></a></td>
                         <td><?php echo esc_html($statusObj ? $statusObj->label : $post->post_status); ?></td>
-                        <td><?php echo esc_html($exportedAt ? Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt) : ''); ?></td>
+                        <td>
+                            <?php echo esc_html($exportedAt ? Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt) : ''); ?>
+                            <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
+                                <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
+                            <?php endif; ?>
+                        </td>
                         <td>
                             <?php if ($githubUrl !== '') : ?>
                                 <a href="<?php echo esc_url($githubUrl); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($path); ?></a>
                             <?php else : ?>
                                 <code><?php echo esc_html($path); ?></code>
+                            <?php endif; ?>
+                        </td>
+                        <td class="potogh-orphan-actions">
+                            <button type="button" class="button potogh-orphan-ignore" data-post-id="<?php echo esc_attr($post->ID); ?>">
+                                <?php esc_html_e('Ignore', 'post-to-github-md'); ?>
+                            </button>
+                            <?php if ($path) : ?>
+                                <button type="button" class="button button-link-delete potogh-orphan-delete" data-post-id="<?php echo esc_attr($post->ID); ?>">
+                                    <?php esc_html_e('Delete from GitHub', 'post-to-github-md'); ?>
+                                </button>
                             <?php endif; ?>
                         </td>
                     </tr>

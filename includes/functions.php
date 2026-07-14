@@ -48,6 +48,8 @@ function export_post_by_id(int $postId): array
     $result = $service->exportPost(post_to_export_data($post));
 
     if (!$result['success']) {
+        update_post_meta($postId, '_potogh_last_error', ['message' => $result['error'], 'at' => gmdate('c')]);
+
         return $result;
     }
 
@@ -55,6 +57,7 @@ function export_post_by_id(int $postId): array
     update_post_meta($postId, '_potogh_path', $result['path']);
     update_post_meta($postId, '_potogh_sha', $result['sha']);
     update_post_meta($postId, '_potogh_exported_at', $exportedAt);
+    delete_post_meta($postId, '_potogh_last_error');
 
     return ['success' => true, 'path' => $result['path'], 'exported_at' => $exportedAt, 'trace' => $result['trace']];
 }
@@ -85,6 +88,46 @@ function prepare_export_data(int $postId): array
     ];
 }
 
+function clear_export_meta(int $postId): void
+{
+    delete_post_meta($postId, '_potogh_path');
+    delete_post_meta($postId, '_potogh_sha');
+    delete_post_meta($postId, '_potogh_exported_at');
+    delete_post_meta($postId, '_potogh_last_error');
+}
+
+function delete_export_by_id(int $postId): array
+{
+    $path = get_post_meta($postId, '_potogh_path', true) ?: null;
+    $sha = get_post_meta($postId, '_potogh_sha', true) ?: null;
+
+    if (!$path || !$sha) {
+        return ['success' => false, 'error' => __('No exported file recorded for this post.', 'post-to-github-md')];
+    }
+
+    $settings = Settings::get();
+    $client = new GithubClient($settings['token'], $settings['owner_repo'], $settings['branch']);
+    $title = get_the_title($postId) ?: (string) $postId;
+    $message = sprintf('Remove exported post: %s (#%d)', $title, $postId);
+
+    $result = $client->deleteFile($path, $sha, $message);
+
+    if (!$result['success']) {
+        update_post_meta($postId, '_potogh_last_error', ['message' => $result['error'], 'at' => gmdate('c')]);
+
+        return $result;
+    }
+
+    clear_export_meta($postId);
+
+    return ['success' => true];
+}
+
+function ignore_orphaned_export(int $postId): void
+{
+    clear_export_meta($postId);
+}
+
 function build_batch_commit_message(array $items): string
 {
     $subject = sprintf('Bulk export: %d posts', count($items));
@@ -108,6 +151,12 @@ function commit_batch(array $items): array
     $result = $client->commitFiles($files, build_batch_commit_message($items));
 
     if (!$result['success']) {
+        $failedAt = gmdate('c');
+
+        foreach ($items as $item) {
+            update_post_meta($item['post_id'], '_potogh_last_error', ['message' => $result['error'], 'at' => $failedAt]);
+        }
+
         return $result;
     }
 
@@ -120,6 +169,7 @@ function commit_batch(array $items): array
         update_post_meta($item['post_id'], '_potogh_path', $item['path']);
         update_post_meta($item['post_id'], '_potogh_sha', $sha);
         update_post_meta($item['post_id'], '_potogh_exported_at', $exportedAt);
+        delete_post_meta($item['post_id'], '_potogh_last_error');
 
         $exported[] = [
             'post_id' => $item['post_id'],
@@ -193,7 +243,7 @@ function uninstall_cleanup(): void
     global $wpdb;
 
     $wpdb->query(
-        "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_potogh_path', '_potogh_sha', '_potogh_exported_at')"
+        "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_potogh_path', '_potogh_sha', '_potogh_exported_at', '_potogh_last_error')"
     );
 
     $wpdb->query(
@@ -243,6 +293,7 @@ function enqueue_admin_assets(string $hook): void
             'summaryPrepareFailed' => __('%d could not be prepared:', 'post-to-github-md'),
             /* translators: %s: error message returned by GitHub */
             'commitFailed' => __('Commit failed: %s', 'post-to-github-md'),
+            'confirmDeleteFromGithub' => __('Delete this file from the GitHub repository? This creates a removal commit and cannot be undone from here.', 'post-to-github-md'),
         ]);
     }
 

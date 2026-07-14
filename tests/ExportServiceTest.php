@@ -89,6 +89,33 @@ class ExportServiceTest extends TestCase
         $this->assertSame('updated-sha', $result['sha']);
     }
 
+    public function test_falls_back_to_github_lookup_when_local_sha_missing(): void
+    {
+        $githubClient = $this->createMock(GithubClient::class);
+        $githubClient->expects($this->once())
+            ->method('getFile')
+            ->with('posts/2025/old-path.md')
+            ->willReturn(['sha' => 'remote-sha']);
+        $githubClient->expects($this->once())
+            ->method('putFile')
+            ->with(
+                'posts/2025/old-path.md',
+                $this->anything(),
+                $this->anything(),
+                'remote-sha'
+            )
+            ->willReturn(['success' => true, 'sha' => 'updated-sha']);
+
+        $service = new ExportService(new Converter(), $githubClient, 'posts');
+        $result = $service->exportPost($this->samplePostData([
+            'existing_path' => 'posts/2025/old-path.md',
+            'existing_sha' => null,
+        ]));
+
+        $this->assertTrue($result['success']);
+        $this->assertSame('updated-sha', $result['sha']);
+    }
+
     public function test_prepare_export_computes_path_and_content_without_calling_github(): void
     {
         $githubClient = $this->createMock(GithubClient::class);

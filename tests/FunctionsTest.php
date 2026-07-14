@@ -79,7 +79,7 @@ class FunctionsTest extends TestCase
         $this->assertFalse($result['success']);
     }
 
-    public function test_export_post_by_id_does_not_write_meta_when_export_service_fails(): void
+    public function test_export_post_by_id_records_last_error_when_export_service_fails(): void
     {
         $post = new \WP_Post();
         $post->ID = 55;
@@ -119,11 +119,18 @@ class FunctionsTest extends TestCase
             return json_encode($data);
         });
         Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 409]]);
+        Functions\when('wp_remote_get')->justReturn(['response' => ['code' => 404]]);
         Functions\when('is_wp_error')->justReturn(false);
-        Functions\when('wp_remote_retrieve_response_code')->justReturn(409);
+        Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
+            return $response['response']['code'];
+        });
         Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'sha does not match']));
 
-        Functions\expect('update_post_meta')->never();
+        Functions\expect('update_post_meta')
+            ->once()
+            ->with(55, '_potogh_last_error', \Mockery::on(function ($value) {
+                return is_array($value) && strpos($value['message'], 'sha does not match') === 0;
+            }));
 
         $result = \POTOGH\export_post_by_id(55);
 
@@ -392,6 +399,101 @@ class FunctionsTest extends TestCase
         $this->assertStringContainsString('Corpo', $result['content']);
     }
 
+    public function test_delete_export_by_id_returns_error_when_no_file_recorded(): void
+    {
+        Functions\when('get_post_meta')->justReturn('');
+        Functions\when('__')->returnArg(1);
+
+        $result = \POTOGH\delete_export_by_id(42);
+
+        $this->assertFalse($result['success']);
+    }
+
+    public function test_delete_export_by_id_clears_meta_on_success(): void
+    {
+        Functions\when('get_post_meta')->alias(function ($postId, $key) {
+            if ($key === '_potogh_path') {
+                return 'posts/2020/old-post.md';
+            }
+            if ($key === '_potogh_sha') {
+                return 'abc123';
+            }
+            return '';
+        });
+        Functions\when('get_option')->justReturn([
+            'token' => 'ghp_test',
+            'owner_repo' => 'gioxx/blog',
+            'branch' => 'main',
+        ]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\when('__')->returnArg(1);
+        Functions\when('get_the_title')->justReturn('Old post');
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 200]]);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(200);
+        Functions\when('wp_remote_retrieve_body')->justReturn('{}');
+
+        Functions\expect('delete_post_meta')->times(4);
+
+        $result = \POTOGH\delete_export_by_id(42);
+
+        $this->assertTrue($result['success']);
+    }
+
+    public function test_delete_export_by_id_records_last_error_on_failure(): void
+    {
+        Functions\when('get_post_meta')->alias(function ($postId, $key) {
+            if ($key === '_potogh_path') {
+                return 'posts/2020/old-post.md';
+            }
+            if ($key === '_potogh_sha') {
+                return 'stale-sha';
+            }
+            return '';
+        });
+        Functions\when('get_option')->justReturn([
+            'token' => 'ghp_test',
+            'owner_repo' => 'gioxx/blog',
+            'branch' => 'main',
+        ]);
+        Functions\when('wp_parse_args')->alias(function (array $args, array $defaults) {
+            return array_merge($defaults, $args);
+        });
+        Functions\when('__')->returnArg(1);
+        Functions\when('get_the_title')->justReturn('Old post');
+        Functions\when('wp_json_encode')->alias(function ($data) {
+            return json_encode($data);
+        });
+        Functions\when('is_wp_error')->justReturn(false);
+        Functions\when('wp_remote_request')->justReturn(['response' => ['code' => 409]]);
+        Functions\when('wp_remote_retrieve_response_code')->justReturn(409);
+        Functions\when('wp_remote_retrieve_body')->justReturn(json_encode(['message' => 'sha does not match']));
+
+        Functions\expect('update_post_meta')
+            ->once()
+            ->with(42, '_potogh_last_error', \Mockery::on(function ($value) {
+                return is_array($value) && $value['message'] === 'sha does not match';
+            }));
+
+        $result = \POTOGH\delete_export_by_id(42);
+
+        $this->assertFalse($result['success']);
+    }
+
+    public function test_ignore_orphaned_export_clears_meta(): void
+    {
+        Functions\expect('delete_post_meta')->times(4);
+
+        \POTOGH\ignore_orphaned_export(42);
+
+        $this->assertConditionsMet();
+    }
+
     public function test_commit_batch_updates_meta_for_each_item_on_success(): void
     {
         Functions\when('get_option')->alias(function ($name) {
@@ -446,6 +548,7 @@ class FunctionsTest extends TestCase
         });
 
         Functions\expect('update_post_meta')->times(3);
+        Functions\expect('delete_post_meta')->once()->with(1, '_potogh_last_error');
 
         $result = \POTOGH\commit_batch([
             ['post_id' => 1, 'title' => 'Post A', 'path' => 'posts/2026/a.md', 'content' => '# A'],
@@ -455,7 +558,7 @@ class FunctionsTest extends TestCase
         $this->assertSame('new-commit-sha', $result['commit_sha']);
     }
 
-    public function test_commit_batch_does_not_update_meta_on_failure(): void
+    public function test_commit_batch_records_last_error_for_each_item_on_failure(): void
     {
         Functions\when('get_option')->justReturn([
             'token' => 'ghp_test',
@@ -472,7 +575,11 @@ class FunctionsTest extends TestCase
             ->once()
             ->andReturn(['response' => ['code' => 500], 'body_json' => ['message' => 'Server error']]);
         Functions\expect('wp_remote_request')->never();
-        Functions\expect('update_post_meta')->never();
+        Functions\expect('update_post_meta')
+            ->once()
+            ->with(1, '_potogh_last_error', \Mockery::on(function ($value) {
+                return is_array($value) && $value['message'] === 'Server error';
+            }));
 
         Functions\when('wp_remote_retrieve_response_code')->alias(function ($response) {
             return $response['response']['code'];

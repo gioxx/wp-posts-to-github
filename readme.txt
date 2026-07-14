@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.5.6
+Stable tag: 1.5.7
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,11 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.7 =
+* Failed exports now record an error message on the post, shown as a warning in the post edit metabox, the bulk export table, and the "Exported, no longer published" view, instead of failing silently in the background.
+* "Exported, no longer published" view: added "Delete from GitHub" and "Ignore" actions per post.
+* Fixed "Invalid request. sha wasn't supplied" error when re-exporting a post whose GitHub file sha wasn't recorded locally: the plugin now looks up the file's current sha on GitHub before writing, instead of only relying on cached post meta.
+
 = 1.5.6 =
 * The bulk export screen's "posts per page" is now set via the native WordPress Screen Options panel instead of a custom dropdown.
 * Faster pagination on the bulk export screen: most filter combinations now paginate at the database level instead of loading every matching post into memory.
