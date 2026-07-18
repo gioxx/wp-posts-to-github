@@ -139,8 +139,10 @@ class Cli
         ];
 
         if ($status === ExportStatus::NEVER_EXPORTED) {
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             $args['meta_query'] = [['key' => '_potogh_exported_at', 'compare' => 'NOT EXISTS']];
         } elseif (in_array($status, [ExportStatus::EXPORTED, ExportStatus::MODIFIED_SINCE_EXPORT], true)) {
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             $args['meta_query'] = [['key' => '_potogh_exported_at', 'compare' => 'EXISTS']];
         }
 

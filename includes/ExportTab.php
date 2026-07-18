@@ -504,6 +504,7 @@ class ExportTab
             'post_status' => 'publish',
             'numberposts' => -1,
             'fields' => 'ids',
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             'meta_query' => [['key' => '_potogh_exported_at', 'compare' => 'NOT EXISTS']],
         ]);
 
@@ -511,6 +512,7 @@ class ExportTab
             'post_type' => 'post',
             'post_status' => 'publish',
             'numberposts' => -1,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             'meta_query' => [['key' => '_potogh_exported_at', 'compare' => 'EXISTS']],
         ]);
 
@@ -532,6 +534,7 @@ class ExportTab
             'post_status' => self::ORPHANED_POST_STATUSES,
             'numberposts' => -1,
             'fields' => 'ids',
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             'meta_query' => [['key' => '_potogh_path', 'compare' => 'EXISTS']],
         ]);
 
@@ -571,8 +574,10 @@ class ExportTab
         }
 
         if ($filters['status'] === ExportStatus::NEVER_EXPORTED) {
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             $args['meta_query'] = [['key' => '_potogh_exported_at', 'compare' => 'NOT EXISTS']];
         } elseif (in_array($filters['status'], [ExportStatus::EXPORTED, ExportStatus::MODIFIED_SINCE_EXPORT], true)) {
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             $args['meta_query'] = [['key' => '_potogh_exported_at', 'compare' => 'EXISTS']];
         }
 
@@ -890,6 +895,7 @@ class ExportTab
             'orderby' => 'modified',
             'order' => 'DESC',
             'numberposts' => -1,
+            // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- required to query the plugin's own export-tracking meta key; no alternative exists.
             'meta_query' => [['key' => '_potogh_path', 'compare' => 'EXISTS']],
         ];
 

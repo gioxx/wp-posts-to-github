@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.10] - 2026-07-18
+### Fixed
+- Silenced the remaining `WordPress.DB.SlowDBQuery.slow_db_query_meta_query` warnings from the WordPress Plugin Check tool (`includes/ExportTab.php`, `includes/Cli.php`) with justified `phpcs:ignore` annotations: these queries filter on the plugin's own export-tracking meta keys and have no `WP_Query` alternative.
+
 ## [1.5.9] - 2026-07-18
 ### Fixed
 - Second WordPress Plugin Check pass: `phpcs:ignore` annotations for nonce verification and input sanitization only suppressed the sniff on the line directly below them, missing later lines of the same multi-line statement (`includes/Settings.php`, `includes/ExportTab.php`). Switched to `phpcs:disable`/`phpcs:enable` blocks where needed.
