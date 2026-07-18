@@ -96,7 +96,8 @@ class ExportTab
         }
 
         $perPage = $this->resolvePerPage();
-        $paged = max(1, (int) ($_GET['paged'] ?? 1));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only pagination on an admin listing screen, no state change.
+        $paged = max(1, absint(wp_unslash($_GET['paged'] ?? 1)));
 
         $page = $this->queryMatchingPostsPage($filters, $perPage, $paged);
         $posts = $page['posts'];
@@ -214,6 +215,7 @@ class ExportTab
                             <span class="dashicons <?php echo esc_attr(Metabox::statusIconClass($status)); ?>"></span>
                             <span class="potogh-status-text"><?php echo esc_html(Metabox::statusLabel($status, $exportedAt)); ?></span>
                             <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
+                                <?php // translators: %s: error message from the last automatic export attempt. ?>
                                 <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
                             <?php endif; ?>
                         </td>
@@ -364,6 +366,7 @@ class ExportTab
             wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
         }
 
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce-verified above; decoded and validated as an array below.
         $raw = isset($_POST['items']) ? wp_unslash($_POST['items']) : '[]';
         $items = json_decode((string) $raw, true);
 
@@ -665,8 +668,16 @@ class ExportTab
 
     private function availableMonths(): array
     {
+        $cacheKey = 'potogh_available_months';
+        $cached = wp_cache_get($cacheKey, 'post-to-github-md');
+
+        if (is_array($cached)) {
+            return $cached;
+        }
+
         global $wpdb;
 
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- no core API provides a distinct year/month aggregate over posts; result is cached below.
         $results = $wpdb->get_results(
             "SELECT DISTINCT YEAR(post_date) AS year, MONTH(post_date) AS month FROM {$wpdb->posts}
              WHERE post_type = 'post' AND post_status = 'publish' ORDER BY post_date DESC"
@@ -680,6 +691,8 @@ class ExportTab
                 'label' => date_i18n('F Y', mktime(0, 0, 0, (int) $row->month, 1, (int) $row->year)),
             ];
         }
+
+        wp_cache_set($cacheKey, $months, 'post-to-github-md', 5 * MINUTE_IN_SECONDS);
 
         return $months;
     }
@@ -751,10 +764,10 @@ class ExportTab
                 '<span class="tablenav-paging-text" id="%1$s-text"> %5$s <span class="total-pages">%6$d</span></span></span>',
                 esc_attr($uid),
                 esc_html__('Current Page', 'post-to-github-md'),
-                $paged,
-                max(1, strlen((string) $totalPages)),
+                absint($paged),
+                absint(max(1, strlen((string) $totalPages))),
                 esc_html__('of', 'post-to-github-md'),
-                $totalPages
+                absint($totalPages)
             );
 
             $this->renderPaginationLink($paged >= $totalPages, 'next-page', esc_url(add_query_arg('paged', min($totalPages, $paged + 1), $baseUrl)), '&rsaquo;', __('Next page', 'post-to-github-md'));
@@ -769,6 +782,7 @@ class ExportTab
     private function renderPaginationLink(bool $disabled, string $class, string $url, string $glyph, string $label): void
     {
         if ($disabled) {
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $glyph is a hardcoded HTML entity from a caller in this class, not user input.
             printf('<span class="tablenav-pages-navspan button disabled" aria-hidden="true">%s</span>', $glyph);
 
             return;
@@ -777,8 +791,9 @@ class ExportTab
         printf(
             '<a class="%s button" href="%s"><span class="screen-reader-text">%s</span><span aria-hidden="true">%s</span></a>',
             esc_attr($class),
-            $url,
+            esc_url($url),
             esc_html($label),
+            // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- $glyph is a hardcoded HTML entity from a caller in this class, not user input.
             $glyph
         );
     }
@@ -786,7 +801,8 @@ class ExportTab
     private function renderOrphaned(array $filters): void
     {
         $perPage = $this->resolvePerPage();
-        $paged = max(1, (int) ($_GET['paged'] ?? 1));
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only pagination on an admin listing screen, no state change.
+        $paged = max(1, absint(wp_unslash($_GET['paged'] ?? 1)));
         $page = $this->queryOrphanedPostsPage($filters, $perPage, $paged);
         $posts = $page['posts'];
         $total = $page['total'];
@@ -834,6 +850,7 @@ class ExportTab
                         <td>
                             <?php echo esc_html($exportedAt ? Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt) : ''); ?>
                             <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
+                                <?php // translators: %s: error message from the last automatic export attempt. ?>
                                 <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
                             <?php endif; ?>
                         </td>

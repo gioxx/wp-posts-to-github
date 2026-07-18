@@ -151,8 +151,8 @@ class Settings
                             <p class="description">
                                 <?php
                                 printf(
-                                    /* translators: %s: link to GitHub token settings page */
-                                    esc_html__('A fine-grained or classic token with %s access to the target repository. Generate one at %s.', 'post-to-github-md'),
+                                    /* translators: 1: required token scope, 2: link to GitHub token settings page */
+                                    esc_html__('A fine-grained or classic token with %1$s access to the target repository. Generate one at %2$s.', 'post-to-github-md'),
                                     '<code>repo</code>',
                                     '<a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">github.com/settings/tokens</a>'
                                 );
@@ -265,6 +265,7 @@ class Settings
         }
 
         $defaults = self::defaults();
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below via self::sanitize().
         $sanitized = self::sanitize([
             'token' => wp_unslash($_POST['token'] ?? ''),
             'owner_repo' => wp_unslash($_POST['owner_repo'] ?? ''),
@@ -295,6 +296,7 @@ class Settings
         }
 
         $defaults = self::defaults();
+        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below via self::sanitize().
         $sanitized = self::sanitize([
             'token' => wp_unslash($_POST['token'] ?? ''),
             'owner_repo' => wp_unslash($_POST['owner_repo'] ?? ''),

@@ -2,6 +2,11 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.8] - 2026-07-18
+### Fixed
+- Addressed findings from the WordPress Plugin Check tool ahead of directory submission: missing `translators:` comments, unordered translation placeholders, unescaped pagination output, missing `ABSPATH` guard in `includes/functions.php`, deprecated `load_plugin_textdomain()` call, and an outdated readme "Tested up to" header (now 7.0, tested against 7.0.2).
+- Excluded `README.it.md` from the release zip built by the GitHub Actions workflow (unexpected file in plugin root per directory guidelines); it remains in the GitHub repository.
+
 ## [1.5.7] - 2026-07-14
 ### Added
 - Failed exports (automatic or manual, single-post or batch) now record the error message on the post (`_potogh_last_error`), surfaced as a warning next to the export status in the post edit metabox, the bulk export table, and the "Exported, no longer published" view. Previously, a failed background auto-(re)export was completely silent.

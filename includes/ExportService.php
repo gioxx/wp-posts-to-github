@@ -21,6 +21,7 @@ class ExportService
 
         $year = gmdate('Y', strtotime($postData['date_gmt']));
         $path = $postData['existing_path'] ?? PathBuilder::build($this->baseFolder, $year, $postData['slug']);
+        // translators: %s: computed file path on GitHub.
         $trace[] = sprintf(__('Computed path: %s', 'post-to-github-md'), $path);
 
         $frontMatter = FrontMatter::build([
@@ -55,16 +56,19 @@ class ExportService
 
             if ($remote !== null && $remote['sha'] !== null) {
                 $sha = $remote['sha'];
+                // translators: %s: SHA of the existing file found on GitHub.
                 $trace[] = sprintf(__('Found existing file on GitHub (sha: %s).', 'post-to-github-md'), $sha);
             }
         }
 
         $message = sprintf('Export post: %s (#%d)', $postData['title'], $postData['wp_id']);
 
+        // translators: %s: file path being sent to GitHub.
         $trace[] = sprintf(__('Sending to GitHub (%s)...', 'post-to-github-md'), $path);
         $result = $this->githubClient->putFile($path, $fileContent, $message, $sha);
 
         if (!$result['success']) {
+            // translators: %s: error message returned by GitHub.
             $trace[] = sprintf(__('Error from GitHub: %s', 'post-to-github-md'), $result['error']);
 
             return [
@@ -75,6 +79,7 @@ class ExportService
             ];
         }
 
+        // translators: %s: SHA of the file saved on GitHub.
         $trace[] = sprintf(__('File saved on GitHub (sha: %s).', 'post-to-github-md'), $result['sha']);
 
         return ['success' => true, 'path' => $path, 'sha' => $result['sha'], 'trace' => $trace];

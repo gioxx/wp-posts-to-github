@@ -2,6 +2,10 @@
 
 namespace POTOGH;
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 function build_export_service(): ExportService
 {
     $settings = Settings::get();
@@ -26,6 +30,7 @@ function post_to_export_data(\WP_Post $post): array
         'categories' => $categories,
         'tags' => $tags,
         'permalink' => get_permalink($post),
+        // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- reuses WordPress core's own 'the_content' filter to render content as the theme would, not a plugin-defined hook.
         'content_html' => apply_filters('the_content', $post->post_content),
         'existing_path' => get_post_meta($post->ID, '_potogh_path', true) ?: null,
         'existing_sha' => get_post_meta($post->ID, '_potogh_sha', true) ?: null,
@@ -242,10 +247,12 @@ function uninstall_cleanup(): void
 
     global $wpdb;
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-time uninstall cleanup of plugin-owned meta keys; no core API bulk-deletes across all posts/users, and caching is moot on uninstall.
     $wpdb->query(
         "DELETE FROM {$wpdb->postmeta} WHERE meta_key IN ('_potogh_path', '_potogh_sha', '_potogh_exported_at', '_potogh_last_error')"
     );
 
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- one-time uninstall cleanup of plugin-owned meta keys; no core API bulk-deletes across all posts/users, and caching is moot on uninstall.
     $wpdb->query(
         $wpdb->prepare("DELETE FROM {$wpdb->usermeta} WHERE meta_key = %s", 'potogh_export_per_page')
     );

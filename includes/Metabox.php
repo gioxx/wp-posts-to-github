@@ -30,6 +30,7 @@ class Metabox
         <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
             <p class="potogh-last-error notice notice-error inline">
                 <span class="dashicons dashicons-warning"></span>
+                <?php // translators: %s: error message from the last automatic export attempt. ?>
                 <?php echo esc_html(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>
             </p>
         <?php endif; ?>
@@ -50,6 +51,7 @@ class Metabox
     {
         switch ($status) {
             case ExportStatus::EXPORTED:
+                // translators: %s: formatted date/time the post was exported.
                 return sprintf(__('Exported on %s', 'post-to-github-md'), self::formatExportedAt($exportedAt));
             case ExportStatus::MODIFIED_SINCE_EXPORT:
                 return __('Modified since last export', 'post-to-github-md');

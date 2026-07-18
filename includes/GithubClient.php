@@ -57,10 +57,12 @@ class GithubClient
         $branchCode = wp_remote_retrieve_response_code($branchResponse);
 
         if ($branchCode === 404) {
+            // translators: %s: branch name.
             return ['success' => false, 'message' => sprintf(__('Branch "%s" not found in repository.', 'post-to-github-md'), $this->branch)];
         }
 
         if ($branchCode < 200 || $branchCode >= 300) {
+            // translators: %d: HTTP status code returned by the GitHub API.
             return ['success' => false, 'message' => sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $branchCode)];
         }
 
@@ -106,6 +108,7 @@ class GithubClient
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if ($code < 200 || $code >= 300) {
+            // translators: %d: HTTP status code returned by the GitHub API.
             $error = $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $code);
 
             return ['success' => false, 'message' => $error];
@@ -150,6 +153,7 @@ class GithubClient
         if ($retryAfter !== null) {
             return [
                 'success' => false,
+                // translators: %d: number of seconds to wait before retrying.
                 'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'post-to-github-md'), $retryAfter),
                 'status' => $code,
                 'retry_after' => $retryAfter,
@@ -401,6 +405,7 @@ class GithubClient
         if ($retryAfter !== null) {
             return [
                 'success' => false,
+                // translators: %d: number of seconds to wait before retrying.
                 'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'post-to-github-md'), $retryAfter),
                 'retry_after' => $retryAfter,
             ];
@@ -410,6 +415,7 @@ class GithubClient
 
         return [
             'success' => false,
+            // translators: %d: HTTP status code returned by the GitHub API.
             'error' => $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $code),
         ];
     }
