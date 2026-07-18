@@ -2,6 +2,10 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.9] - 2026-07-18
+### Fixed
+- Second WordPress Plugin Check pass: `phpcs:ignore` annotations for nonce verification and input sanitization only suppressed the sniff on the line directly below them, missing later lines of the same multi-line statement (`includes/Settings.php`, `includes/ExportTab.php`). Switched to `phpcs:disable`/`phpcs:enable` blocks where needed.
+
 ## [1.5.8] - 2026-07-18
 ### Fixed
 - Addressed findings from the WordPress Plugin Check tool ahead of directory submission: missing `translators:` comments, unordered translation placeholders, unescaped pagination output, missing `ABSPATH` guard in `includes/functions.php`, deprecated `load_plugin_textdomain()` call, and an outdated readme "Tested up to" header (now 7.0, tested against 7.0.2).

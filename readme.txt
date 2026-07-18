@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.8
+Stable tag: 1.5.9
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.9 =
+* Fixed remaining WordPress Plugin Check findings from a second review pass: nonce-verification and input-sanitization ignore annotations that only covered part of a multi-line statement now cover the whole block.
+
 = 1.5.8 =
 * Addressed WordPress Plugin Check findings ahead of directory submission: missing translators comments, unordered placeholders, unescaped pagination output, missing ABSPATH guard, deprecated load_plugin_textdomain() call, and outdated "Tested up to" header.
 

@@ -265,13 +265,14 @@ class Settings
         }
 
         $defaults = self::defaults();
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below via self::sanitize().
+        // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below via self::sanitize().
         $sanitized = self::sanitize([
             'token' => wp_unslash($_POST['token'] ?? ''),
             'owner_repo' => wp_unslash($_POST['owner_repo'] ?? ''),
             'branch' => wp_unslash($_POST['branch'] ?? ''),
             'base_folder' => $defaults['base_folder'],
         ]);
+        // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
         if ($sanitized['token'] === '' || $sanitized['owner_repo'] === '') {
             wp_send_json_error(['message' => __('Enter both a token and a valid repository before testing the connection.', 'post-to-github-md')], 400);
@@ -296,13 +297,14 @@ class Settings
         }
 
         $defaults = self::defaults();
-        // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below via self::sanitize().
+        // phpcs:disable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- sanitized below via self::sanitize().
         $sanitized = self::sanitize([
             'token' => wp_unslash($_POST['token'] ?? ''),
             'owner_repo' => wp_unslash($_POST['owner_repo'] ?? ''),
             'branch' => $defaults['branch'],
             'base_folder' => $defaults['base_folder'],
         ]);
+        // phpcs:enable WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
         if ($sanitized['token'] === '' || $sanitized['owner_repo'] === '') {
             wp_send_json_error(['message' => __('Enter both a token and a valid repository first.', 'post-to-github-md')], 400);

@@ -87,6 +87,7 @@ class ExportTab
 
     public function render(): void
     {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- read-only pagination/filtering on an admin listing screen, no state change.
         $filters = $this->filtersFrom($_GET);
 
         if ($filters['status'] === self::ORPHANED_STATUS) {
