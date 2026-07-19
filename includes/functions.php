@@ -179,6 +179,7 @@ function commit_batch(array $items): array
         $exported[] = [
             'post_id' => $item['post_id'],
             'message' => Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt),
+            'path' => $item['path'],
         ];
     }
 
@@ -301,6 +302,9 @@ function enqueue_admin_assets(string $hook): void
             /* translators: %s: error message returned by GitHub */
             'commitFailed' => __('Commit failed: %s', 'post-to-github-md'),
             'confirmDeleteFromGithub' => __('Delete this file from the GitHub repository? This creates a removal commit and cannot be undone from here.', 'post-to-github-md'),
+            'githubBaseUrl' => $settings['owner_repo'] !== ''
+                ? sprintf('https://github.com/%s/blob/%s/', $settings['owner_repo'], $settings['branch'])
+                : '',
         ]);
     }
 

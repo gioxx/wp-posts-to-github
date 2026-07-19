@@ -107,6 +107,7 @@ class ExportTab
         $nonce = wp_create_nonce('potogh_bulk_export');
         $categoryCounts = $this->termCounts($filters, 'category');
         $tagCounts = $this->termCounts($filters, 'tag');
+        $settings = Settings::get();
         ?>
         <div class="potogh-export-tab" data-nonce="<?php echo esc_attr($nonce); ?>" data-total="<?php echo esc_attr($total); ?>">
             <?php wp_nonce_field('potogh_bulk_export', 'potogh_bulk_nonce'); ?>
@@ -205,6 +206,11 @@ class ExportTab
                     $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
                     $status = ExportStatus::determine($exportedAt, $post->post_modified_gmt);
                     $lastError = get_post_meta($post->ID, '_potogh_last_error', true) ?: null;
+                    $path = get_post_meta($post->ID, '_potogh_path', true) ?: null;
+                    $githubUrl = ($settings['owner_repo'] !== '' && $path)
+                        ? sprintf('https://github.com/%s/blob/%s/%s', $settings['owner_repo'], $settings['branch'], ltrim($path, '/'))
+                        : '';
+                    $statusLabel = Metabox::statusLabel($status, $exportedAt);
                 ?>
                     <tr data-post-id="<?php echo esc_attr($post->ID); ?>">
                         <th scope="row" class="check-column"><input type="checkbox" class="potogh-post-checkbox" value="<?php echo esc_attr($post->ID); ?>"></th>
@@ -214,7 +220,11 @@ class ExportTab
                         <td class="column-date"><?php echo esc_html(get_the_date('', $post)); ?></td>
                         <td class="column-status potogh-status-cell potogh-status-<?php echo esc_attr($status); ?>">
                             <span class="dashicons <?php echo esc_attr(Metabox::statusIconClass($status)); ?>"></span>
-                            <span class="potogh-status-text"><?php echo esc_html(Metabox::statusLabel($status, $exportedAt)); ?></span>
+                            <?php if ($githubUrl !== '') : ?>
+                                <a class="potogh-status-text" href="<?php echo esc_url($githubUrl); ?>" target="_blank" rel="noopener noreferrer" title="<?php echo esc_attr($path); ?>"><?php echo esc_html($statusLabel); ?></a>
+                            <?php else : ?>
+                                <span class="potogh-status-text"><?php echo esc_html($statusLabel); ?></span>
+                            <?php endif; ?>
                             <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
                                 <?php // translators: %s: error message from the last automatic export attempt. ?>
                                 <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
@@ -276,6 +286,7 @@ class ExportTab
         wp_send_json_success([
             'post_id' => $postId,
             'message' => Metabox::statusLabel(ExportStatus::EXPORTED, $result['exported_at']),
+            'path' => $result['path'],
             'trace' => $result['trace'],
         ]);
     }

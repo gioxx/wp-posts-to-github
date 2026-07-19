@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.11] - 2026-07-19
+### Added
+- The export status text ("Exported on ...") in the bulk export table is now a direct link to the file on GitHub, opening in a new tab.
+
+### Fixed
+- Added the `Release Asset: true` plugin header so Git Updater installs the clean production zip (built by the release workflow, with dev-only Composer dependencies excluded) instead of the raw `main` branch zip, which shipped test-only packages (`brain/monkey`, `antecedent/patchwork`) to end users.
+
 ## [1.5.10] - 2026-07-18
 ### Fixed
 - Silenced the remaining `WordPress.DB.SlowDBQuery.slow_db_query_meta_query` warnings from the WordPress Plugin Check tool (`includes/ExportTab.php`, `includes/Cli.php`) with justified `phpcs:ignore` annotations: these queries filter on the plugin's own export-tracking meta keys and have no `WP_Query` alternative.

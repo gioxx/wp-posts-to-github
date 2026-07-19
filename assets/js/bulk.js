@@ -193,7 +193,7 @@
         $number.text(current + delta);
     }
 
-    function markRowExported(postId, message) {
+    function markRowExported(postId, message, path) {
         var $cell = $('tr[data-post-id="' + postId + '"]').find('.potogh-status-cell');
         var previousStatus = null;
 
@@ -207,7 +207,20 @@
             .removeClass('potogh-status-never_exported potogh-status-modified_since_export potogh-status-exported')
             .addClass('potogh-status-exported');
         $cell.find('.dashicons').attr('class', 'dashicons ' + statusIconClass('exported'));
-        $cell.find('.potogh-status-text').text(message);
+
+        var $text = $cell.find('.potogh-status-text');
+        var githubUrl = (path && potoghBulk.githubBaseUrl) ? potoghBulk.githubBaseUrl + path.replace(/^\//, '') : '';
+
+        if (githubUrl) {
+            if (!$text.is('a')) {
+                var $link = $('<a class="potogh-status-text"></a>');
+                $text.replaceWith($link);
+                $text = $link;
+            }
+            $text.attr('href', githubUrl).attr('target', '_blank').attr('rel', 'noopener noreferrer').attr('title', path);
+        }
+
+        $text.text(message);
 
         if (previousStatus && previousStatus !== 'exported') {
             adjustStatTile(previousStatus, -1);
@@ -238,6 +251,7 @@
             deferred.resolve({
                 success: !!response.success,
                 message: response.data ? response.data.message : '',
+                path: response.data ? response.data.path : '',
                 trace: response.data ? response.data.trace : [],
                 retryAfter: response.data ? response.data.retry_after : null
             });
@@ -344,7 +358,7 @@
             exportWithRetry(postId, nonce, false).then(function (result) {
                 if (result.success) {
                     succeededIds.push(postId);
-                    markRowExported(postId, result.message);
+                    markRowExported(postId, result.message, result.path);
                 } else {
                     failed.push(postId + ': ' + result.message);
                 }
@@ -453,7 +467,7 @@
                         return item.post_id;
                     });
                     $.each(result.data.exported, function (i, item) {
-                        markRowExported(item.post_id, item.message);
+                        markRowExported(item.post_id, item.message, item.path);
                     });
                     finishExport(buildBatchSummary(result.data.exported.length, failed, skippedCount), exportedIds);
                 } else {
