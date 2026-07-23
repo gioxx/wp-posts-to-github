@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.12] - 2026-07-24
+### Fixed
+- Aligned the text domain with the plugin slug (`posts-to-github-md`) across all files and the plugin header.
+- Sanitized the `branch` and `base_folder` settings with `sanitize_text_field()` instead of trimming only.
+- Removed bundled translation files (`.po`/`.mo`/`.pot`); translations are now handled via translate.wordpress.org.
+
 ## [1.5.11] - 2026-07-19
 ### Added
 - The export status text ("Exported on ...") in the bulk export table is now a direct link to the file on GitHub, opening in a new tab.
