@@ -1,2 +1,5 @@
 .tokensave
 .phpunit.result.cache
+/languages/*.po
+/languages/*.mo
+/languages/*.pot

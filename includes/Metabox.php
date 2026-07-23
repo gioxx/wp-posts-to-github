@@ -8,7 +8,7 @@ class Metabox
     {
         add_meta_box(
             'potogh_export',
-            __('Export to GitHub', 'post-to-github-md'),
+            __('Export to GitHub', 'posts-to-github-md'),
             [$this, 'render'],
             'post',
             'side'
@@ -31,16 +31,16 @@ class Metabox
             <p class="potogh-last-error notice notice-error inline">
                 <span class="dashicons dashicons-warning"></span>
                 <?php // translators: %s: error message from the last automatic export attempt. ?>
-                <?php echo esc_html(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>
+                <?php echo esc_html(sprintf(__('Last automatic export failed: %s', 'posts-to-github-md'), $lastError['message'])); ?>
             </p>
         <?php endif; ?>
         <button type="button" class="button button-primary potogh-export-button" data-post-id="<?php echo esc_attr($post->ID); ?>">
             <span class="dashicons dashicons-cloud-upload"></span>
-            <?php esc_html_e('Export to GitHub', 'post-to-github-md'); ?>
+            <?php esc_html_e('Export to GitHub', 'posts-to-github-md'); ?>
         </button>
         <p class="potogh-export-progress" hidden>
             <span class="potogh-spinner" aria-hidden="true"></span>
-            <?php esc_html_e('Exporting…', 'post-to-github-md'); ?>
+            <?php esc_html_e('Exporting…', 'posts-to-github-md'); ?>
         </p>
         <div class="potogh-export-message"></div>
         <ul class="potogh-export-trace"></ul>
@@ -52,11 +52,11 @@ class Metabox
         switch ($status) {
             case ExportStatus::EXPORTED:
                 // translators: %s: formatted date/time the post was exported.
-                return sprintf(__('Exported on %s', 'post-to-github-md'), self::formatExportedAt($exportedAt));
+                return sprintf(__('Exported on %s', 'posts-to-github-md'), self::formatExportedAt($exportedAt));
             case ExportStatus::MODIFIED_SINCE_EXPORT:
-                return __('Modified since last export', 'post-to-github-md');
+                return __('Modified since last export', 'posts-to-github-md');
             default:
-                return __('Never exported', 'post-to-github-md');
+                return __('Never exported', 'posts-to-github-md');
         }
     }
 
@@ -90,11 +90,11 @@ class Metabox
         check_ajax_referer('potogh_export_' . $postId, 'nonce');
 
         if (!current_user_can('edit_post', $postId)) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md')], 400);
         }
 
         $result = export_post_by_id($postId);

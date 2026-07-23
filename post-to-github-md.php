@@ -10,7 +10,7 @@
  * Author URI: https://gioxx.org
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: post-to-github-md
+ * Text Domain: posts-to-github-md
  * Domain Path: /languages
  *
  * GitHub Plugin URI: gioxx/wp-posts-to-github
@@ -63,7 +63,7 @@ add_action('plugins_loaded', function () {
     }
 
     add_filter('plugin_action_links_' . plugin_basename(__FILE__), function (array $links) {
-        $settingsLink = '<a href="' . esc_url(\POTOGH\Settings::pageUrl()) . '">' . esc_html__('Settings', 'post-to-github-md') . '</a>';
+        $settingsLink = '<a href="' . esc_url(\POTOGH\Settings::pageUrl()) . '">' . esc_html__('Settings', 'posts-to-github-md') . '</a>';
         array_unshift($links, $settingsLink);
 
         return $links;

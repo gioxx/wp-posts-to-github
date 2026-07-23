@@ -25,7 +25,7 @@ class Cli
     public function export(array $args, array $assocArgs): void
     {
         if (!Settings::isConfigured()) {
-            \WP_CLI::error(__('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md'));
+            \WP_CLI::error(__('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md'));
 
             return;
         }
@@ -66,7 +66,7 @@ class Cli
     public function bulkExport(array $args, array $assocArgs): void
     {
         if (!Settings::isConfigured()) {
-            \WP_CLI::error(__('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md'));
+            \WP_CLI::error(__('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md'));
 
             return;
         }

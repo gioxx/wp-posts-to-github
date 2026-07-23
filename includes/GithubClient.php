@@ -58,15 +58,15 @@ class GithubClient
 
         if ($branchCode === 404) {
             // translators: %s: branch name.
-            return ['success' => false, 'message' => sprintf(__('Branch "%s" not found in repository.', 'post-to-github-md'), $this->branch)];
+            return ['success' => false, 'message' => sprintf(__('Branch "%s" not found in repository.', 'posts-to-github-md'), $this->branch)];
         }
 
         if ($branchCode < 200 || $branchCode >= 300) {
             // translators: %d: HTTP status code returned by the GitHub API.
-            return ['success' => false, 'message' => sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $branchCode)];
+            return ['success' => false, 'message' => sprintf(__('GitHub API error, HTTP %d.', 'posts-to-github-md'), $branchCode)];
         }
 
-        return ['success' => true, 'message' => __('Connection successful: repository and branch are reachable.', 'post-to-github-md')];
+        return ['success' => true, 'message' => __('Connection successful: repository and branch are reachable.', 'posts-to-github-md')];
     }
 
     public function getDefaultBranch(): array
@@ -80,7 +80,7 @@ class GithubClient
         $branch = $repo['body']['default_branch'] ?? null;
 
         if (!$branch) {
-            return ['success' => false, 'message' => __('Could not determine the default branch.', 'post-to-github-md')];
+            return ['success' => false, 'message' => __('Could not determine the default branch.', 'posts-to-github-md')];
         }
 
         return ['success' => true, 'branch' => $branch];
@@ -98,18 +98,18 @@ class GithubClient
         $code = wp_remote_retrieve_response_code($response);
 
         if ($code === 401) {
-            return ['success' => false, 'message' => __('Invalid GitHub token.', 'post-to-github-md')];
+            return ['success' => false, 'message' => __('Invalid GitHub token.', 'posts-to-github-md')];
         }
 
         if ($code === 404) {
-            return ['success' => false, 'message' => __('Repository not found or not accessible with this token.', 'post-to-github-md')];
+            return ['success' => false, 'message' => __('Repository not found or not accessible with this token.', 'posts-to-github-md')];
         }
 
         $body = json_decode(wp_remote_retrieve_body($response), true);
 
         if ($code < 200 || $code >= 300) {
             // translators: %d: HTTP status code returned by the GitHub API.
-            $error = $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $code);
+            $error = $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'posts-to-github-md'), $code);
 
             return ['success' => false, 'message' => $error];
         }
@@ -154,7 +154,7 @@ class GithubClient
             return [
                 'success' => false,
                 // translators: %d: number of seconds to wait before retrying.
-                'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'post-to-github-md'), $retryAfter),
+                'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'posts-to-github-md'), $retryAfter),
                 'status' => $code,
                 'retry_after' => $retryAfter,
             ];
@@ -163,7 +163,7 @@ class GithubClient
         $error = $body['message'] ?? ('GitHub API error, HTTP ' . $code);
 
         if ($code === 409) {
-            $error .= ' ' . __('(the file may have been modified directly on GitHub: check the repository contents before re-exporting)', 'post-to-github-md');
+            $error .= ' ' . __('(the file may have been modified directly on GitHub: check the repository contents before re-exporting)', 'posts-to-github-md');
         }
 
         return [
@@ -406,7 +406,7 @@ class GithubClient
             return [
                 'success' => false,
                 // translators: %d: number of seconds to wait before retrying.
-                'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'post-to-github-md'), $retryAfter),
+                'error' => sprintf(__('GitHub rate limit reached. Retrying automatically in %d seconds.', 'posts-to-github-md'), $retryAfter),
                 'retry_after' => $retryAfter,
             ];
         }
@@ -416,7 +416,7 @@ class GithubClient
         return [
             'success' => false,
             // translators: %d: HTTP status code returned by the GitHub API.
-            'error' => $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'post-to-github-md'), $code),
+            'error' => $body['message'] ?? sprintf(__('GitHub API error, HTTP %d.', 'posts-to-github-md'), $code),
         ];
     }
 

@@ -12,8 +12,8 @@ class ExportTab
     public function registerPage(): void
     {
         $hook = add_posts_page(
-            __('Export to GitHub', 'post-to-github-md'),
-            __('Export to GitHub', 'post-to-github-md'),
+            __('Export to GitHub', 'posts-to-github-md'),
+            __('Export to GitHub', 'posts-to-github-md'),
             'manage_options',
             'potogh-export',
             [$this, 'renderPage']
@@ -29,7 +29,7 @@ class ExportTab
     public function registerScreenOptions(): void
     {
         add_screen_option('per_page', [
-            'label' => __('Posts per page', 'post-to-github-md'),
+            'label' => __('Posts per page', 'posts-to-github-md'),
             'default' => self::DEFAULT_PER_PAGE,
             'option' => self::PER_PAGE_OPTION_KEY,
         ]);
@@ -55,7 +55,7 @@ class ExportTab
     {
         ?>
         <div class="wrap potogh-settings">
-            <h1 class="wp-heading-inline"><?php echo esc_html__('Export posts to GitHub', 'post-to-github-md'); ?></h1>
+            <h1 class="wp-heading-inline"><?php echo esc_html__('Export posts to GitHub', 'posts-to-github-md'); ?></h1>
             <hr class="wp-header-end">
             <?php if (!Settings::isConfigured()) : ?>
                 <div class="notice notice-warning inline">
@@ -63,8 +63,8 @@ class ExportTab
                         <?php
                         printf(
                             /* translators: %s: link to the plugin settings screen */
-                            esc_html__('Configure the GitHub Personal Access Token and repository in %s before exporting posts.', 'post-to-github-md'),
-                            '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'post-to-github-md') . '</a>'
+                            esc_html__('Configure the GitHub Personal Access Token and repository in %s before exporting posts.', 'posts-to-github-md'),
+                            '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'posts-to-github-md') . '</a>'
                         );
                         ?>
                     </p>
@@ -74,8 +74,8 @@ class ExportTab
                     <?php
                     printf(
                         /* translators: %s: link to the plugin settings screen */
-                        esc_html__('Need to change the GitHub connection? Head over to %s.', 'post-to-github-md'),
-                        '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'post-to-github-md') . '</a>'
+                        esc_html__('Need to change the GitHub connection? Head over to %s.', 'posts-to-github-md'),
+                        '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'posts-to-github-md') . '</a>'
                     );
                     ?>
                 </p>
@@ -118,30 +118,30 @@ class ExportTab
                 <input type="hidden" name="page" value="potogh-export">
 
                 <p class="search-box">
-                    <label class="screen-reader-text" for="potogh-search-input"><?php esc_html_e('Search posts:', 'post-to-github-md'); ?></label>
-                    <input type="search" id="potogh-search-input" name="s" value="<?php echo esc_attr($filters['search']); ?>" placeholder="<?php esc_attr_e('Search title…', 'post-to-github-md'); ?>">
-                    <input type="submit" class="button" value="<?php esc_attr_e('Search Posts', 'post-to-github-md'); ?>">
+                    <label class="screen-reader-text" for="potogh-search-input"><?php esc_html_e('Search posts:', 'posts-to-github-md'); ?></label>
+                    <input type="search" id="potogh-search-input" name="s" value="<?php echo esc_attr($filters['search']); ?>" placeholder="<?php esc_attr_e('Search title…', 'posts-to-github-md'); ?>">
+                    <input type="submit" class="button" value="<?php esc_attr_e('Search Posts', 'posts-to-github-md'); ?>">
                 </p>
 
                 <div class="tablenav top">
                     <div class="alignleft actions bulkactions">
                         <button type="button" class="button button-primary" id="potogh-bulk-export-selected" disabled>
                             <span class="dashicons dashicons-cloud-upload"></span>
-                            <?php esc_html_e('Export selected', 'post-to-github-md'); ?>
+                            <?php esc_html_e('Export selected', 'posts-to-github-md'); ?>
                         </button>
                     </div>
 
                     <div class="alignleft actions">
                         <select name="status">
-                            <option value=""><?php esc_html_e('All statuses', 'post-to-github-md'); ?></option>
-                            <option value="<?php echo esc_attr(ExportStatus::NEVER_EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::NEVER_EXPORTED); ?>><?php esc_html_e('Never exported', 'post-to-github-md'); ?></option>
-                            <option value="<?php echo esc_attr(ExportStatus::EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::EXPORTED); ?>><?php esc_html_e('Exported', 'post-to-github-md'); ?></option>
-                            <option value="<?php echo esc_attr(ExportStatus::MODIFIED_SINCE_EXPORT); ?>" <?php selected($filters['status'], ExportStatus::MODIFIED_SINCE_EXPORT); ?>><?php esc_html_e('Modified since export', 'post-to-github-md'); ?></option>
-                            <option value="<?php echo esc_attr(self::ORPHANED_STATUS); ?>" <?php selected($filters['status'], self::ORPHANED_STATUS); ?>><?php esc_html_e('Exported, no longer published', 'post-to-github-md'); ?></option>
+                            <option value=""><?php esc_html_e('All statuses', 'posts-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(ExportStatus::NEVER_EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::NEVER_EXPORTED); ?>><?php esc_html_e('Never exported', 'posts-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(ExportStatus::EXPORTED); ?>" <?php selected($filters['status'], ExportStatus::EXPORTED); ?>><?php esc_html_e('Exported', 'posts-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(ExportStatus::MODIFIED_SINCE_EXPORT); ?>" <?php selected($filters['status'], ExportStatus::MODIFIED_SINCE_EXPORT); ?>><?php esc_html_e('Modified since export', 'posts-to-github-md'); ?></option>
+                            <option value="<?php echo esc_attr(self::ORPHANED_STATUS); ?>" <?php selected($filters['status'], self::ORPHANED_STATUS); ?>><?php esc_html_e('Exported, no longer published', 'posts-to-github-md'); ?></option>
                         </select>
 
                         <select name="category">
-                            <option value="0"><?php esc_html_e('All categories', 'post-to-github-md'); ?></option>
+                            <option value="0"><?php esc_html_e('All categories', 'posts-to-github-md'); ?></option>
                             <?php foreach (get_categories(['hide_empty' => false, 'orderby' => 'name', 'order' => 'ASC']) as $category) : ?>
                                 <option value="<?php echo esc_attr($category->term_id); ?>" <?php selected($filters['category'], $category->term_id); ?>>
                                     <?php echo esc_html($category->name); ?> (<?php echo esc_html((string) ($categoryCounts[$category->term_id] ?? 0)); ?>)
@@ -150,7 +150,7 @@ class ExportTab
                         </select>
 
                         <select name="tag">
-                            <option value=""><?php esc_html_e('All tags', 'post-to-github-md'); ?></option>
+                            <option value=""><?php esc_html_e('All tags', 'posts-to-github-md'); ?></option>
                             <?php foreach (get_tags(['hide_empty' => false]) as $tag) : ?>
                                 <option value="<?php echo esc_attr($tag->slug); ?>" <?php selected($filters['tag'], $tag->slug); ?>>
                                     <?php echo esc_html($tag->name); ?> (<?php echo esc_html((string) ($tagCounts[$tag->term_id] ?? 0)); ?>)
@@ -159,16 +159,16 @@ class ExportTab
                         </select>
 
                         <select name="m">
-                            <option value=""><?php esc_html_e('All dates', 'post-to-github-md'); ?></option>
+                            <option value=""><?php esc_html_e('All dates', 'posts-to-github-md'); ?></option>
                             <?php foreach ($this->availableMonths() as $month) : ?>
                                 <option value="<?php echo esc_attr($month['value']); ?>" <?php selected($filters['month'], $month['value']); ?>><?php echo esc_html($month['label']); ?></option>
                             <?php endforeach; ?>
                         </select>
 
-                        <button type="submit" class="button"><?php esc_html_e('Filter', 'post-to-github-md'); ?></button>
+                        <button type="submit" class="button"><?php esc_html_e('Filter', 'posts-to-github-md'); ?></button>
                         <?php if ($this->hasActiveFilters($filters)) : ?>
                             <a href="<?php echo esc_url(admin_url('edit.php?page=potogh-export')); ?>" class="button">
-                                <?php esc_html_e('Reset filters', 'post-to-github-md'); ?>
+                                <?php esc_html_e('Reset filters', 'posts-to-github-md'); ?>
                             </a>
                         <?php endif; ?>
                     </div>
@@ -181,26 +181,26 @@ class ExportTab
                 <span id="potogh-selection-count"></span>
                 <button type="button" class="button-link" id="potogh-select-all-matching-btn" hidden></button>
                 <span class="potogh-spinner" id="potogh-select-all-spinner" hidden></span>
-                <button type="button" class="button-link" id="potogh-clear-selection-btn" hidden><?php esc_html_e('Clear selection', 'post-to-github-md'); ?></button>
+                <button type="button" class="button-link" id="potogh-clear-selection-btn" hidden><?php esc_html_e('Clear selection', 'posts-to-github-md'); ?></button>
             </p>
 
             <table class="wp-list-table widefat fixed striped potogh-export-table">
                 <thead>
                     <tr>
                         <th scope="col" id="cb" class="manage-column column-cb check-column">
-                            <label class="screen-reader-text" for="potogh-select-all"><?php esc_html_e('Select all', 'post-to-github-md'); ?></label>
+                            <label class="screen-reader-text" for="potogh-select-all"><?php esc_html_e('Select all', 'posts-to-github-md'); ?></label>
                             <input type="checkbox" id="potogh-select-all">
                         </th>
-                        <th scope="col" class="column-title"><?php esc_html_e('Title', 'post-to-github-md'); ?></th>
-                        <th scope="col" class="column-categories"><?php esc_html_e('Categories', 'post-to-github-md'); ?></th>
-                        <th scope="col" class="column-tags"><?php esc_html_e('Tags', 'post-to-github-md'); ?></th>
-                        <th scope="col" class="column-date"><?php esc_html_e('Publish date', 'post-to-github-md'); ?></th>
-                        <th scope="col" class="column-status"><?php esc_html_e('Export status', 'post-to-github-md'); ?></th>
+                        <th scope="col" class="column-title"><?php esc_html_e('Title', 'posts-to-github-md'); ?></th>
+                        <th scope="col" class="column-categories"><?php esc_html_e('Categories', 'posts-to-github-md'); ?></th>
+                        <th scope="col" class="column-tags"><?php esc_html_e('Tags', 'posts-to-github-md'); ?></th>
+                        <th scope="col" class="column-date"><?php esc_html_e('Publish date', 'posts-to-github-md'); ?></th>
+                        <th scope="col" class="column-status"><?php esc_html_e('Export status', 'posts-to-github-md'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($posts)) : ?>
-                    <tr><td colspan="6"><?php esc_html_e('No posts match the current filters.', 'post-to-github-md'); ?></td></tr>
+                    <tr><td colspan="6"><?php esc_html_e('No posts match the current filters.', 'posts-to-github-md'); ?></td></tr>
                 <?php endif; ?>
                 <?php foreach ($posts as $post) :
                     $exportedAt = get_post_meta($post->ID, '_potogh_exported_at', true) ?: null;
@@ -227,7 +227,7 @@ class ExportTab
                             <?php endif; ?>
                             <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
                                 <?php // translators: %s: error message from the last automatic export attempt. ?>
-                                <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
+                                <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'posts-to-github-md'), $lastError['message'])); ?>"></span>
                             <?php endif; ?>
                         </td>
                     </tr>
@@ -245,7 +245,7 @@ class ExportTab
         </div>
         <div id="potogh-bulk-footer" class="potogh-bulk-footer" hidden>
             <button type="button" class="potogh-bulk-stop-label" id="potogh-bulk-stop" hidden>
-                <?php esc_html_e('Stop', 'post-to-github-md'); ?>
+                <?php esc_html_e('Stop', 'posts-to-github-md'); ?>
             </button>
             <div id="potogh-bulk-progress" class="potogh-progress">
                 <span class="potogh-spinner" aria-hidden="true"></span>
@@ -264,11 +264,11 @@ class ExportTab
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md')], 400);
         }
 
         $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
@@ -296,11 +296,11 @@ class ExportTab
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md')], 400);
         }
 
         $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
@@ -318,7 +318,7 @@ class ExportTab
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
@@ -332,7 +332,7 @@ class ExportTab
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         $filters = $this->filtersFrom($_POST);
@@ -349,11 +349,11 @@ class ExportTab
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md')], 400);
         }
 
         $postId = isset($_POST['post_id']) ? (int) $_POST['post_id'] : 0;
@@ -371,11 +371,11 @@ class ExportTab
         check_ajax_referer('potogh_bulk_export', 'nonce');
 
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Insufficient permissions.', 'post-to-github-md')], 403);
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
         }
 
         if (!Settings::isConfigured()) {
-            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md')], 400);
         }
 
         // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- nonce-verified above; decoded and validated as an array below.
@@ -383,7 +383,7 @@ class ExportTab
         $items = json_decode((string) $raw, true);
 
         if (!is_array($items) || empty($items)) {
-            wp_send_json_error(['message' => __('No posts to commit.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('No posts to commit.', 'posts-to-github-md')], 400);
         }
 
         $sanitized = [];
@@ -402,7 +402,7 @@ class ExportTab
         }
 
         if (empty($sanitized)) {
-            wp_send_json_error(['message' => __('No posts to commit.', 'post-to-github-md')], 400);
+            wp_send_json_error(['message' => __('No posts to commit.', 'posts-to-github-md')], 400);
         }
 
         $result = commit_batch($sanitized);
@@ -462,35 +462,35 @@ class ExportTab
                 'class' => 'total',
                 'icon' => 'dashicons-admin-post',
                 'count' => $counts['total'],
-                'label' => __('Total published posts', 'post-to-github-md'),
+                'label' => __('Total published posts', 'posts-to-github-md'),
             ],
             [
                 'status' => ExportStatus::NEVER_EXPORTED,
                 'class' => ExportStatus::NEVER_EXPORTED,
                 'icon' => Metabox::statusIconClass(ExportStatus::NEVER_EXPORTED),
                 'count' => $counts['never_exported'],
-                'label' => __('Never exported', 'post-to-github-md'),
+                'label' => __('Never exported', 'posts-to-github-md'),
             ],
             [
                 'status' => ExportStatus::EXPORTED,
                 'class' => ExportStatus::EXPORTED,
                 'icon' => Metabox::statusIconClass(ExportStatus::EXPORTED),
                 'count' => $counts['exported'],
-                'label' => __('Exported', 'post-to-github-md'),
+                'label' => __('Exported', 'posts-to-github-md'),
             ],
             [
                 'status' => ExportStatus::MODIFIED_SINCE_EXPORT,
                 'class' => ExportStatus::MODIFIED_SINCE_EXPORT,
                 'icon' => Metabox::statusIconClass(ExportStatus::MODIFIED_SINCE_EXPORT),
                 'count' => $counts['modified'],
-                'label' => __('Modified since export', 'post-to-github-md'),
+                'label' => __('Modified since export', 'posts-to-github-md'),
             ],
             [
                 'status' => self::ORPHANED_STATUS,
                 'class' => self::ORPHANED_STATUS,
                 'icon' => 'dashicons-trash',
                 'count' => $counts['orphaned'],
-                'label' => __('Exported, no longer published', 'post-to-github-md'),
+                'label' => __('Exported, no longer published', 'posts-to-github-md'),
             ],
         ];
         ?>
@@ -686,7 +686,7 @@ class ExportTab
     private function availableMonths(): array
     {
         $cacheKey = 'potogh_available_months';
-        $cached = wp_cache_get($cacheKey, 'post-to-github-md');
+        $cached = wp_cache_get($cacheKey, 'posts-to-github-md');
 
         if (is_array($cached)) {
             return $cached;
@@ -709,7 +709,7 @@ class ExportTab
             ];
         }
 
-        wp_cache_set($cacheKey, $months, 'post-to-github-md', 5 * MINUTE_IN_SECONDS);
+        wp_cache_set($cacheKey, $months, 'posts-to-github-md', 5 * MINUTE_IN_SECONDS);
 
         return $months;
     }
@@ -764,7 +764,7 @@ class ExportTab
             '<span class="displaying-num">%s</span>',
             esc_html(sprintf(
                 /* translators: %d: number of matching posts */
-                _n('%d item', '%d items', $total, 'post-to-github-md'),
+                _n('%d item', '%d items', $total, 'posts-to-github-md'),
                 $total
             ))
         );
@@ -772,23 +772,23 @@ class ExportTab
         if ($totalPages > 1) {
             echo '<span class="pagination-links">';
 
-            $this->renderPaginationLink($paged <= 1, 'first-page', esc_url(add_query_arg('paged', 1, $baseUrl)), '&laquo;', __('First page', 'post-to-github-md'));
-            $this->renderPaginationLink($paged <= 1, 'prev-page', esc_url(add_query_arg('paged', max(1, $paged - 1), $baseUrl)), '&lsaquo;', __('Previous page', 'post-to-github-md'));
+            $this->renderPaginationLink($paged <= 1, 'first-page', esc_url(add_query_arg('paged', 1, $baseUrl)), '&laquo;', __('First page', 'posts-to-github-md'));
+            $this->renderPaginationLink($paged <= 1, 'prev-page', esc_url(add_query_arg('paged', max(1, $paged - 1), $baseUrl)), '&lsaquo;', __('Previous page', 'posts-to-github-md'));
 
             printf(
                 '<span class="paging-input"><label for="%1$s-input" class="screen-reader-text">%2$s</label>' .
                 '<input class="current-page" id="%1$s-input" type="text" name="paged" value="%3$d" size="%4$d" aria-describedby="%1$s-text">' .
                 '<span class="tablenav-paging-text" id="%1$s-text"> %5$s <span class="total-pages">%6$d</span></span></span>',
                 esc_attr($uid),
-                esc_html__('Current Page', 'post-to-github-md'),
+                esc_html__('Current Page', 'posts-to-github-md'),
                 absint($paged),
                 absint(max(1, strlen((string) $totalPages))),
-                esc_html__('of', 'post-to-github-md'),
+                esc_html__('of', 'posts-to-github-md'),
                 absint($totalPages)
             );
 
-            $this->renderPaginationLink($paged >= $totalPages, 'next-page', esc_url(add_query_arg('paged', min($totalPages, $paged + 1), $baseUrl)), '&rsaquo;', __('Next page', 'post-to-github-md'));
-            $this->renderPaginationLink($paged >= $totalPages, 'last-page', esc_url(add_query_arg('paged', $totalPages, $baseUrl)), '&raquo;', __('Last page', 'post-to-github-md'));
+            $this->renderPaginationLink($paged >= $totalPages, 'next-page', esc_url(add_query_arg('paged', min($totalPages, $paged + 1), $baseUrl)), '&rsaquo;', __('Next page', 'posts-to-github-md'));
+            $this->renderPaginationLink($paged >= $totalPages, 'last-page', esc_url(add_query_arg('paged', $totalPages, $baseUrl)), '&raquo;', __('Last page', 'posts-to-github-md'));
 
             echo '</span>';
         }
@@ -832,7 +832,7 @@ class ExportTab
 
             <p>
                 <a href="<?php echo esc_url(admin_url('edit.php?page=potogh-export')); ?>" class="button">
-                    <?php esc_html_e('Back to published posts', 'post-to-github-md'); ?>
+                    <?php esc_html_e('Back to published posts', 'posts-to-github-md'); ?>
                 </a>
             </p>
 
@@ -841,16 +841,16 @@ class ExportTab
             <table class="wp-list-table widefat fixed striped potogh-export-table">
                 <thead>
                     <tr>
-                        <th scope="col" class="column-title"><?php esc_html_e('Title', 'post-to-github-md'); ?></th>
-                        <th scope="col"><?php esc_html_e('Current status', 'post-to-github-md'); ?></th>
-                        <th scope="col"><?php esc_html_e('Exported on', 'post-to-github-md'); ?></th>
-                        <th scope="col"><?php esc_html_e('GitHub file', 'post-to-github-md'); ?></th>
-                        <th scope="col"><?php esc_html_e('Actions', 'post-to-github-md'); ?></th>
+                        <th scope="col" class="column-title"><?php esc_html_e('Title', 'posts-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('Current status', 'posts-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('Exported on', 'posts-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('GitHub file', 'posts-to-github-md'); ?></th>
+                        <th scope="col"><?php esc_html_e('Actions', 'posts-to-github-md'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                 <?php if (empty($posts)) : ?>
-                    <tr><td colspan="5"><?php esc_html_e('No exported posts are currently unpublished.', 'post-to-github-md'); ?></td></tr>
+                    <tr><td colspan="5"><?php esc_html_e('No exported posts are currently unpublished.', 'posts-to-github-md'); ?></td></tr>
                 <?php endif; ?>
                 <?php foreach ($posts as $post) :
                     $path = get_post_meta($post->ID, '_potogh_path', true);
@@ -868,7 +868,7 @@ class ExportTab
                             <?php echo esc_html($exportedAt ? Metabox::statusLabel(ExportStatus::EXPORTED, $exportedAt) : ''); ?>
                             <?php if (is_array($lastError) && !empty($lastError['message'])) : ?>
                                 <?php // translators: %s: error message from the last automatic export attempt. ?>
-                                <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'post-to-github-md'), $lastError['message'])); ?>"></span>
+                                <span class="dashicons dashicons-warning potogh-last-error-icon" title="<?php echo esc_attr(sprintf(__('Last automatic export failed: %s', 'posts-to-github-md'), $lastError['message'])); ?>"></span>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -880,11 +880,11 @@ class ExportTab
                         </td>
                         <td class="potogh-orphan-actions">
                             <button type="button" class="button potogh-orphan-ignore" data-post-id="<?php echo esc_attr($post->ID); ?>">
-                                <?php esc_html_e('Ignore', 'post-to-github-md'); ?>
+                                <?php esc_html_e('Ignore', 'posts-to-github-md'); ?>
                             </button>
                             <?php if ($path) : ?>
                                 <button type="button" class="button button-link-delete potogh-orphan-delete" data-post-id="<?php echo esc_attr($post->ID); ?>">
-                                    <?php esc_html_e('Delete from GitHub', 'post-to-github-md'); ?>
+                                    <?php esc_html_e('Delete from GitHub', 'posts-to-github-md'); ?>
                                 </button>
                             <?php endif; ?>
                         </td>

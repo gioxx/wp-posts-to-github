@@ -42,11 +42,11 @@ function export_post_by_id(int $postId): array
     $post = get_post($postId);
 
     if (!$post instanceof \WP_Post) {
-        return ['success' => false, 'error' => __('Post not found.', 'post-to-github-md'), 'trace' => []];
+        return ['success' => false, 'error' => __('Post not found.', 'posts-to-github-md'), 'trace' => []];
     }
 
     if ($post->post_status !== 'publish' || $post->post_type !== 'post') {
-        return ['success' => false, 'error' => __('Only published posts can be exported.', 'post-to-github-md'), 'trace' => []];
+        return ['success' => false, 'error' => __('Only published posts can be exported.', 'posts-to-github-md'), 'trace' => []];
     }
 
     $service = build_export_service();
@@ -72,11 +72,11 @@ function prepare_export_data(int $postId): array
     $post = get_post($postId);
 
     if (!$post instanceof \WP_Post) {
-        return ['success' => false, 'error' => __('Post not found.', 'post-to-github-md')];
+        return ['success' => false, 'error' => __('Post not found.', 'posts-to-github-md')];
     }
 
     if ($post->post_status !== 'publish' || $post->post_type !== 'post') {
-        return ['success' => false, 'error' => __('Only published posts can be exported.', 'post-to-github-md')];
+        return ['success' => false, 'error' => __('Only published posts can be exported.', 'posts-to-github-md')];
     }
 
     $settings = Settings::get();
@@ -107,7 +107,7 @@ function delete_export_by_id(int $postId): array
     $sha = get_post_meta($postId, '_potogh_sha', true) ?: null;
 
     if (!$path || !$sha) {
-        return ['success' => false, 'error' => __('No exported file recorded for this post.', 'post-to-github-md')];
+        return ['success' => false, 'error' => __('No exported file recorded for this post.', 'posts-to-github-md')];
     }
 
     $settings = Settings::get();
@@ -265,7 +265,7 @@ function enqueue_admin_assets(string $hook): void
         wp_enqueue_script('potogh-metabox', POTOGH_PLUGIN_URL . 'assets/js/metabox.js', ['jquery'], POTOGH_VERSION, true);
         wp_localize_script('potogh-metabox', 'potoghMetabox', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'networkError' => __('Network error during export.', 'post-to-github-md'),
+            'networkError' => __('Network error during export.', 'posts-to-github-md'),
         ]);
     }
 
@@ -276,32 +276,32 @@ function enqueue_admin_assets(string $hook): void
         wp_localize_script('potogh-bulk', 'potoghBulk', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'batchCommit' => !empty($settings['batch_commit']),
-            'networkError' => __('Network error.', 'post-to-github-md'),
+            'networkError' => __('Network error.', 'posts-to-github-md'),
             /* translators: %d: number of successfully exported posts */
-            'summarySucceeded' => __('%d posts exported successfully.', 'post-to-github-md'),
+            'summarySucceeded' => __('%d posts exported successfully.', 'posts-to-github-md'),
             /* translators: %d: number of failed exports */
-            'summaryFailed' => __('%d failed:', 'post-to-github-md'),
+            'summaryFailed' => __('%d failed:', 'posts-to-github-md'),
             /* translators: %d: number of posts selected across all pages */
-            'selectionCount' => __('%d posts selected (all pages).', 'post-to-github-md'),
-            'selectedLabel' => __('selected', 'post-to-github-md'),
+            'selectionCount' => __('%d posts selected (all pages).', 'posts-to-github-md'),
+            'selectedLabel' => __('selected', 'posts-to-github-md'),
             /* translators: %d: total number of posts matching the current filters */
-            'selectAllMatching' => __('Select all %d items matching this filter', 'post-to-github-md'),
-            'stopLabel' => __('Stop', 'post-to-github-md'),
-            'stopping' => __('Stopping…', 'post-to-github-md'),
+            'selectAllMatching' => __('Select all %d items matching this filter', 'posts-to-github-md'),
+            'stopLabel' => __('Stop', 'posts-to-github-md'),
+            'stopping' => __('Stopping…', 'posts-to-github-md'),
             /* translators: %d: number of posts left unprocessed after stopping */
-            'summaryStopped' => __('Stopped: %d posts left unprocessed.', 'post-to-github-md'),
+            'summaryStopped' => __('Stopped: %d posts left unprocessed.', 'posts-to-github-md'),
             /* translators: %d: seconds to wait before retrying */
-            'rateLimitWait' => __('GitHub rate limit reached, waiting %d seconds before retrying...', 'post-to-github-md'),
+            'rateLimitWait' => __('GitHub rate limit reached, waiting %d seconds before retrying...', 'posts-to-github-md'),
             /* translators: %d: number of prepared posts */
-            'preparing' => __('Preparing #%d...', 'post-to-github-md'),
-            'committing' => __('Committing to GitHub...', 'post-to-github-md'),
+            'preparing' => __('Preparing #%d...', 'posts-to-github-md'),
+            'committing' => __('Committing to GitHub...', 'posts-to-github-md'),
             /* translators: %d: number of posts included in the commit */
-            'summaryCommitted' => __('%d posts committed to GitHub in a single commit.', 'post-to-github-md'),
+            'summaryCommitted' => __('%d posts committed to GitHub in a single commit.', 'posts-to-github-md'),
             /* translators: %d: number of posts that could not be prepared */
-            'summaryPrepareFailed' => __('%d could not be prepared:', 'post-to-github-md'),
+            'summaryPrepareFailed' => __('%d could not be prepared:', 'posts-to-github-md'),
             /* translators: %s: error message returned by GitHub */
-            'commitFailed' => __('Commit failed: %s', 'post-to-github-md'),
-            'confirmDeleteFromGithub' => __('Delete this file from the GitHub repository? This creates a removal commit and cannot be undone from here.', 'post-to-github-md'),
+            'commitFailed' => __('Commit failed: %s', 'posts-to-github-md'),
+            'confirmDeleteFromGithub' => __('Delete this file from the GitHub repository? This creates a removal commit and cannot be undone from here.', 'posts-to-github-md'),
             'githubBaseUrl' => $settings['owner_repo'] !== ''
                 ? sprintf('https://github.com/%s/blob/%s/', $settings['owner_repo'], $settings['branch'])
                 : '',
@@ -312,8 +312,8 @@ function enqueue_admin_assets(string $hook): void
         wp_enqueue_script('potogh-settings', POTOGH_PLUGIN_URL . 'assets/js/settings.js', ['jquery'], POTOGH_VERSION, true);
         wp_localize_script('potogh-settings', 'potoghSettings', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'testing' => __('Testing…', 'post-to-github-md'),
-            'networkError' => __('Network error.', 'post-to-github-md'),
+            'testing' => __('Testing…', 'posts-to-github-md'),
+            'networkError' => __('Network error.', 'posts-to-github-md'),
         ]);
     }
 
