@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.12
+Stable tag: 1.5.13
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,11 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.13 =
+* First release published to the WordPress.org SVN repository.
+* Fixed the bundled `POTOGH_VERSION` constant, which was out of sync with the plugin header.
+* Release packaging now strips `vendor/*/bin` directories, addressing a WordPress.org review note about non-plugin files in the distributed zip.
+
 = 1.5.12 =
 * Aligned the text domain with the plugin slug (`posts-to-github-md`) across all files and the plugin header.
 * Sanitized the `branch` and `base_folder` settings with `sanitize_text_field()` instead of trimming only.

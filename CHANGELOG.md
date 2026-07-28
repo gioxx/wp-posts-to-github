@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.13] - 2026-07-28
+### Added
+- First release published to the WordPress.org SVN repository, via a new `deploy.yml` GitHub Actions workflow (`10up/action-wordpress-plugin-deploy`).
+
+### Fixed
+- Synced the `POTOGH_VERSION` constant, which was still pinned to `1.5.11`.
+- Release packaging now strips `vendor/*/bin` directories, addressing a WordPress.org review note about non-plugin files (`vendor/bin/html-to-markdown`) in the distributed zip.
+
 ## [1.5.12] - 2026-07-24
 ### Fixed
 - Aligned the text domain with the plugin slug (`posts-to-github-md`) across all files and the plugin header.
