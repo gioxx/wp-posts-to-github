@@ -23,7 +23,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('POTOGH_VERSION', '1.5.11');
+define('POTOGH_VERSION', '1.5.12');
 define('POTOGH_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('POTOGH_PLUGIN_URL', plugin_dir_url(__FILE__));
 

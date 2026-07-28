@@ -51,6 +51,15 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.12 =
+* Aligned the text domain with the plugin slug (`posts-to-github-md`) across all files and the plugin header.
+* Sanitized the `branch` and `base_folder` settings with `sanitize_text_field()` instead of trimming only.
+* Removed bundled translation files (`.po`/`.mo`/`.pot`); translations are now handled via translate.wordpress.org.
+
+= 1.5.11 =
+* The export status text ("Exported on ...") in the bulk export table is now a direct link to the file on GitHub, opening in a new tab.
+* Added the `Release Asset: true` plugin header so Git Updater installs the clean production zip instead of the raw `main` branch zip.
+
 = 1.5.10 =
 * Silenced the remaining informational `meta_query` slow-query warnings from the WordPress Plugin Check tool with justified `phpcs:ignore` annotations: the plugin's export-status filters query its own `_potogh_exported_at`/`_potogh_path` post meta and have no WP_Query alternative.
 
