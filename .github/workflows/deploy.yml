@@ -1,0 +1,58 @@
+name: Deploy to WordPress.org Repository
+
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to deploy (e.g. v1.5.12)'
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  deploy_to_wp_repository:
+    name: Deploy to WP.org
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+          tools: composer
+
+      - name: Install production dependencies
+        run: composer install --no-dev --optimize-autoloader --no-interaction
+
+      - name: Build clean plugin directory
+        run: |
+          SLUG=post-to-github-md
+          STAGING="/tmp/$SLUG"
+          rm -rf "$STAGING"
+          mkdir -p "$STAGING"
+          git ls-files \
+            | grep -v '^tests/' \
+            | grep -v '^phpunit\.xml\.dist$' \
+            | grep -v '^\.github/' \
+            | grep -v '^\.gitignore$' \
+            | grep -v '^vendor/' \
+            | grep -v '^README\.it\.md$' \
+            | rsync -a --files-from=- . "$STAGING/"
+          cp -r vendor "$STAGING/vendor"
+          find "$STAGING/vendor" -type d -name bin -prune -exec rm -rf {} +
+          echo "STAGING=$STAGING" >> "$GITHUB_ENV"
+
+      - name: WordPress Plugin Deploy
+        uses: 10up/action-wordpress-plugin-deploy@2.3.0
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SLUG: posts-to-github-md
+          BUILD_DIR: ${{ env.STAGING }}

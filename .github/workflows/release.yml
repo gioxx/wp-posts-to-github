@@ -55,6 +55,7 @@ jobs:
             | grep -v '^README\.it\.md$' \
             | rsync -a --files-from=- . "$STAGING/"
           cp -r vendor "$STAGING/vendor"
+          find "$STAGING/vendor" -type d -name bin -prune -exec rm -rf {} +
           cd /tmp
           zip -r -q "$SLUG-${{ steps.version.outputs.version }}.zip" "$SLUG"
 
