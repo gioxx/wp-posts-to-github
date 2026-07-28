@@ -36,6 +36,12 @@ jobs:
       - name: Install production dependencies
         run: composer install --no-dev --optimize-autoloader --no-interaction
 
+      - name: Read plugin version
+        id: version
+        run: |
+          VERSION=$(grep -m1 '^ \* Version:' post-to-github-md.php | sed -E 's/.*Version:\s*//')
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Build clean plugin directory
         run: |
           SLUG=post-to-github-md
@@ -60,4 +66,5 @@ jobs:
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
           SLUG: posts-to-github-md
+          VERSION: ${{ steps.version.outputs.version }}
           BUILD_DIR: ${{ env.STAGING }}
