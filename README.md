@@ -69,6 +69,12 @@ If the post was already exported before, the plugin updates the same file on Git
 
 The stat tiles above the table include **"Exported, no longer published"**: posts that were exported to GitHub at some point but are now a draft, pending, private, scheduled, or trashed in WordPress. Selecting that tile switches to a read-only list with a link to the post and a link to the corresponding file on GitHub. The plugin never deletes files from the repository automatically — if you want the file gone, do it manually on GitHub.
 
+## Taxonomy backup
+
+Below the posts table, the **"Taxonomy backup"** section lets you push a JSON snapshot of your categories and tags to the same GitHub repository: `wp-categories.json` and `wp-tags.json`, written to the repository root regardless of the configured base folder. WordPress stays the source of truth — the plugin only writes to GitHub here, it never reads categories or tags back from the repository.
+
+The status line tells you whether anything changed since the last upload (new/removed categories or tags), based on a hash stored locally in the database — no extra GitHub API calls just to show that status. Click **"Update categories and tags on GitHub"** to push the current state in a single commit; the button stays enabled even when nothing changed, in case you want to force a commit anyway. Direct links to both files on GitHub sit right below the button.
+
 ## WP-CLI
 
 If [WP-CLI](https://wp-cli.org/) is available, the plugin registers two commands:
