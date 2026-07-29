@@ -79,7 +79,13 @@ class ExportTab
                     );
                     ?>
                     <br>
-                    <a href="#potogh-taxonomy-backup"><?php esc_html_e('Back up categories and tags to GitHub', 'posts-to-github-md'); ?></a>
+                    <?php
+                    printf(
+                        /* translators: %s: link to the Taxonomy backup section further down this page */
+                        esc_html__('Want to back up your categories and tags? Head over to %s.', 'posts-to-github-md'),
+                        '<a href="#potogh-taxonomy-backup">' . esc_html__('Taxonomy backup', 'posts-to-github-md') . '</a>'
+                    );
+                    ?>
                 </p>
                 <?php $this->render(); ?>
             <?php endif; ?>
@@ -289,6 +295,7 @@ class ExportTab
             </p>
             <?php if ($categoriesUrl !== '' && $tagsUrl !== '') : ?>
                 <p class="potogh-taxonomy-backup-links">
+                    <?php esc_html_e('Go to:', 'posts-to-github-md'); ?>
                     <a href="<?php echo esc_url($categoriesUrl); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html(TaxonomyBackup::CATEGORIES_PATH); ?></a>
                     &middot;
                     <a href="<?php echo esc_url($tagsUrl); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html(TaxonomyBackup::TAGS_PATH); ?></a>
