@@ -78,11 +78,12 @@ class ExportTab
                         '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'posts-to-github-md') . '</a>'
                     );
                     ?>
-                    &mdash;
+                    <br>
                     <a href="#potogh-taxonomy-backup"><?php esc_html_e('Back up categories and tags to GitHub', 'posts-to-github-md'); ?></a>
                 </p>
                 <?php $this->render(); ?>
             <?php endif; ?>
+            <button type="button" id="potogh-back-to-top" class="button button-primary" aria-label="<?php esc_attr_e('Back to top', 'posts-to-github-md'); ?>">&uarr;</button>
         </div>
         <?php
     }
@@ -267,6 +268,9 @@ class ExportTab
     {
         $summary = TaxonomyBackup::pendingSummary();
         $nonce = wp_create_nonce('potogh_taxonomy_backup');
+        $settings = Settings::get();
+        $categoriesUrl = $this->taxonomyFileUrl($settings, TaxonomyBackup::CATEGORIES_PATH);
+        $tagsUrl = $this->taxonomyFileUrl($settings, TaxonomyBackup::TAGS_PATH);
         ?>
         <div id="potogh-taxonomy-backup" class="potogh-taxonomy-backup" data-nonce="<?php echo esc_attr($nonce); ?>">
             <h2><?php esc_html_e('Taxonomy backup', 'posts-to-github-md'); ?></h2>
@@ -283,9 +287,23 @@ class ExportTab
                 </button>
                 <span class="potogh-spinner" id="potogh-taxonomy-backup-spinner" hidden></span>
             </p>
+            <?php if ($categoriesUrl !== '' && $tagsUrl !== '') : ?>
+                <p class="potogh-taxonomy-backup-links">
+                    <a href="<?php echo esc_url($categoriesUrl); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html(TaxonomyBackup::CATEGORIES_PATH); ?></a>
+                    &middot;
+                    <a href="<?php echo esc_url($tagsUrl); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html(TaxonomyBackup::TAGS_PATH); ?></a>
+                </p>
+            <?php endif; ?>
             <div id="potogh-taxonomy-backup-message"></div>
         </div>
         <?php
+    }
+
+    private function taxonomyFileUrl(array $settings, string $path): string
+    {
+        return $settings['owner_repo'] !== ''
+            ? sprintf('https://github.com/%s/blob/%s/%s', $settings['owner_repo'], $settings['branch'], $path)
+            : '';
     }
 
     private function renderTaxonomyBackupStatus(array $summary): void

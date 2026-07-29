@@ -551,6 +551,23 @@
         });
     });
 
+    // Back-to-top button: only shown once the page has scrolled a bit.
+    (function () {
+        var $button = $('#potogh-back-to-top');
+
+        if (!$button.length) {
+            return;
+        }
+
+        $(window).on('scroll', function () {
+            $button.toggleClass('potogh-visible', $(window).scrollTop() > 300);
+        });
+
+        $button.on('click', function () {
+            $('html, body').animate({ scrollTop: 0 }, 300);
+        });
+    })();
+
     $('#potogh-taxonomy-backup-commit').on('click', function () {
         var $btn = $(this);
         var $spinner = $('#potogh-taxonomy-backup-spinner');

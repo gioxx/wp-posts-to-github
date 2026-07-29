@@ -343,6 +343,26 @@ a.potogh-status-text:hover {
     font-weight: 600;
 }
 
+#potogh-back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 40px;
+    z-index: 100;
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    line-height: 38px;
+    text-align: center;
+    font-size: 18px;
+    border-radius: 50%;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+#potogh-back-to-top.potogh-visible {
+    display: block;
+}
+
 .potogh-export-tab .alignleft.actions {
     display: flex;
     flex-wrap: wrap;

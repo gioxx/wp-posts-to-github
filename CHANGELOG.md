@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.15] - 2026-07-29
+### Fixed
+- Taxonomy backup section: removed the em-dash separator from the intro paragraph, moving the "Back up categories and tags" link to its own line.
+
+### Added
+- "Back to top" floating button on the Export posts screen, shown once the page is scrolled down.
+- Direct links to `wp-categories.json` and `wp-tags.json` on GitHub in the taxonomy backup section.
+
+## [1.5.14] - 2026-07-29
+### Added
+- Taxonomy backup section on the Export posts screen: pushes `wp-categories.json` and `wp-tags.json` to the repository root on demand, keeping a versioned snapshot of your categories and tags alongside your exported posts. WordPress stays the source of truth; a locally stored hash flags pending changes without ever reading state back from GitHub.
+
 ## [1.5.13] - 2026-07-28
 ### Added
 - First release published to the WordPress.org SVN repository, via a new `deploy.yml` GitHub Actions workflow (`10up/action-wordpress-plugin-deploy`).
