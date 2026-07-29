@@ -245,6 +245,7 @@ function uninstall_cleanup(): void
     }
 
     delete_option(Settings::OPTION_NAME);
+    delete_option(TaxonomyBackup::OPTION_NAME);
 
     global $wpdb;
 
@@ -302,6 +303,7 @@ function enqueue_admin_assets(string $hook): void
             /* translators: %s: error message returned by GitHub */
             'commitFailed' => __('Commit failed: %s', 'posts-to-github-md'),
             'confirmDeleteFromGithub' => __('Delete this file from the GitHub repository? This creates a removal commit and cannot be undone from here.', 'posts-to-github-md'),
+            'taxonomyBackupFailed' => __('Upload failed: %s', 'posts-to-github-md'),
             'githubBaseUrl' => $settings['owner_repo'] !== ''
                 ? sprintf('https://github.com/%s/blob/%s/', $settings['owner_repo'], $settings['branch'])
                 : '',

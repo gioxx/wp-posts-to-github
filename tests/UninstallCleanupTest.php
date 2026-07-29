@@ -64,6 +64,7 @@ class UninstallCleanupTest extends TestCase
             return array_merge($defaults, $args);
         });
         Functions\expect('delete_option')->once()->with('potogh_settings');
+        Functions\expect('delete_option')->once()->with('potogh_taxonomy_backup');
 
         \POTOGH\uninstall_cleanup();
 

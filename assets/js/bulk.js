@@ -551,6 +551,35 @@
         });
     });
 
+    $('#potogh-taxonomy-backup-commit').on('click', function () {
+        var $btn = $(this);
+        var $spinner = $('#potogh-taxonomy-backup-spinner');
+        var $status = $('#potogh-taxonomy-backup-status');
+        var $message = $('#potogh-taxonomy-backup-message');
+        var nonce = $('#potogh-taxonomy-backup').data('nonce');
+
+        $btn.prop('disabled', true);
+        $spinner.prop('hidden', false);
+        $message.text('');
+
+        $.post(potoghBulk.ajaxUrl, {
+            action: 'potogh_commit_taxonomy_backup',
+            nonce: nonce
+        }).done(function (response) {
+            if (response.success) {
+                $status.text(response.data.message);
+            } else {
+                $message.text(potoghBulk.taxonomyBackupFailed.replace('%s', response.data && response.data.message ? response.data.message : potoghBulk.networkError));
+            }
+        }).fail(function (jqXHR) {
+            var data = jqXHR.responseJSON && jqXHR.responseJSON.data ? jqXHR.responseJSON.data : null;
+            $message.text(potoghBulk.taxonomyBackupFailed.replace('%s', data && data.message ? data.message : potoghBulk.networkError));
+        }).always(function () {
+            $btn.prop('disabled', false);
+            $spinner.prop('hidden', true);
+        });
+    });
+
     $(document).on('click', '.potogh-orphan-delete', function () {
         var $btn = $(this);
         var postId = $btn.data('post-id');

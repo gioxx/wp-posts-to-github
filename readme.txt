@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.13
+Stable tag: 1.5.14
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,9 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.14 =
+* Added a taxonomy backup section on the Export posts screen: pushes `wp-categories.json` and `wp-tags.json` to the repository root on demand, keeping a versioned snapshot of your categories and tags alongside your exported posts. WordPress stays the source of truth; nothing is ever read back from GitHub.
+
 = 1.5.13 =
 * First release published to the WordPress.org SVN repository.
 * Fixed the bundled `POTOGH_VERSION` constant, which was out of sync with the plugin header.

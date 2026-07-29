@@ -78,6 +78,8 @@ class ExportTab
                         '<a href="' . esc_url(Settings::pageUrl()) . '">' . esc_html__('the plugin settings', 'posts-to-github-md') . '</a>'
                     );
                     ?>
+                    &mdash;
+                    <a href="#potogh-taxonomy-backup"><?php esc_html_e('Back up categories and tags to GitHub', 'posts-to-github-md'); ?></a>
                 </p>
                 <?php $this->render(); ?>
             <?php endif; ?>
@@ -242,6 +244,8 @@ class ExportTab
             </form>
 
             <div id="potogh-bulk-summary"></div>
+
+            <?php $this->renderTaxonomyBackup(); ?>
         </div>
         <div id="potogh-bulk-footer" class="potogh-bulk-footer" hidden>
             <button type="button" class="potogh-bulk-stop-label" id="potogh-bulk-stop" hidden>
@@ -257,6 +261,115 @@ class ExportTab
             </div>
         </div>
         <?php
+    }
+
+    private function renderTaxonomyBackup(): void
+    {
+        $summary = TaxonomyBackup::pendingSummary();
+        $nonce = wp_create_nonce('potogh_taxonomy_backup');
+        ?>
+        <div id="potogh-taxonomy-backup" class="potogh-taxonomy-backup" data-nonce="<?php echo esc_attr($nonce); ?>">
+            <h2><?php esc_html_e('Taxonomy backup', 'posts-to-github-md'); ?></h2>
+            <p>
+                <?php esc_html_e('Keep a JSON backup of your categories and tags in the same GitHub repository. WordPress stays the source of truth — this only pushes a snapshot; nothing is ever read back from GitHub.', 'posts-to-github-md'); ?>
+            </p>
+            <p id="potogh-taxonomy-backup-status">
+                <?php $this->renderTaxonomyBackupStatus($summary); ?>
+            </p>
+            <p>
+                <button type="button" class="button button-primary" id="potogh-taxonomy-backup-commit">
+                    <span class="dashicons dashicons-cloud-upload"></span>
+                    <?php esc_html_e('Update categories and tags on GitHub', 'posts-to-github-md'); ?>
+                </button>
+                <span class="potogh-spinner" id="potogh-taxonomy-backup-spinner" hidden></span>
+            </p>
+            <div id="potogh-taxonomy-backup-message"></div>
+        </div>
+        <?php
+    }
+
+    private function renderTaxonomyBackupStatus(array $summary): void
+    {
+        if (!$summary['has_changes']) {
+            if ($summary['updated_at']) {
+                printf(
+                    /* translators: %s: date/time the taxonomy backup was last uploaded */
+                    esc_html__('Up to date. Last uploaded on %s.', 'posts-to-github-md'),
+                    esc_html($this->formatBackupDate($summary['updated_at']))
+                );
+            } else {
+                esc_html_e('Not uploaded yet.', 'posts-to-github-md');
+            }
+
+            return;
+        }
+
+        $parts = [];
+
+        if ($summary['categories_added'] > 0 || $summary['categories_removed'] > 0) {
+            $parts[] = sprintf(
+                /* translators: 1: number of categories added since last upload, 2: number of categories removed */
+                esc_html__('categories: +%1$d / -%2$d', 'posts-to-github-md'),
+                $summary['categories_added'],
+                $summary['categories_removed']
+            );
+        }
+
+        if ($summary['tags_added'] > 0 || $summary['tags_removed'] > 0) {
+            $parts[] = sprintf(
+                /* translators: 1: number of tags added since last upload, 2: number of tags removed */
+                esc_html__('tags: +%1$d / -%2$d', 'posts-to-github-md'),
+                $summary['tags_added'],
+                $summary['tags_removed']
+            );
+        }
+
+        echo esc_html__('Changes pending upload', 'posts-to-github-md');
+
+        if (!empty($parts)) {
+            echo ' (' . esc_html(implode(', ', $parts)) . ')';
+        }
+    }
+
+    private function formatBackupDate(string $updatedAtGmt): string
+    {
+        $timestamp = strtotime($updatedAtGmt);
+
+        if ($timestamp === false) {
+            return $updatedAtGmt;
+        }
+
+        return wp_date(get_option('date_format') . ' ' . get_option('time_format'), $timestamp);
+    }
+
+    public function handleAjaxCommitTaxonomyBackup(): void
+    {
+        check_ajax_referer('potogh_taxonomy_backup', 'nonce');
+
+        if (!current_user_can('manage_options')) {
+            wp_send_json_error(['message' => __('Insufficient permissions.', 'posts-to-github-md')], 403);
+        }
+
+        if (!Settings::isConfigured()) {
+            wp_send_json_error(['message' => __('Configure the PAT and repository in the plugin settings first.', 'posts-to-github-md')], 400);
+        }
+
+        $result = TaxonomyBackup::commit();
+
+        if (!$result['success']) {
+            wp_send_json_error([
+                'message' => $result['error'],
+                'retry_after' => $result['retry_after'] ?? null,
+            ], 500);
+        }
+
+        wp_send_json_success([
+            'message' => sprintf(
+                /* translators: %s: date/time the taxonomy backup was uploaded */
+                __('Up to date. Last uploaded on %s.', 'posts-to-github-md'),
+                $this->formatBackupDate($result['updated_at'])
+            ),
+        ]);
     }
 
     public function handleAjaxExportOne(): void
