@@ -42,7 +42,7 @@ jobs:
       - name: Build plugin zip
         if: steps.check.outputs.exists == 'false'
         run: |
-          SLUG=post-to-github-md
+          SLUG=posts-to-github-md
           STAGING="/tmp/$SLUG"
           rm -rf "$STAGING"
           mkdir -p "$STAGING"
@@ -84,6 +84,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release create "${{ steps.version.outputs.tag }}" \
-            "/tmp/post-to-github-md-${{ steps.version.outputs.version }}.zip" \
+            "/tmp/posts-to-github-md-${{ steps.version.outputs.version }}.zip" \
             --title "${{ steps.version.outputs.tag }}" \
             --notes-file /tmp/release-notes.md

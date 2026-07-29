@@ -275,7 +275,7 @@ class ExportTab
         <div id="potogh-taxonomy-backup" class="potogh-taxonomy-backup" data-nonce="<?php echo esc_attr($nonce); ?>">
             <h2><?php esc_html_e('Taxonomy backup', 'posts-to-github-md'); ?></h2>
             <p>
-                <?php esc_html_e('Keep a JSON backup of your categories and tags in the same GitHub repository. WordPress stays the source of truth — this only pushes a snapshot; nothing is ever read back from GitHub.', 'posts-to-github-md'); ?>
+                <?php esc_html_e('Keep a JSON backup of your categories and tags in the same GitHub repository. WordPress stays the source of truth, this only pushes a snapshot; nothing is ever read back from GitHub.', 'posts-to-github-md'); ?>
             </p>
             <p id="potogh-taxonomy-backup-status">
                 <?php $this->renderTaxonomyBackupStatus($summary); ?>

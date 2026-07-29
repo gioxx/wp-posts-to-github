@@ -15,7 +15,7 @@ Il plugin non crea il repository, non carica immagini binarie e lavora solo su a
 
 ## Installazione
 
-1. Copia l'intera cartella del plugin in `wp-content/plugins/post-to-github-md/` sul tuo sito WordPress (la cartella `vendor/` con le dipendenze è già inclusa: non serve eseguire Composer).
+1. Copia l'intera cartella del plugin in `wp-content/plugins/posts-to-github-md/` sul tuo sito WordPress (la cartella `vendor/` con le dipendenze è già inclusa: non serve eseguire Composer).
 2. Vai su **Plugin** nella bacheca di WordPress e attiva "Posts to GitHub".
 
 ## Lingua

@@ -28,7 +28,7 @@ Features:
 The plugin never creates the repository, never uploads binary images (they stay as absolute links to the source site), and only works on published `post` content.
 
 == Installation ==
-1. Copy the whole plugin folder to `wp-content/plugins/post-to-github-md/` (the `vendor/` folder with dependencies is already included: no need to run Composer).
+1. Copy the whole plugin folder to `wp-content/plugins/posts-to-github-md/` (the `vendor/` folder with dependencies is already included: no need to run Composer).
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 3. Go to **Settings → Posts to GitHub** and configure a GitHub Personal Access Token and target repository.
 4. Export posts individually from the post edit screen, in bulk from **Posts → Export to GitHub**, or automatically on publish via the "Automatic export" setting.
