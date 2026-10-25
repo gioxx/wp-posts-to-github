@@ -5,7 +5,7 @@ Tags: github, markdown, export, backup, corpus
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.5.15
+Stable tag: 1.5.16
 License: GPL v2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,10 @@ On each export, the plugin sends the post title, content converted to Markdown, 
 This service is provided by GitHub, Inc.: [GitHub Terms of Service](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service) and [GitHub Privacy Statement](https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement).
 
 == Changelog ==
+= 1.5.16 =
+* Fixed: posts cloned with Yoast Duplicate Post no longer overwrite (or delete) the original post's exported file; the copy gets its own path.
+* Export meta (`_potogh_*`) is now excluded from Yoast Duplicate Post copies.
+
 = 1.5.15 =
 * Taxonomy backup section: fixed intro paragraph layout and added direct links to `wp-categories.json`/`wp-tags.json` on GitHub.
 * Added a "back to top" floating button to the Export posts screen.

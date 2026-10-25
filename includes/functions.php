@@ -19,6 +19,7 @@ function post_to_export_data(\WP_Post $post): array
 {
     $categories = wp_list_pluck(get_the_category($post->ID), 'name');
     $tags = wp_list_pluck(get_the_tags($post->ID) ?: [], 'name');
+    $exportMeta = owned_export_meta($post->ID);
 
     return [
         'wp_id' => $post->ID,
@@ -32,9 +33,49 @@ function post_to_export_data(\WP_Post $post): array
         'permalink' => get_permalink($post),
         // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- reuses WordPress core's own 'the_content' filter to render content as the theme would, not a plugin-defined hook.
         'content_html' => apply_filters('the_content', $post->post_content),
-        'existing_path' => get_post_meta($post->ID, '_potogh_path', true) ?: null,
-        'existing_sha' => get_post_meta($post->ID, '_potogh_sha', true) ?: null,
+        'existing_path' => $exportMeta['path'],
+        'existing_sha' => $exportMeta['sha'],
     ];
+}
+
+/**
+ * Returns the export path/sha recorded on a post, or nulls when an older post
+ * already owns the same path. Duplicating plugins (e.g. Yoast Duplicate Post)
+ * copy the _potogh_* meta onto the copy: trusting it would make the copy
+ * overwrite (or delete) the original post's file on GitHub.
+ */
+function owned_export_meta(int $postId): array
+{
+    $path = get_post_meta($postId, '_potogh_path', true) ?: null;
+    $sha = get_post_meta($postId, '_potogh_sha', true) ?: null;
+
+    if ($path === null) {
+        return ['path' => null, 'sha' => null];
+    }
+
+    global $wpdb;
+
+    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- single indexed lookup on a plugin-owned meta key; WP_Query cannot return MIN(post_id) across all statuses.
+    $ownerId = (int) $wpdb->get_var(
+        $wpdb->prepare("SELECT MIN(post_id) FROM {$wpdb->postmeta} WHERE meta_key = '_potogh_path' AND meta_value = %s", $path)
+    );
+
+    if ($ownerId > 0 && $ownerId !== $postId) {
+        return ['path' => null, 'sha' => null];
+    }
+
+    return ['path' => $path, 'sha' => $sha];
+}
+
+/**
+ * Keeps Yoast Duplicate Post from copying the export meta onto new copies.
+ */
+function exclude_export_meta_from_duplicates($excludelist): array
+{
+    $excludelist = is_array($excludelist) ? $excludelist : [];
+    $excludelist[] = '_potogh_*';
+
+    return $excludelist;
 }
 
 function export_post_by_id(int $postId): array
@@ -103,8 +144,9 @@ function clear_export_meta(int $postId): void
 
 function delete_export_by_id(int $postId): array
 {
-    $path = get_post_meta($postId, '_potogh_path', true) ?: null;
-    $sha = get_post_meta($postId, '_potogh_sha', true) ?: null;
+    $exportMeta = owned_export_meta($postId);
+    $path = $exportMeta['path'];
+    $sha = $exportMeta['sha'];
 
     if (!$path || !$sha) {
         return ['success' => false, 'error' => __('No exported file recorded for this post.', 'posts-to-github-md')];

@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.5.16] - 2026-10-25
+### Fixed
+- Posts cloned with Yoast Duplicate Post (or any plugin that copies post meta) inherited the original post's `_potogh_path`/`_potogh_sha`, so exporting the copy silently overwrote the original's Markdown file on GitHub, and "Delete from GitHub" on the copy could remove it. The recorded path is now trusted only when no older post owns the same path; otherwise the copy gets its own path from its slug.
+- Test suite: `tests/bootstrap.php` now defines `ABSPATH`, so requiring plugin files no longer ends the PHPUnit run early with a success exit code; `SettingsTest` stubs `sanitize_text_field()`.
+
+### Added
+- `_potogh_*` is added to Yoast Duplicate Post's meta exclude list (`duplicate_post_excludelist_filter`), so new copies no longer carry export meta.
+
 ## [1.5.15] - 2026-07-29
 ### Fixed
 - Taxonomy backup section: removed the em-dash separator from the intro paragraph, moving the "Back up categories and tags" link to its own line.

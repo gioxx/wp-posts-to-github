@@ -13,10 +13,13 @@ class FunctionsTest extends TestCase
         parent::setUp();
         Monkey\setUp();
         require_once __DIR__ . '/../includes/functions.php';
+        // No other post shares the recorded export path unless a test says otherwise.
+        $GLOBALS['wpdb'] = new FakeMetaOwnerWpdb(null);
     }
 
     protected function tearDown(): void
     {
+        unset($GLOBALS['wpdb']);
         Monkey\tearDown();
         parent::tearDown();
     }

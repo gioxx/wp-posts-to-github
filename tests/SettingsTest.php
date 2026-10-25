@@ -2,11 +2,28 @@
 
 namespace POTOGH\Tests;
 
+use Brain\Monkey;
+use Brain\Monkey\Functions;
 use PHPUnit\Framework\TestCase;
 use POTOGH\Settings;
 
 class SettingsTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        Monkey\setUp();
+        Functions\when('sanitize_text_field')->alias(function ($value) {
+            return trim(strip_tags((string) $value));
+        });
+    }
+
+    protected function tearDown(): void
+    {
+        Monkey\tearDown();
+        parent::tearDown();
+    }
+
     public function test_defaults(): void
     {
         $this->assertSame([
