@@ -51,6 +51,7 @@ jobs:
             | grep -v '^phpunit\.xml\.dist$' \
             | grep -v '^\.github/' \
             | grep -v '^\.gitignore$' \
+            | grep -v '^\.wordpress-org/' \
             | grep -v '^vendor/' \
             | grep -v '^README\.it\.md$' \
             | rsync -a --files-from=- . "$STAGING/"
