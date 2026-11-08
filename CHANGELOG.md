@@ -7,7 +7,7 @@ All notable changes to this project are documented in this file.
 - Admin: the credits line at the bottom of the Settings screen becomes a two-card footer — Posts to GitHub (icon, version, links, "View on GitHub") next to an invitation to the author's plugin gallery at wordpress.gioxx.org, with the trademark notice below. Styles live in `assets/css/admin.css`; the icon (Lucide, ISC) and the gallery logo (a W drawn from the Bungee typeface, SIL OFL 1.1) are bundled in `assets/images/`, so nothing is loaded from other sites.
 
 ### Added
-- Plugins screen: a "More plugins by Gioxx" link under the plugin description.
+- Plugins screen: a "More plugins by Gioxx" link under the plugin description, plus "View on GitHub" when the row does not already link to the repository.
 
 ## [1.5.16] - 2026-10-25
 ### Fixed
