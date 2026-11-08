@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [Unreleased]
+### Changed
+- Admin: the credits line at the bottom of the Settings screen becomes a two-card footer — Posts to GitHub (icon, version, links, "View on GitHub") next to an invitation to the author's plugin gallery at wordpress.gioxx.org, with the trademark notice below. Styles live in `assets/css/admin.css`; the icon (Lucide, ISC) and the gallery logo (a W drawn from the Bungee typeface, SIL OFL 1.1) are bundled in `assets/images/`, so nothing is loaded from other sites.
+
+### Added
+- Plugins screen: a "More plugins by Gioxx" link under the plugin description.
+
 ## [1.5.16] - 2026-10-25
 ### Fixed
 - Posts cloned with Yoast Duplicate Post (or any plugin that copies post meta) inherited the original post's `_potogh_path`/`_potogh_sha`, so exporting the copy silently overwrote the original's Markdown file on GitHub, and "Delete from GitHub" on the copy could remove it. The recorded path is now trusted only when no older post owns the same path; otherwise the copy gets its own path from its slug.
