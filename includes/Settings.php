@@ -118,19 +118,50 @@ class Settings
     private function renderCredits(): void
     {
         ?>
-        <div class="potogh-credits">
-            <p class="description">
-                <?php
-                printf(
-                    /* translators: 1: link to the author's site, 2: link to the plugin repository */
-                    esc_html__('Posts to GitHub by %1$s, source on %2$s.', 'posts-to-github-md'),
-                    '<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
-                    '<a href="https://github.com/gioxx/wp-posts-to-github" target="_blank" rel="noopener noreferrer">GitHub</a>'
-                );
-                ?>
-            </p>
+        <div class="potogh-footer">
+            <div class="potogh-footer__cards">
+                <div class="potogh-footer__card potogh-footer__card--plugin">
+                    <span class="potogh-footer__badge"><img src="<?php echo esc_url( POTOGH_PLUGIN_URL . 'assets/images/plugin-icon.svg' ); ?>" width="20" height="20" alt=""></span>
+                    <div class="potogh-footer__body">
+                        <p class="potogh-footer__eyebrow">
+                            <?php
+                            /* translators: %s: plugin version number */
+                            printf( esc_html__( 'Version %s', 'posts-to-github-md' ), esc_html( POTOGH_VERSION ) );
+                            ?>
+                        </p>
+                        <h2 class="potogh-footer__title">Posts to GitHub</h2>
+                        <p class="potogh-footer__text"><?php esc_html_e( 'Exports published posts as Markdown files, with YAML front matter, to a GitHub repository.', 'posts-to-github-md' ); ?></p>
+                        <p class="potogh-footer__text">
+                            <?php
+                            printf(
+                                /* translators: 1: link to the author's site, 2: link to the plugin repository */
+                                esc_html__( 'Made by %1$s. Source code on %2$s.', 'posts-to-github-md' ),
+                                '<a href="https://gioxx.org" target="_blank" rel="noopener noreferrer">Gioxx</a>',
+                                '<a href="https://github.com/gioxx/wp-posts-to-github" target="_blank" rel="noopener noreferrer">GitHub</a>'
+                            );
+                            ?>
+                        </p>
+                        <a class="button potogh-footer__action" href="https://github.com/gioxx/wp-posts-to-github" target="_blank" rel="noopener noreferrer">
+                            <?php esc_html_e( 'View on GitHub', 'posts-to-github-md' ); ?>
+                            <span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'posts-to-github-md' ); ?></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="potogh-footer__card potogh-footer__card--gallery">
+                    <img class="potogh-footer__logo" src="<?php echo esc_url( POTOGH_PLUGIN_URL . 'assets/images/gioxx-plugins.svg' ); ?>" width="40" height="40" alt="">
+                    <div class="potogh-footer__body">
+                        <p class="potogh-footer__eyebrow">gioxx/WordPress</p>
+                        <h2 class="potogh-footer__title"><?php esc_html_e( 'Discover more plugins by Gioxx', 'posts-to-github-md' ); ?></h2>
+                        <p class="potogh-footer__text"><?php esc_html_e( 'A curated collection of open-source plugins for security, analytics, performance and integrations.', 'posts-to-github-md' ); ?></p>
+                        <a class="button potogh-footer__action" href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">
+                            <?php esc_html_e( 'Browse the plugins', 'posts-to-github-md' ); ?>
+                            <span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'posts-to-github-md' ); ?></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
             <p class="description potogh-trademark-notice">
-                <?php esc_html_e('All trademarks mentioned are the property of their respective owners. Third-party trademarks, product names, trade names, corporate names and companies mentioned may be trademarks of their respective owners or registered trademarks of other companies and have been used for explanatory purposes only and for the benefit of the owner, without any intent to infringe existing copyright.', 'posts-to-github-md'); ?>
+                <?php esc_html_e( 'All trademarks mentioned are the property of their respective owners. Third-party trademarks, product names, trade names, corporate names and companies mentioned may be trademarks of their respective owners or registered trademarks of other companies and have been used for explanatory purposes only and for the benefit of the owner, without any intent to infringe existing copyright.', 'posts-to-github-md' ); ?>
             </p>
         </div>
         <?php

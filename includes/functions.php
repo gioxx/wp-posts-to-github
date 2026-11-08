@@ -365,3 +365,22 @@ function enqueue_admin_assets(string $hook): void
         wp_enqueue_style('potogh-admin', POTOGH_PLUGIN_URL . 'assets/css/admin.css', [], POTOGH_VERSION);
     }
 }
+
+/**
+ * Links under the plugin description on the Plugins screen.
+ *
+ * @param string[] $links Row meta links.
+ * @param string   $file  Plugin basename of the row.
+ * @return string[]
+ */
+function plugin_row_meta($links, $file): array
+{
+    if (plugin_basename(POTOGH_PLUGIN_DIR . 'post-to-github-md.php') !== $file) {
+        return (array) $links;
+    }
+    $links[] = '<a href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">' . esc_html__('More plugins by Gioxx', 'posts-to-github-md') . '</a>';
+
+    return $links;
+}
+
+add_filter('plugin_row_meta', __NAMESPACE__ . '\\plugin_row_meta', 10, 2);
