@@ -378,6 +378,9 @@ function plugin_row_meta($links, $file): array
     if (plugin_basename(POTOGH_PLUGIN_DIR . 'post-to-github-md.php') !== $file) {
         return (array) $links;
     }
+    if (false === strpos(implode(' ', (array) $links), 'https://github.com/gioxx/wp-posts-to-github')) {
+        $links[] = '<a href="https://github.com/gioxx/wp-posts-to-github" target="_blank" rel="noopener noreferrer">' . esc_html__('View on GitHub', 'posts-to-github-md') . '</a>';
+    }
     $links[] = '<a href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">' . esc_html__('More plugins by Gioxx', 'posts-to-github-md') . '</a>';
 
     return $links;
