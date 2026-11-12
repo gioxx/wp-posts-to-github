@@ -153,7 +153,7 @@ class Settings
                         <p class="potogh-footer__eyebrow">gioxx/WordPress</p>
                         <h2 class="potogh-footer__title"><?php esc_html_e( 'Discover more plugins by Gioxx', 'posts-to-github-md' ); ?></h2>
                         <p class="potogh-footer__text"><?php esc_html_e( 'A curated collection of open-source plugins for security, analytics, performance and integrations.', 'posts-to-github-md' ); ?></p>
-                        <a class="button potogh-footer__action" href="https://wordpress.gioxx.org/" target="_blank" rel="noopener noreferrer">
+                        <a class="button potogh-footer__action" href="https://wordpress.gxware.org/" target="_blank" rel="noopener noreferrer">
                             <?php esc_html_e( 'Browse the plugins', 'posts-to-github-md' ); ?>
                             <span class="screen-reader-text"><?php esc_html_e( '(opens in a new tab)', 'posts-to-github-md' ); ?></span>
                         </a>
